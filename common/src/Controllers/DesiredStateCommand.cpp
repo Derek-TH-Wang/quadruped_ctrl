@@ -64,7 +64,9 @@ void DesiredStateCommand<T>::convertToStateCommands() {
   // Warning!!!!
   // Recommend not to use stateDes
   // We are going to remove it soon
+
   
+  //todo gamepad input
   //delete gamepad
   // joystickLeft = gamepadCommand->leftStickAnalog;
   // joystickRight = gamepadCommand->rightStickAnalog;
