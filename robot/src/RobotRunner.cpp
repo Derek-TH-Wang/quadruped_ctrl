@@ -63,7 +63,7 @@ void RobotRunner::init() {
   // memset(&rc_control, 0, sizeof(rc_control_settings));
   // Initialize the DesiredStateCommand object
   _desiredStateCommand =
-    new DesiredStateCommand<float>(driverCommand,
+    new DesiredStateCommand<float>(//driverCommand,  //delete gamepad
         //delete rc
         // &rc_control,
         controlParameters,
@@ -78,7 +78,8 @@ void RobotRunner::init() {
   _robot_ctrl->_stateEstimate = &_stateEstimate;
   _robot_ctrl->_visualizationData= visualizationData;
   _robot_ctrl->_robotType = robotType;
-  _robot_ctrl->_driverCommand = driverCommand;
+  //delete gamepad
+  // _robot_ctrl->_driverCommand = driverCommand;
   _robot_ctrl->_controlParameters = controlParameters;
   _robot_ctrl->_desiredStateCommand = _desiredStateCommand;
 

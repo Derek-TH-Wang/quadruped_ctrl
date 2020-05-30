@@ -21,8 +21,8 @@
 
 #include <eigen3/Eigen/Dense>
 #include <qpOASES.hpp>
-#include <lcm/lcm-cpp.hpp>
 //delete lcm
+// #include <lcm/lcm-cpp.hpp>
 // #include "sim_command_t.hpp"
 // #include "two_contact_stand_data_t.hpp"
 class two_contact_stand_data_t

@@ -18,8 +18,8 @@
 #include "Controllers/LegController.h"
 #include "Dynamics/Quadruped.h"
 #include "JPosInitializer.h"
-
-#include "SimUtilities/GamepadCommand.h"
+//delete gamepad
+// #include "SimUtilities/GamepadCommand.h"
 #include "SimUtilities/VisualizationData.h"
 #include "Utilities/PeriodicTask.h"
 // #include "cheetah_visualization_lcmt.hpp"
@@ -42,8 +42,8 @@ class RobotRunner : public PeriodicTask {
   virtual ~RobotRunner();
 
   RobotController* _robot_ctrl;
-
-  GamepadCommand* driverCommand;
+  //delete gamepad
+  // GamepadCommand* driverCommand;
   RobotType robotType;
   VectorNavData* vectorNavData;
   CheaterState<double>* cheaterState;

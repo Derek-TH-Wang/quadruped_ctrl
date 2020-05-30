@@ -64,9 +64,11 @@ void DesiredStateCommand<T>::convertToStateCommands() {
   // Warning!!!!
   // Recommend not to use stateDes
   // We are going to remove it soon
-  joystickLeft = gamepadCommand->leftStickAnalog;
-  joystickRight = gamepadCommand->rightStickAnalog;
-  trigger_pressed = gamepadCommand->a;
+  
+  //delete gamepad
+  // joystickLeft = gamepadCommand->leftStickAnalog;
+  // joystickRight = gamepadCommand->rightStickAnalog;
+  // trigger_pressed = gamepadCommand->a;
 
   joystickLeft[0] *= -1.f;
   joystickRight[0] *= -1.f;
@@ -153,37 +155,38 @@ float DesiredStateCommand<T>::deadband(float command, T minVal, T maxVal) {
  */
 template <typename T>
 void DesiredStateCommand<T>::printRawInfo() {
-  // Increment printing iteration
-  printIter++;
+  //delete gamepad
+  // // Increment printing iteration
+  // printIter++;
 
-  // Print at requested frequency
-  if (printIter == printNum) {
-    std::cout << "[DESIRED STATE COMMAND] Printing Raw Gamepad Info...\n";
-    std::cout << "---------------------------------------------------------\n";
-    std::cout << "Button Start: " << gamepadCommand->start
-              << " | Back: " << gamepadCommand->back << "\n";
-    std::cout << "Button A: " << gamepadCommand->a
-              << " | B: " << gamepadCommand->b << " | X: " << gamepadCommand->x
-              << " | Y: " << gamepadCommand->y << "\n";
-    std::cout << "Left Stick Button: " << gamepadCommand->leftStickButton
-              << " | X: " << gamepadCommand->leftStickAnalog[0]
-              << " | Y: " << gamepadCommand->leftStickAnalog[1] << "\n";
-    std::cout << "Right Analog Button: " << gamepadCommand->rightStickButton
-              << " | X: " << gamepadCommand->rightStickAnalog[0]
-              << " | Y: " << gamepadCommand->rightStickAnalog[1] << "\n";
-    std::cout << "Left Bumper: " << gamepadCommand->leftBumper
-              << " | Trigger Switch: " << gamepadCommand->leftTriggerButton
-              << " | Trigger Value: " << gamepadCommand->leftTriggerAnalog
-              << "\n";
-    std::cout << "Right Bumper: " << gamepadCommand->rightBumper
-              << " | Trigger Switch: " << gamepadCommand->rightTriggerButton
-              << " | Trigger Value: " << gamepadCommand->rightTriggerAnalog
-              << "\n\n";
-    std::cout << std::endl;
+  // // Print at requested frequency
+  // if (printIter == printNum) {
+  //   std::cout << "[DESIRED STATE COMMAND] Printing Raw Gamepad Info...\n";
+  //   std::cout << "---------------------------------------------------------\n";
+  //   std::cout << "Button Start: " << gamepadCommand->start
+  //             << " | Back: " << gamepadCommand->back << "\n";
+  //   std::cout << "Button A: " << gamepadCommand->a
+  //             << " | B: " << gamepadCommand->b << " | X: " << gamepadCommand->x
+  //             << " | Y: " << gamepadCommand->y << "\n";
+  //   std::cout << "Left Stick Button: " << gamepadCommand->leftStickButton
+  //             << " | X: " << gamepadCommand->leftStickAnalog[0]
+  //             << " | Y: " << gamepadCommand->leftStickAnalog[1] << "\n";
+  //   std::cout << "Right Analog Button: " << gamepadCommand->rightStickButton
+  //             << " | X: " << gamepadCommand->rightStickAnalog[0]
+  //             << " | Y: " << gamepadCommand->rightStickAnalog[1] << "\n";
+  //   std::cout << "Left Bumper: " << gamepadCommand->leftBumper
+  //             << " | Trigger Switch: " << gamepadCommand->leftTriggerButton
+  //             << " | Trigger Value: " << gamepadCommand->leftTriggerAnalog
+  //             << "\n";
+  //   std::cout << "Right Bumper: " << gamepadCommand->rightBumper
+  //             << " | Trigger Switch: " << gamepadCommand->rightTriggerButton
+  //             << " | Trigger Value: " << gamepadCommand->rightTriggerAnalog
+  //             << "\n\n";
+  //   std::cout << std::endl;
 
-    // Reset iteration counter
-    printIter = 0;
-  }
+  //   // Reset iteration counter
+  //   printIter = 0;
+  // }
 }
 
 /**

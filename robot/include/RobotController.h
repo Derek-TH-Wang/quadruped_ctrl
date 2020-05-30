@@ -12,7 +12,8 @@
 #include "Controllers/StateEstimatorContainer.h"
 #include "Controllers/DesiredStateCommand.h"
 #include "SimUtilities/VisualizationData.h"
-#include "SimUtilities/GamepadCommand.h"
+//delete gamepad
+// #include "SimUtilities/GamepadCommand.h"
 
 /*!
  * Parent class of user robot controllers
@@ -38,7 +39,8 @@ protected:
   LegController<float>* _legController = nullptr;
   StateEstimatorContainer<float>* _stateEstimator = nullptr;
   StateEstimate<float>* _stateEstimate = nullptr;
-  GamepadCommand* _driverCommand = nullptr;
+  //delete gamepad
+  // GamepadCommand* _driverCommand = nullptr;
   RobotControlParameters* _controlParameters = nullptr;
   DesiredStateCommand<float>* _desiredStateCommand = nullptr;
 

@@ -17,7 +17,8 @@
 
 #include <eigen3/Eigen/Dense>
 #include <qpOASES.hpp>
-#include <lcm/lcm-cpp.hpp>
+//delete lcm
+// #include <lcm/lcm-cpp.hpp>
 // #include "sim_command_t.hpp"
 // #include "qp_controller_data_t.hpp"
 

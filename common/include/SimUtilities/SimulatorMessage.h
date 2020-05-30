@@ -10,7 +10,8 @@
 #define PROJECT_SIMULATORTOROBOTMESSAGE_H
 
 #include "ControlParameters/ControlParameterInterface.h"
-#include "SimUtilities/GamepadCommand.h"
+//delete gamepad
+// #include "SimUtilities/GamepadCommand.h"
 #include "SimUtilities/IMUTypes.h"
 #include "SimUtilities/SpineBoard.h"
 #include "SimUtilities/VisualizationData.h"
@@ -32,7 +33,8 @@ enum class SimulatorMode {
  * A plain message from the simulator to the robot
  */
 struct SimulatorToRobotMessage {
-  GamepadCommand gamepadCommand;  // joystick
+  //delete gamepad
+  // GamepadCommand gamepadCommand;  // joystick
   RobotType robotType;  // which robot the simulator thinks we are simulating
 
   // imu data

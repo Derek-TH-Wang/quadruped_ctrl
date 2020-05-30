@@ -66,7 +66,8 @@ class HardwareBridge {
  protected:
   PeriodicTaskManager taskManager;
   PrintTaskStatus statusTask;
-  GamepadCommand _gamepadCommand;
+  //delete gamepad
+  // GamepadCommand _gamepadCommand;
   //delete lcm
   //   CheetahVisualization _mainCheetahVisualization;
 //   lcm::LCM _interfaceLCM;

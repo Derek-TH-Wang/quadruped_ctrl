@@ -152,7 +152,9 @@ void MiniCheetahHardwareBridge::run() {
   _robotRunner =
       new RobotRunner(_controller, &taskManager, _robotParams.controller_dt, "robot-control");
 
-  _robotRunner->driverCommand = &_gamepadCommand;
+  //delete gamepad
+  // _robotRunner->driverCommand = &_gamepadCommand;
+  //delete spi
   // _robotRunner->spiData = &_spiData;
   // _robotRunner->spiCommand = &_spiCommand;
   _robotRunner->robotType = RobotType::MINI_CHEETAH;

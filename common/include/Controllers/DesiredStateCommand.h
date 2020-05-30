@@ -17,7 +17,8 @@
 #include "Controllers/StateEstimatorContainer.h"
 #include "cppTypes.h"
 
-#include "SimUtilities/GamepadCommand.h"
+//delete gamepad
+// #include "SimUtilities/GamepadCommand.h"
 //delete rc
 // #include "robot/include/rt/rt_rc_interface.h"
 
@@ -92,10 +93,11 @@ public:
 
   //   dt = _dt;
   // }
-  DesiredStateCommand(GamepadCommand* command,
+  DesiredStateCommand(// GamepadCommand* command,     delete gamepad
                       RobotControlParameters* _parameters,
                       StateEstimate<T>* sEstimate, float _dt) {
-    gamepadCommand = command;
+    // delete gamepad
+    // gamepadCommand = command;
     stateEstimate = sEstimate;
     parameters = _parameters;
 
@@ -142,7 +144,8 @@ public:
 
   //delete rc
   // const rc_control_settings* rcCommand;
-  const GamepadCommand* gamepadCommand;
+  //delete gamepad
+  // const GamepadCommand* gamepadCommand;
 
   bool trigger_pressed = false;
 

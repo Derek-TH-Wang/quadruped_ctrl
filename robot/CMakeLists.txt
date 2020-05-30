@@ -10,7 +10,7 @@ include_directories("../third-party/vectornav/include/vn")
 include_directories("../third-party/lord_imu/Include")
 
 # include_directories("../lcm-types/cpp")
-include_directories("/usr/local/include/lcm/")   # lcm includes
+# include_directories("/usr/local/include/lcm/")   # lcm includes
 include_directories("../third-party/SOEM/osal")
 include_directories("../third-party/SOEM/osal/linux")
 include_directories("../third-party/SOEM/oshw")
@@ -21,7 +21,8 @@ file(GLOB sources "src/*.cpp")
 
 add_library(robot SHARED ${sources})
 
-target_link_libraries(robot biomimetics pthread lcm inih dynacore_param_handler lord_imu soem)
+# target_link_libraries(robot biomimetics pthread lcm inih dynacore_param_handler lord_imu soem)
+target_link_libraries(robot biomimetics pthread inih dynacore_param_handler lord_imu soem)
 if(CMAKE_SYSTEM_NAME MATCHES Linux)
 target_link_libraries(robot libvnc)
 endif()

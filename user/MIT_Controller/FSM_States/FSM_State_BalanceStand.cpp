@@ -231,16 +231,18 @@ void FSM_State_BalanceStand<T>::BalanceStandStep() {
   //   _wbc_data->pBody_des[2] += 0.12 * rc_cmd->height_variation;
   // }else{
     // Orientation
-    _wbc_data->pBody_RPY_des[0] = 
-     0.6* this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
-     _wbc_data->pBody_RPY_des[1] = 
-      0.6*this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
-    _wbc_data->pBody_RPY_des[2] -= 
-      this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[1];
+
+    //delete gamepad
+    // _wbc_data->pBody_RPY_des[0] = 
+    //  0.6* this->_data->_desiredStateCommand->gamepadCommand->leftStickAnalog[0];
+    //  _wbc_data->pBody_RPY_des[1] = 
+    //   0.6*this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
+    // _wbc_data->pBody_RPY_des[2] -= 
+    //   this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[1];
     
-    // Height
-    _wbc_data->pBody_des[2] += 
-      0.12 * this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
+    // // Height
+    // _wbc_data->pBody_des[2] += 
+    //   0.12 * this->_data->_desiredStateCommand->gamepadCommand->rightStickAnalog[0];
   // }
   _wbc_data->vBody_Ori_des.setZero();
 
