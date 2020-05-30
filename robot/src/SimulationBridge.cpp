@@ -62,6 +62,7 @@ void SimulationBridge::runRobotControl() {
     // //delete ti
     // // _robotRunner->tiBoardData = _sharedMemory().simToRobot.tiBoardData;
     // _robotRunner->robotType = _robot;
+    //derektodo: imu callback function in this file
     // _robotRunner->vectorNavData = &_sharedMemory().simToRobot.vectorNav;
     // _robotRunner->cheaterState = &_sharedMemory().simToRobot.cheaterState;//simulation only
     // _robotRunner->spiCommand = &_sharedMemory().robotToSim.spiCommand;

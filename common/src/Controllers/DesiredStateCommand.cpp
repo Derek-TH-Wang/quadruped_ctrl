@@ -66,7 +66,7 @@ void DesiredStateCommand<T>::convertToStateCommands() {
   // We are going to remove it soon
 
   
-  //todo gamepad input
+  //derektodo: gamepad callback function in this file
   //delete gamepad
   // joystickLeft = gamepadCommand->leftStickAnalog;
   // joystickRight = gamepadCommand->rightStickAnalog;

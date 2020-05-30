@@ -18,6 +18,14 @@
         "utility": "cpp",
         "thread": "cpp",
         "*.cuh": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "typeinfo": "cpp",
+        "callback": "cpp",
+        "drawable": "cpp",
+        "graphicscontext": "cpp",
+        "graphicsthread": "cpp",
+        "operationthread": "cpp",
+        "program": "cpp",
+        "stateset": "cpp"
     }
 }

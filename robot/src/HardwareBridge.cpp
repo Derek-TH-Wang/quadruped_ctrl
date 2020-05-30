@@ -5,7 +5,7 @@
  * This class initializes the hardware of both robots and allows the robot
  * controller to access it
  */
-#ifdef linux 
+// #ifdef linux 
 
 #include <sys/mman.h>
 #include <unistd.h>
@@ -158,6 +158,7 @@ void MiniCheetahHardwareBridge::run() {
   // _robotRunner->spiData = &_spiData;
   // _robotRunner->spiCommand = &_spiCommand;
   _robotRunner->robotType = RobotType::MINI_CHEETAH;
+  //derektodo: imu callback function in this file
   _robotRunner->vectorNavData = &_vectorNavData;
   _robotRunner->controlParameters = &_robotParams;
   // _robotRunner->visualizationData = &_visualizationData;
@@ -204,4 +205,4 @@ void MiniCheetahHardwareBridge::initHardware() {
 
 
 
-#endif
+// #endif
