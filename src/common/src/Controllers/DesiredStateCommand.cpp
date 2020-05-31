@@ -66,7 +66,9 @@ void DesiredStateCommand<T>::convertToStateCommands() {
   // We are going to remove it soon
 
   
-  //derektodo: gamepad callback function in this file
+  //derektodo: gamepad callback function in this file, 
+  // geometry_msgs/Twist.msg, "/cmd_vel"
+  
   //delete gamepad
   // joystickLeft = gamepadCommand->leftStickAnalog;
   // joystickRight = gamepadCommand->rightStickAnalog;

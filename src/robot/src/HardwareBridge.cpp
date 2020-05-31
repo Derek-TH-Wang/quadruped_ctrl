@@ -115,7 +115,7 @@ void MiniCheetahHardwareBridge::run() {
   // _robotRunner->spiData = &_spiData;
   // _robotRunner->spiCommand = &_spiCommand;
   _robotRunner->robotType = RobotType::MINI_CHEETAH;
-  //derektodo: imu callback function in this file
+  //derektodo: imu callback function in this file, sensor_msgs/Imu.msg
   _robotRunner->vectorNavData = &_vectorNavData;
   _robotRunner->controlParameters = &_robotParams;
   // _robotRunner->visualizationData = &_visualizationData;
