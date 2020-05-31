@@ -1,6 +1,6 @@
 #include "LocalTailPosTask.hpp"
 
-#include <Configuration.h>
+// #include <Configuration.h>
 #include <Dynamics/FloatingBaseModel.h>
 #include <Dynamics/Quadruped.h>
 #include <Math/orientation_tools.h>

@@ -6,7 +6,7 @@
 #include "JPosInitializer.h"
 #include "Utilities/Utilities_print.h"
 #include "ParamHandler/ParamHandler.hpp"
-#include <Configuration.h>
+// #include <Configuration.h>
 
 template <typename T>
 JPosInitializer<T>::JPosInitializer(T end_time, float dt)
@@ -80,7 +80,7 @@ void JPosInitializer<T>::_UpdateInitial(const LegController<T>* ctrl) {
 
 template <typename T>
 void JPosInitializer<T>::_UpdateParam() {
-  ParamHandler handler(THIS_COM "config/initial_jpos_ctrl.yaml");
+  ParamHandler handler("./config/initial_jpos_ctrl.yaml");
   handler.getVector<T>("target_jpos", _target_jpos);
   handler.getVector<T>("mid_jpos", _mid_jpos);
 }

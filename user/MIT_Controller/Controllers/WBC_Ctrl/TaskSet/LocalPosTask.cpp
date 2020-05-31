@@ -1,6 +1,6 @@
 #include "LocalPosTask.hpp"
 // (X, Y, Z)
-#include <Configuration.h>
+// #include <Configuration.h>
 #include <Dynamics/FloatingBaseModel.h>
 #include <Dynamics/Quadruped.h>
 #include <Utilities/Utilities_print.h>

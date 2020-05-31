@@ -18,9 +18,9 @@ set(BUILD_TYPE_RELEASE TRUE)
 
 
 if(MINI_CHEETAH_BUILD)
-  SET (THIS_COM "../" )
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
-    ${CMAKE_BINARY_DIR}/Configuration.h)
+  # SET (THIS_COM "../" )
+  # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+    # ${CMAKE_BINARY_DIR}/Configuration.h)
   set(CMAKE_CXX_FLAGS "-O3 -no-pie -ggdb -Wall \
   -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
   -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
@@ -28,9 +28,9 @@ if(MINI_CHEETAH_BUILD)
   set(CMAKE_C_FLAGS "-O3  -ggdb -std=gnu99 -I.")
   message("**** Mini-Cheetah build enabled ****")
 else(MINI_CHEETAH_BUILD)
-  SET (THIS_COM "${PROJECT_SOURCE_DIR}/" )
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
-    ${CMAKE_BINARY_DIR}/Configuration.h)
+  # SET (THIS_COM "${PROJECT_SOURCE_DIR}/" )
+  # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+    # ${CMAKE_BINARY_DIR}/Configuration.h)
 
   if(CMAKE_SYSTEM_NAME MATCHES Linux)
     set(CMAKE_CXX_FLAGS "-O3 -no-pie -march=native -ggdb -Wall \
