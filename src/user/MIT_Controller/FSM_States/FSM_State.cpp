@@ -165,18 +165,18 @@ void FSM_State<T>::runControls() {
 
   } else if (CONTROLLER_OPTION == 2) {
     // WBC
-    runWholeBodyController();
+    // runWholeBodyController();
 
   } else if (CONTROLLER_OPTION == 3) {
     // cMPC
-    runConvexModelPredictiveController();
+    // runConvexModelPredictiveController();
 
     // Swing foot landing positions are calculated with heuristics
     // footstepHeuristicPlacement();
 
   } else if (CONTROLLER_OPTION == 4) {
     // RPC
-    runRegularizedPredictiveController();
+    // runRegularizedPredictiveController();
 
   } else {
     // Zero out the commands if a controller was not selected

@@ -80,9 +80,9 @@ class FSM_State {
   //
   void runControls();
   void runBalanceController();
-  void runWholeBodyController();
-  void runConvexModelPredictiveController();
-  void runRegularizedPredictiveController();
+  // void runWholeBodyController();
+  // void runConvexModelPredictiveController();
+  // void runRegularizedPredictiveController();
 
   //
   void turnOnAllSafetyChecks();

@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(quadruped_robot)
 
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
-
-
+set(CMAKE_CXX_STANDARD 14)
+set(BUILD_TYPE_RELEASE TRUE)
 
 find_package(catkin REQUIRED COMPONENTS
   roslib
@@ -24,7 +22,7 @@ generate_messages(
 catkin_package(
   LIBRARIES
   INCLUDE_DIRS
-  CATKIN_DEPENDS roscpp std_msgs geometry_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs
 )
 
 include_directories(
@@ -46,47 +44,38 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
-option(MINI_CHEETAH_BUILD "use compiler flags for mini cheetah computer" OFF)
-set(BUILD_TYPE_RELEASE TRUE)
 
 
-if(MINI_CHEETAH_BUILD)
-  # SET (THIS_COM "../" )
-  # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
-    # ${CMAKE_BINARY_DIR}/Configuration.h)
-  set(CMAKE_CXX_FLAGS "-O3 -no-pie -ggdb -Wall \
-  -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
-  -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
-  -Wshadow -Wsign-promo -Werror")
-  set(CMAKE_C_FLAGS "-O3  -ggdb -std=gnu99 -I.")
-  message("**** Mini-Cheetah build enabled ****")
-else(MINI_CHEETAH_BUILD)
-  # SET (THIS_COM "${PROJECT_SOURCE_DIR}/" )
-  # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
-    # ${CMAKE_BINARY_DIR}/Configuration.h)
 
-  if(CMAKE_SYSTEM_NAME MATCHES Linux)
-    set(CMAKE_CXX_FLAGS "-O3 -no-pie -march=native -ggdb -Wall \
-    -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
-    -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
-    -Wshadow -Wsign-promo -Werror")
-  elseif(APPLE)
-    set(CMAKE_CXX_FLAGS "-O3 -march=native -ggdb -Wall \
-    -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2 \
-    -Winit-self -Wmissing-include-dirs -Woverloaded-virtual \
-    -Wshadow -Wsign-promo")
-    include_directories("/usr/local/include/")   # lcm includes
-  endif()
 
-  set(CMAKE_C_FLAGS "-O3  -ggdb  -march=native -std=gnu99 -I.")
-  message("**** Mini-Cheetah build disabled ****")
-endif(MINI_CHEETAH_BUILD)
-
-set(CMAKE_CXX_STANDARD 14)
 
 #find_package(lcm)
 add_subdirectory(src/third-party)
 add_subdirectory(src/robot)
 add_subdirectory(src/common)
 add_subdirectory(src/user)
+
+
+include_directories("src/user/MIT_Controller")
+include_directories("src/user/MIT_Controller/Controllers")
+include_directories("src/robot/include")
+include_directories("src/common/include/")
+include_directories("src/common/FootstepPlanner")
+include_directories("src/third-party/")
+include_directories(SYSTEM "src/third-party/qpOASES/include")
+include_directories("src/third-party/ParamHandler")
+
+include_directories("/usr/local/include/eigen3")   # lcm includes
+include_directories(${CMAKE_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR})
+
+add_executable(quadruped_ctrl src/main.cpp)
+target_link_libraries(quadruped_ctrl ${catkin_LIBRARIES})
+target_link_libraries(quadruped_ctrl ctrller)
+target_link_libraries(quadruped_ctrl robot biomimetics)
+target_link_libraries(quadruped_ctrl dynacore_param_handler qpOASES)
+target_link_libraries(quadruped_ctrl Goldfarb_Optimizer osqp)
+target_link_libraries(quadruped_ctrl WBC_Ctrl)
+target_link_libraries(quadruped_ctrl VisionMPC)
+add_dependencies(quadruped_ctrl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
