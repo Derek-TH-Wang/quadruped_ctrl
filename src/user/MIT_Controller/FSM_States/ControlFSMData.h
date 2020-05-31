@@ -22,7 +22,7 @@ struct ControlFSMData {
   DesiredStateCommand<T>* _desiredStateCommand;
   RobotControlParameters* controlParameters;
   MIT_UserParameters* userParameters;
-  VisualizationData* visualizationData;
+  // VisualizationData* visualizationData;
 };
 
 template struct ControlFSMData<double>;

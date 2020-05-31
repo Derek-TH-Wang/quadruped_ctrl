@@ -27,7 +27,7 @@ ControlFSM<T>::ControlFSM(Quadruped<T>* _quadruped,
                           GaitScheduler<T>* _gaitScheduler,
                           DesiredStateCommand<T>* _desiredStateCommand,
                           RobotControlParameters* controlParameters,
-                          VisualizationData* visualizationData,
+                          //VisualizationData* visualizationData,
                           MIT_UserParameters* userParameters)
 {
   // Add the pointers to the ControlFSMData struct
@@ -37,7 +37,7 @@ ControlFSM<T>::ControlFSM(Quadruped<T>* _quadruped,
   data._gaitScheduler = _gaitScheduler;
   data._desiredStateCommand = _desiredStateCommand;
   data.controlParameters = controlParameters;
-  data.visualizationData = visualizationData;
+  // data.visualizationData = visualizationData;
   data.userParameters = userParameters;
 
   // Initialize and add all of the FSM States to the state list

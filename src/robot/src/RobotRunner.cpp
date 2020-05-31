@@ -76,7 +76,7 @@ void RobotRunner::init() {
   _robot_ctrl->_legController = _legController;
   _robot_ctrl->_stateEstimator = _stateEstimator;
   _robot_ctrl->_stateEstimate = &_stateEstimate;
-  _robot_ctrl->_visualizationData= visualizationData;
+  // _robot_ctrl->_visualizationData= visualizationData;
   _robot_ctrl->_robotType = robotType;
   //delete gamepad
   // _robot_ctrl->_driverCommand = driverCommand;
@@ -96,7 +96,7 @@ void RobotRunner::run() {
   //_stateEstimator->run(cheetahMainVisualization);
   _stateEstimator->run();
   //cheetahMainVisualization->p = _stateEstimate.position;
-  visualizationData->clear();
+  // visualizationData->clear();
 
   // Update the data from the robot
   setupStep();
@@ -142,11 +142,11 @@ void RobotRunner::run() {
       } else {
         // Run Control 
         _robot_ctrl->runController();
-        cheetahMainVisualization->p = _stateEstimate.position;
+        // cheetahMainVisualization->p = _stateEstimate.position;
 
         // Update Visualization
         _robot_ctrl->updateVisualization();
-        cheetahMainVisualization->p = _stateEstimate.position;
+        // cheetahMainVisualization->p = _stateEstimate.position;
       }
     // }
 
@@ -155,15 +155,15 @@ void RobotRunner::run() {
 
 
   // Visualization (will make this into a separate function later)
-  for (int leg = 0; leg < 4; leg++) {
-    for (int joint = 0; joint < 3; joint++) {
-      cheetahMainVisualization->q[leg * 3 + joint] =
-        _legController->datas[leg].q[joint];
-    }
-  }
-  cheetahMainVisualization->p.setZero();
-  cheetahMainVisualization->p = _stateEstimate.position;
-  cheetahMainVisualization->quat = _stateEstimate.orientation;
+  // for (int leg = 0; leg < 4; leg++) {
+  //   for (int joint = 0; joint < 3; joint++) {
+  //     cheetahMainVisualization->q[leg * 3 + joint] =
+  //       _legController->datas[leg].q[joint];
+  //   }
+  // }
+  // cheetahMainVisualization->p.setZero();
+  // cheetahMainVisualization->p = _stateEstimate.position;
+  // cheetahMainVisualization->quat = _stateEstimate.orientation;
 
   // Sets the leg controller commands for the robot appropriate commands
   finalizeStep();

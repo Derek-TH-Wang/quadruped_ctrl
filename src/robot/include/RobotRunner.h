@@ -50,8 +50,8 @@ class RobotRunner : public PeriodicTask {
   // SpiData* spiData;
   // SpiCommand* spiCommand;
   RobotControlParameters* controlParameters;
-  VisualizationData* visualizationData;
-  CheetahVisualization* cheetahMainVisualization;
+  // VisualizationData* visualizationData;
+  // CheetahVisualization* cheetahMainVisualization;
 
  private:
   float _ini_yaw;

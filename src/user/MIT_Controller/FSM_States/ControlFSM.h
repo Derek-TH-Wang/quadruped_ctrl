@@ -66,7 +66,7 @@ class ControlFSM {
              LegController<T>* _legController, GaitScheduler<T>* _gaitScheduler,
              DesiredStateCommand<T>* _desiredStateCommand,
              RobotControlParameters* controlParameters,
-             VisualizationData* visualizationData,
+            //  VisualizationData* visualizationData,
              MIT_UserParameters* userParameters);
 
   // Initializes the Control FSM instance

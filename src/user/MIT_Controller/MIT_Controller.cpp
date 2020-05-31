@@ -17,8 +17,8 @@ void MIT_Controller::initializeController() {
   // Initializes the Control FSM with all the required data
   _controlFSM = new ControlFSM<float>(_quadruped, _stateEstimator,
                                       _legController, _gaitScheduler,
-                                      _desiredStateCommand, _controlParameters, 
-                                      _visualizationData, &userParameters);
+                                      _desiredStateCommand, _controlParameters, //_visualizationData, 
+                                      &userParameters);
 }
 
 /**
