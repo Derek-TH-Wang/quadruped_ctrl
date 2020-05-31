@@ -1,6 +1,6 @@
 # quadruped_robot
 
 ```
-rosrun quadruped_robot mit_ctrl s
-rosrun quadruped_robot mit_ctrl r
+rosrun quadruped_robot quadruped_ctrl s
+rosrun quadruped_robot quadruped_ctrl r
 ```

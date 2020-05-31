@@ -144,7 +144,7 @@ void MiniCheetahHardwareBridge::run() {
  */
 void MiniCheetahHardwareBridge::initHardware() {
   _vectorNavData.quat << 1, 0, 0, 0;
-  //derek todo: init sdk
+  //derektodo: init sdk
 }
 
 

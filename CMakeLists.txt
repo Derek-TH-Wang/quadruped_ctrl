@@ -7,18 +7,24 @@ set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
 
 
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
+  roslib
   roscpp
   rospy
   std_msgs
+  message_generation
+  geometry_msgs
 )
 
 
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES quadruped_robot
-#  CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs
-#  DEPENDS system_lib
+  LIBRARIES
+  INCLUDE_DIRS
+  CATKIN_DEPENDS roscpp std_msgs geometry_msgs
 )
 
 include_directories(

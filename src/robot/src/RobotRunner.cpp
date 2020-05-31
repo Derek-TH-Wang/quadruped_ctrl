@@ -175,7 +175,7 @@ void RobotRunner::run() {
 void RobotRunner::setupStep() {
   // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    //derek todo: send sdk
+    //derektodo: send sdk
     // _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     //delete ti
@@ -217,7 +217,7 @@ void RobotRunner::setupStep() {
  */
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
-    //derek todo: send sdk
+    //derektodo: send sdk
     // _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     //delete ti
