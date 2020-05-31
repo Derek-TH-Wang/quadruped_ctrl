@@ -49,8 +49,8 @@ int main_helper(int argc, char** argv, RobotController* ctrl) {
     return EXIT_FAILURE;
   }
 
-  gMasterConfig.load_from_file = false;
-  printf("Load parameters from network\n");
+  gMasterConfig.load_from_file = true;
+  printf("Load parameters from file\n");
 
   printf("[Quadruped] Cheetah Software\n");
   printf("        Quadruped:  %s\n",

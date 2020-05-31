@@ -42,14 +42,11 @@ class HardwareBridge {
       //delete lcm
         // _interfaceLCM(getLcmUrl(255)),
         // _visualizationLCM(getLcmUrl(255)) {
-        {
+  {
     _controller = robot_ctrl;
     _userControlParameters = robot_ctrl->getUserControlParameters();
-        }
-  void prefaultStack();
-  void setupScheduler();
+  }
   void initError(const char* reason, bool printErrno = false);
-  void initCommon();
   ~HardwareBridge() { delete _robotRunner; }
   //delete lcm
 //   void handleGamepadLCM(const lcm::ReceiveBuffer* rbuf, const std::string& chan,

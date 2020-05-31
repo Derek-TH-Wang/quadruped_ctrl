@@ -27,18 +27,28 @@ void SimulationBridge::run() {
 void SimulationBridge::runRobotControl() {
   if (_firstControllerRun) {
     printf("[Simulator Driver] First run of robot controller...\n");
-    if (_robotParams.isFullyInitialized()) {
-      printf("\tAll %ld control parameters are initialized\n",
-             _robotParams.collection._map.size());
-    } else {
-      printf(
-          "\t111but not all control parameters were initialized. Missing:\n%s\n",
-          _robotParams.generateUnitializedList().c_str());
-      throw std::runtime_error(
-          "not all parameters initialized when going into RUN_CONTROLLER");
+    try {
+      _robotParams.initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mini-cheetah-defaults.yaml");
+    } catch(std::exception& e) {
+      printf("Failed to initialize robot parameters from yaml file: %s\n", e.what());
+      exit(1);
+    }
+    if(!_robotParams.isFullyInitialized()) {
+      printf("Failed to initialize all robot parameters\n");
+      exit(1);
     }
 
     auto* userControlParameters = _robotRunner->_robot_ctrl->getUserControlParameters();
+    try {
+      userControlParameters->initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mc-mit-ctrl-user-parameters.yaml");
+    } catch(std::exception& e) {
+      printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
+      exit(1);
+    }
+    if(!userControlParameters->isFullyInitialized()) {
+      printf("Failed to initialize all user parameters\n");
+      exit(1);
+    }
     if(userControlParameters) {
       if (userControlParameters->isFullyInitialized()) {
         printf("\tAll %ld user parameters are initialized\n",

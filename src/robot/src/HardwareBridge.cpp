@@ -40,48 +40,6 @@ void HardwareBridge::initError(const char* reason, bool printErrno) {
   exit(-1);
 }
 
-/*!
- * All hardware initialization steps that are common between Cheetah 3 and Mini Cheetah
- */
-void HardwareBridge::initCommon() {
-  printf("[HardwareBridge] Init stack\n");
-  prefaultStack();
-  printf("[HardwareBridge] Init scheduler\n");
-  setupScheduler();
-}
-
-/*!
- * Writes to a 16 KB buffer on the stack. If we are using 4K pages for our
- * stack, this will make sure that we won't have a page fault when the stack
- * grows.  Also mlock's all pages associated with the current process, which
- * prevents the cheetah software from being swapped out.  If we do run out of
- * memory, the robot program will be killed by the OOM process killer (and
- * leaves a log) instead of just becoming unresponsive.
- */
-void HardwareBridge::prefaultStack() {
-  printf("[Init] Prefault stack...\n");
-  volatile char stack[MAX_STACK_SIZE];
-  memset(const_cast<char*>(stack), 0, MAX_STACK_SIZE);
-  if (mlockall(MCL_CURRENT | MCL_FUTURE) == -1) {
-    initError(
-        "mlockall failed.  This is likely because you didn't run robot as "
-        "root.\n",
-        true);
-  }
-}
-
-/*!
- * Configures the scheduler for real time priority
- */
-void HardwareBridge::setupScheduler() {
-  printf("[Init] Setup RT Scheduler...\n");
-  struct sched_param params;
-  params.sched_priority = TASK_PRIORITY;
-  if (sched_setscheduler(0, SCHED_FIFO, &params) == -1) {
-    initError("sched_setscheduler failed.\n", true);
-  }
-}
-
 
 MiniCheetahHardwareBridge::MiniCheetahHardwareBridge(RobotController* robot_ctrl, bool load_parameters_from_file)
     : HardwareBridge(robot_ctrl)//, _spiLcm(getLcmUrl(255)), _microstrainLcm(getLcmUrl(255)) { //delete lcm
@@ -93,14 +51,13 @@ MiniCheetahHardwareBridge::MiniCheetahHardwareBridge(RobotController* robot_ctrl
  * Main method for Mini Cheetah hardware
  */
 void MiniCheetahHardwareBridge::run() {
-  initCommon();
   initHardware();
 
   if(_load_parameters_from_file) {
     printf("[Hardware Bridge] Loading parameters from file...\n");
 
     try {
-      _robotParams.initializeFromYamlFile("./config/mini-cheetah-defaults.yaml");
+      _robotParams.initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mini-cheetah-defaults.yaml");
     } catch(std::exception& e) {
       printf("Failed to initialize robot parameters from yaml file: %s\n", e.what());
       exit(1);
@@ -115,7 +72,7 @@ void MiniCheetahHardwareBridge::run() {
 
     if(_userControlParameters) {
       try {
-        _userControlParameters->initializeFromYamlFile("./config/mc-mit-ctrl-user-parameters.yaml");
+        _userControlParameters->initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mc-mit-ctrl-user-parameters.yaml");
       } catch(std::exception& e) {
         printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
         exit(1);
@@ -187,18 +144,7 @@ void MiniCheetahHardwareBridge::run() {
  */
 void MiniCheetahHardwareBridge::initHardware() {
   _vectorNavData.quat << 1, 0, 0, 0;
-#ifndef USE_MICROSTRAIN
-  printf("[MiniCheetahHardware] Init vectornav\n");
-  if (!init_vectornav(&_vectorNavData)) {
-    printf("Vectornav failed to initialize\n");
-    //initError("failed to initialize vectornav!\n", false);
-  }
-#endif
-
-  //delete spi
-  // init_spi();
-  //delete imu
-  // _microstrainInit = _microstrainImu.tryInit(0, 921600);
+  //derek todo: init sdk
 }
 
 
