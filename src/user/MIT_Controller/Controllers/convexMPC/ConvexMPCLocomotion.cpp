@@ -4,7 +4,7 @@
 
 #include "ConvexMPCLocomotion.h"
 #include "convexMPC_interface.h"
-#include "../../../../common/FootstepPlanner/GraphSearch.h"
+#include "../../../../common/include/GraphSearch.h"
 
 #include "Gait.h"
 

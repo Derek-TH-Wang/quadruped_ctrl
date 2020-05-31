@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-
 generate_messages(
   DEPENDENCIES
   std_msgs
@@ -30,31 +29,10 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-
-
-
-if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-  message(SEND_ERROR "In-source builds are not allowed.")
-endif ()
-
-set(CMAKE_COLOR_MAKEFILE   ON)
-#execute_process(COMMAND ../scripts/make_types.sh)
-
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
-#set(CMAKE_VERBOSE_MAKEFILE ON)
-
-
-
-
-
-
-#find_package(lcm)
 add_subdirectory(src/third-party)
 add_subdirectory(src/robot)
 add_subdirectory(src/common)
-add_subdirectory(src/user)
-
+add_subdirectory(src/user/MIT_Controller)
 
 include_directories("src/user/MIT_Controller")
 include_directories("src/user/MIT_Controller/Controllers")
@@ -64,7 +42,6 @@ include_directories("src/common/FootstepPlanner")
 include_directories("src/third-party/")
 include_directories(SYSTEM "src/third-party/qpOASES/include")
 include_directories("src/third-party/ParamHandler")
-
 include_directories("/usr/local/include/eigen3")   # lcm includes
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
@@ -78,4 +55,5 @@ target_link_libraries(quadruped_ctrl Goldfarb_Optimizer osqp)
 target_link_libraries(quadruped_ctrl WBC_Ctrl)
 target_link_libraries(quadruped_ctrl VisionMPC)
 add_dependencies(quadruped_ctrl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
