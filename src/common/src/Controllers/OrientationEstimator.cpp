@@ -12,29 +12,6 @@
 
 #include "Controllers/OrientationEstimator.h"
 
-/*!
- * Get quaternion, rotation matrix, angular velocity (body and world),
- * rpy, acceleration (world, body) by copying from cheater state data
- */
-template <typename T>
-void CheaterOrientationEstimator<T>::run() {
-  this->_stateEstimatorData.result->orientation =
-      this->_stateEstimatorData.cheaterState->orientation.template cast<T>();
-  this->_stateEstimatorData.result->rBody = ori::quaternionToRotationMatrix(
-      this->_stateEstimatorData.result->orientation);
-  this->_stateEstimatorData.result->omegaBody =
-      this->_stateEstimatorData.cheaterState->omegaBody.template cast<T>();
-  this->_stateEstimatorData.result->omegaWorld =
-      this->_stateEstimatorData.result->rBody.transpose() *
-      this->_stateEstimatorData.result->omegaBody;
-  this->_stateEstimatorData.result->rpy =
-      ori::quatToRPY(this->_stateEstimatorData.result->orientation);
-  this->_stateEstimatorData.result->aBody =
-      this->_stateEstimatorData.cheaterState->acceleration.template cast<T>();
-  this->_stateEstimatorData.result->aWorld =
-      this->_stateEstimatorData.result->rBody.transpose() *
-      this->_stateEstimatorData.result->aBody;
-}
 
 /*!
  * Get quaternion, rotation matrix, angular velocity (body and world),
@@ -82,9 +59,6 @@ void VectorNavOrientationEstimator<T>::run() {
       this->_stateEstimatorData.result->aBody;
 }
 
-
-template class CheaterOrientationEstimator<float>;
-template class CheaterOrientationEstimator<double>;
 
 template class VectorNavOrientationEstimator<float>;
 template class VectorNavOrientationEstimator<double>;

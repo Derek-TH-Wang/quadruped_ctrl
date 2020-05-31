@@ -38,7 +38,7 @@ class RobotRunner : public PeriodicTask {
   void cleanup() override;
 
   // Initialize the state estimator with default no cheaterMode
-  void initializeStateEstimator(bool cheaterMode = false);
+  void initializeStateEstimator();//bool cheaterMode = false);
   virtual ~RobotRunner();
 
   RobotController* _robot_ctrl;
@@ -46,9 +46,9 @@ class RobotRunner : public PeriodicTask {
   // GamepadCommand* driverCommand;
   RobotType robotType;
   VectorNavData* vectorNavData;
-  CheaterState<double>* cheaterState;
-  SpiData* spiData;
-  SpiCommand* spiCommand;
+  // CheaterState<double>* cheaterState;
+  // SpiData* spiData;
+  // SpiCommand* spiCommand;
   RobotControlParameters* controlParameters;
   VisualizationData* visualizationData;
   CheetahVisualization* cheetahMainVisualization;

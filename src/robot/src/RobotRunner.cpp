@@ -54,10 +54,10 @@ void RobotRunner::init() {
 
   // Always initialize the leg controller and state entimator
   _legController = new LegController<float>(_quadruped);
-  _stateEstimator = new StateEstimatorContainer<float>(
-      cheaterState, vectorNavData, _legController->datas,
+  _stateEstimator = new StateEstimatorContainer<float>(//cheaterState, 
+      vectorNavData, _legController->datas,
       &_stateEstimate, controlParameters);
-  initializeStateEstimator(false);
+  initializeStateEstimator();//false);
 
   //delete rc
   // memset(&rc_control, 0, sizeof(rc_control_settings));
@@ -175,7 +175,8 @@ void RobotRunner::run() {
 void RobotRunner::setupStep() {
   // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    _legController->updateData(spiData);
+    //derek todo: send sdk
+    // _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     //delete ti
     // _legController->updateData(tiBoardData);
@@ -190,20 +191,20 @@ void RobotRunner::setupStep() {
 
   // state estimator
   // check transition to cheater mode:
-  if (!_cheaterModeEnabled && controlParameters->cheater_mode) {
-    printf("[RobotRunner] Transitioning to Cheater Mode...\n");
-    initializeStateEstimator(true);
-    // todo any configuration
-    _cheaterModeEnabled = true;
-  }
-
-  // check transition from cheater mode:
-  if (_cheaterModeEnabled && !controlParameters->cheater_mode) {
-    printf("[RobotRunner] Transitioning from Cheater Mode...\n");
-    initializeStateEstimator(false);
-    // todo any configuration
-    _cheaterModeEnabled = false;
-  }
+  //delete cheater mode
+  // if (!_cheaterModeEnabled && controlParameters->cheater_mode) {
+  //   printf("[RobotRunner] Transitioning to Cheater Mode...\n");
+  //   initializeStateEstimator(true);
+  //   // todo any configuration
+  //   _cheaterModeEnabled = true;
+  // }
+  // // check transition from cheater mode:
+  // if (_cheaterModeEnabled && !controlParameters->cheater_mode) {
+  //   printf("[RobotRunner] Transitioning from Cheater Mode...\n");
+  //   initializeStateEstimator(false);
+  //   // todo any configuration
+  //   _cheaterModeEnabled = false;
+  // }
 
   // delete rc
   // get_rc_control_settings(&rc_control);
@@ -216,7 +217,8 @@ void RobotRunner::setupStep() {
  */
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
-    _legController->updateCommand(spiCommand);
+    //derek todo: send sdk
+    // _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
     //delete ti
     // _legController->updateCommand(tiBoardCommand);
@@ -236,19 +238,14 @@ void RobotRunner::finalizeStep() {
  * Reset the state estimator in the given mode.
  * @param cheaterMode
  */
-void RobotRunner::initializeStateEstimator(bool cheaterMode) {
+void RobotRunner::initializeStateEstimator(){//bool cheaterMode) {
   _stateEstimator->removeAllEstimators();
   _stateEstimator->addEstimator<ContactEstimator<float>>();
   Vec4<float> contactDefault;
   contactDefault << 0.5, 0.5, 0.5, 0.5;
   _stateEstimator->setContactPhase(contactDefault);
-  if (cheaterMode) {
-    _stateEstimator->addEstimator<CheaterOrientationEstimator<float>>();
-    _stateEstimator->addEstimator<CheaterPositionVelocityEstimator<float>>();
-  } else {
-    _stateEstimator->addEstimator<VectorNavOrientationEstimator<float>>();
-    _stateEstimator->addEstimator<LinearKFPositionVelocityEstimator<float>>();
-  }
+  _stateEstimator->addEstimator<VectorNavOrientationEstimator<float>>();
+  _stateEstimator->addEstimator<LinearKFPositionVelocityEstimator<float>>();
 }
 
 RobotRunner::~RobotRunner() {

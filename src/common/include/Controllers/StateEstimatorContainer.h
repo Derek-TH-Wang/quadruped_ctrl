@@ -62,7 +62,7 @@ template <typename T>
 struct StateEstimatorData {
   StateEstimate<T>* result;  // where to write the output to
   VectorNavData* vectorNavData;
-  CheaterState<double>* cheaterState;
+  // CheaterState<double>* cheaterState;
   LegControllerData<T>* legControllerData;
   Vec4<T>* contactPhase;
   RobotControlParameters* parameters;
@@ -96,12 +96,12 @@ class StateEstimatorContainer {
   /*!
    * Construct a new state estimator container
    */
-  StateEstimatorContainer(CheaterState<double>* cheaterState,
+  StateEstimatorContainer(//CheaterState<double>* cheaterState,
                           VectorNavData* vectorNavData,
                           LegControllerData<T>* legControllerData,
                           StateEstimate<T>* stateEstimate,
                           RobotControlParameters* parameters) {
-    _data.cheaterState = cheaterState;
+    // _data.cheaterState = cheaterState;
     _data.vectorNavData = vectorNavData;
     _data.legControllerData = legControllerData;
     _data.result = stateEstimate;
