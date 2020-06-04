@@ -11,7 +11,7 @@
 #include "Dynamics/FloatingBaseModel.h"
 #include "Controllers/StateEstimatorContainer.h"
 #include "Controllers/DesiredStateCommand.h"
-#include "SimUtilities/VisualizationData.h"
+// #include "SimUtilities/VisualizationData.h"
 //delete gamepad
 // #include "SimUtilities/GamepadCommand.h"
 
@@ -44,7 +44,8 @@ protected:
   RobotControlParameters* _controlParameters = nullptr;
   DesiredStateCommand<float>* _desiredStateCommand = nullptr;
 
-  VisualizationData* _visualizationData = nullptr;
+  //delete visulization
+  // VisualizationData* _visualizationData = nullptr;
   RobotType _robotType;
 };
 

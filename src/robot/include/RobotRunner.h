@@ -11,7 +11,7 @@
 #include "ControlParameters/ControlParameterInterface.h"
 #include "ControlParameters/RobotParameters.h"
 #include "Controllers/StateEstimatorContainer.h"
-#include "SimUtilities/IMUTypes.h"
+// #include "SimUtilities/IMUTypes.h"
 // #include "rt/rt_rc_interface.h"
 #include "Controllers/ContactEstimator.h"
 #include "Controllers/DesiredStateCommand.h"
@@ -20,7 +20,7 @@
 #include "JPosInitializer.h"
 //delete gamepad
 // #include "SimUtilities/GamepadCommand.h"
-#include "SimUtilities/VisualizationData.h"
+// #include "SimUtilities/VisualizationData.h"
 #include "Utilities/PeriodicTask.h"
 // #include "cheetah_visualization_lcmt.hpp"
 // #include "state_estimator_lcmt.hpp"

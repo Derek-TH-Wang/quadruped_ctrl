@@ -12,10 +12,17 @@
 
 #include "ControlParameters/RobotParameters.h"
 #include "Controllers/LegController.h"
-#include "SimUtilities/IMUTypes.h"
-#include "SimUtilities/VisualizationData.h"
+// #include "SimUtilities/IMUTypes.h"
+// #include "SimUtilities/VisualizationData.h"
 // #include "state_estimator_lcmt.hpp"
-
+/*!
+ * Mini Cheetah's IMU
+ */
+struct VectorNavData {
+  Vec3<float> accelerometer;
+  Vec3<float> gyro;
+  Quat<float> quat;
+};
 /*!
  * Result of state estimation
  */
@@ -113,15 +120,16 @@ class StateEstimatorContainer {
   /*!
    * Run all estimators
    */
-  void run(CheetahVisualization* visualization = nullptr) {
+  void run() {//CheetahVisualization* visualization = nullptr) { //delete visualization
     for (auto estimator : _estimators) {
       estimator->run();
     }
-    if (visualization) {
-      visualization->quat = _data.result->orientation.template cast<float>();
-      visualization->p = _data.result->position.template cast<float>();
-      // todo contact!
-    }
+    //delete visualization
+    // if (visualization) {
+    //   visualization->quat = _data.result->orientation.template cast<float>();
+    //   visualization->p = _data.result->position.template cast<float>();
+    //   // todo contact!
+    // }
   }
 
   /*!
