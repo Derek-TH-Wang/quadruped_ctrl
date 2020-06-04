@@ -75,7 +75,7 @@ void setLcm();
   /*!
    * Set the maximum torque.  This only works on cheetah 3!
    */
-  void setMaxTorqueCheetah3(T tau) { _maxTorque = tau; }
+  // void setMaxTorqueCheetah3(T tau) { _maxTorque = tau; }
 
   LegControllerCommand<T> commands[4];
   LegControllerData<T> datas[4];

@@ -10,7 +10,7 @@
 #include "RobotRunner.h"
 #include "Controllers/ContactEstimator.h"
 #include "Controllers/OrientationEstimator.h"
-#include "Dynamics/Cheetah3.h"
+// #include "Dynamics/Cheetah3.h"
 #include "Dynamics/MiniCheetah.h"
 #include "Utilities/Utilities_print.h"
 #include "ParamHandler.hpp"
@@ -45,7 +45,7 @@ void RobotRunner::init() {
   if (robotType == RobotType::MINI_CHEETAH) {
     _quadruped = buildMiniCheetah<float>();
   } else {
-    _quadruped = buildCheetah3<float>();
+    // _quadruped = buildCheetah3<float>();
   }
 
   // Initialize the model and robot data
@@ -187,7 +187,7 @@ void RobotRunner::setupStep() {
   // Setup the leg controller for a new iteration
   _legController->zeroCommand();
   _legController->setEnabled(true);
-  _legController->setMaxTorqueCheetah3(208.5);
+  // _legController->setMaxTorqueCheetah3(208.5);
 
   // state estimator
   // check transition to cheater mode:
