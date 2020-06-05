@@ -21,7 +21,7 @@ file(GLOB_RECURSE sources
 
 add_subdirectory(Controllers/WBC)
 add_subdirectory(Controllers/WBC_Ctrl)
-add_subdirectory(Controllers/VisionMPC)
+# add_subdirectory(Controllers/VisionMPC)
 
 add_library(ctrller SHARED ${sources} MIT_Controller.cpp)
 #target_link_libraries(ctrller)
