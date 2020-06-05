@@ -16,7 +16,7 @@
 #define K_LOCOMOTION 4
 #define K_LOCOMOTION_TEST 5
 #define K_RECOVERY_STAND 6
-#define K_VISION 8
+// #define K_VISION 8
 #define K_BACKFLIP 9
 #define K_FRONTJUMP 11
 
@@ -38,7 +38,7 @@ enum class FSM_StateName {
   BALANCE_STAND,
   LOCOMOTION,
   RECOVERY_STAND,
-  VISION,
+  // VISION,
   BACKFLIP,
   FRONTJUMP
 };

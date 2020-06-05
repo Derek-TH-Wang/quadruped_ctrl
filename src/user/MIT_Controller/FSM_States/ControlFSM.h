@@ -18,7 +18,7 @@
 #include "../FSM_States/FSM_State_Passive.h"
 #include "../FSM_States/FSM_State_StandUp.h"
 #include "../FSM_States/FSM_State_RecoveryStand.h"
-#include "../FSM_States/FSM_State_Vision.h"
+// #include "../FSM_States/FSM_State_Vision.h"
 #include "../FSM_States/FSM_State_BackFlip.h"
 #include "../FSM_States/FSM_State_FrontJump.h"
 
@@ -41,7 +41,7 @@ struct FSM_StatesList {
   FSM_State_BalanceStand<T>* balanceStand;
   FSM_State_Locomotion<T>* locomotion;
   FSM_State_RecoveryStand<T>* recoveryStand;
-  FSM_State_Vision<T>* vision;
+  // FSM_State_Vision<T>* vision;
   FSM_State_BackFlip<T>* backflip;
   FSM_State_FrontJump<T>* frontJump;
 };

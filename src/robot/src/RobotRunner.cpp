@@ -175,7 +175,7 @@ void RobotRunner::run() {
 void RobotRunner::setupStep() {
   // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    //derektodo: send sdk
+    //derektodo: get joint pvc from sdk
     // _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
     //delete ti

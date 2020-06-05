@@ -250,9 +250,9 @@ FSM_StateName FSM_State_RecoveryStand<T>::checkTransition() {
       this->nextStateName = FSM_StateName::FRONTJUMP;
       break;
 
-    case K_VISION: 
-      this->nextStateName = FSM_StateName::VISION;
-      break;
+    // case K_VISION: 
+    //   this->nextStateName = FSM_StateName::VISION;
+    //   break;
 
     default:
       std::cout << "[CONTROL FSM] Bad Request: Cannot transition from "
@@ -294,9 +294,9 @@ TransitionData<T> FSM_State_RecoveryStand<T>::transition() {
       this->transitionData.done = true;
       break;
 
-    case FSM_StateName::VISION:
-      this->transitionData.done = true;
-      break;
+    // case FSM_StateName::VISION:
+    //   this->transitionData.done = true;
+    //   break;
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"
