@@ -42,7 +42,7 @@ include_directories("src/common/FootstepPlanner")
 include_directories("src/third-party/")
 include_directories(SYSTEM "src/third-party/qpOASES/include")
 include_directories("src/third-party/ParamHandler")
-include_directories("/usr/local/include/eigen3")   # lcm includes
+include_directories("/usr/local/include/eigen3")
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
@@ -53,7 +53,6 @@ target_link_libraries(quadruped_ctrl robot biomimetics)
 target_link_libraries(quadruped_ctrl dynacore_param_handler qpOASES)
 target_link_libraries(quadruped_ctrl Goldfarb_Optimizer osqp)
 target_link_libraries(quadruped_ctrl WBC_Ctrl)
-# target_link_libraries(quadruped_ctrl VisionMPC)
 add_dependencies(quadruped_ctrl ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 

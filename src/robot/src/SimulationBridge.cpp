@@ -4,6 +4,8 @@
  * HardwareBridge.
  */
 
+#include <ros/ros.h>
+#include <ros/package.h>
 #include "SimulationBridge.h"
 #include "Utilities/SegfaultHandler.h"
 #include "Controllers/LegController.h"
@@ -27,8 +29,9 @@ void SimulationBridge::run() {
 void SimulationBridge::runRobotControl() {
   if (_firstControllerRun) {
     printf("[Simulator Driver] First run of robot controller...\n");
+    std::string packagePath = ros::package::getPath("quadruped_robot");
     try {
-      _robotParams.initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mini-cheetah-defaults.yaml");
+      _robotParams.initializeFromYamlFile(packagePath + "/config/mini-cheetah-defaults.yaml");
     } catch(std::exception& e) {
       printf("Failed to initialize robot parameters from yaml file: %s\n", e.what());
       exit(1);
@@ -40,7 +43,7 @@ void SimulationBridge::runRobotControl() {
 
     auto* userControlParameters = _robotRunner->_robot_ctrl->getUserControlParameters();
     try {
-      userControlParameters->initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mc-mit-ctrl-user-parameters.yaml");
+      userControlParameters->initializeFromYamlFile(packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
     } catch(std::exception& e) {
       printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
       exit(1);

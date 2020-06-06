@@ -170,17 +170,6 @@ BalanceController::BalanceController()
 
 void BalanceController::testFunction() { printf("testfun "); }
 
-/*
-void BalanceController::set_base_support_flag(double sflag)
-{
-   double support_flag[] = {sflag};
-   command.command_number = 4;
-   command.data_size = sizeof(support_flag) / sizeof(double);
-   command.data.resize(command.data_size);
-   memcpy(command.data.data(), support_flag, sizeof(support_flag) );
-   lcm.publish("cheetah:sim_command", &command);
-}
-*/
 
 /* --------------- Primary Interface ------------------- */
 

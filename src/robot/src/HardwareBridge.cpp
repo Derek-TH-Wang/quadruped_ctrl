@@ -7,6 +7,8 @@
  */
 // #ifdef linux 
 
+#include <ros/ros.h>
+#include <ros/package.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #include <cstring>
@@ -51,13 +53,14 @@ MiniCheetahHardwareBridge::MiniCheetahHardwareBridge(RobotController* robot_ctrl
  * Main method for Mini Cheetah hardware
  */
 void MiniCheetahHardwareBridge::run() {
+  std::string packagePath = ros::package::getPath("quadruped_robot");
   initHardware();
 
   if(_load_parameters_from_file) {
     printf("[Hardware Bridge] Loading parameters from file...\n");
 
     try {
-      _robotParams.initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mini-cheetah-defaults.yaml");
+      _robotParams.initializeFromYamlFile(packagePath + "/config/mini-cheetah-defaults.yaml");
     } catch(std::exception& e) {
       printf("Failed to initialize robot parameters from yaml file: %s\n", e.what());
       exit(1);
@@ -72,7 +75,7 @@ void MiniCheetahHardwareBridge::run() {
 
     if(_userControlParameters) {
       try {
-        _userControlParameters->initializeFromYamlFile("/media/derek/OS/Ubuntu/quadruped_ws/src/quadruped_robot/config/mc-mit-ctrl-user-parameters.yaml");
+        _userControlParameters->initializeFromYamlFile(packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
       } catch(std::exception& e) {
         printf("Failed to initialize user parameters from yaml file: %s\n", e.what());
         exit(1);
