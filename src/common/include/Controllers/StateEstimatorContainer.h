@@ -122,9 +122,7 @@ class StateEstimatorContainer {
    * Run all estimators
    */
   void run() {//CheetahVisualization* visualization = nullptr) { //delete visualization
-    ROS_DEBUG("1,%d",_estimators.size());
     for (auto estimator : _estimators) {
-      ROS_DEBUG("123");
       estimator->run();
     }
     //delete visualization

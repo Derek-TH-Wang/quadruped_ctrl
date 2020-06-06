@@ -3,6 +3,8 @@
  * @brief Controller to initialize the position of the legs on power-on
  */
 
+#include <ros/ros.h>
+#include <ros/package.h>
 #include "JPosInitializer.h"
 #include "Utilities/Utilities_print.h"
 #include "ParamHandler/ParamHandler.hpp"
@@ -80,7 +82,8 @@ void JPosInitializer<T>::_UpdateInitial(const LegController<T>* ctrl) {
 
 template <typename T>
 void JPosInitializer<T>::_UpdateParam() {
-  ParamHandler handler("./config/initial_jpos_ctrl.yaml");
+  std::string packagePath = ros::package::getPath("quadruped_robot");
+  ParamHandler handler(packagePath + "/config/initial_jpos_ctrl.yaml");
   handler.getVector<T>("target_jpos", _target_jpos);
   handler.getVector<T>("mid_jpos", _mid_jpos);
 }

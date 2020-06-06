@@ -105,6 +105,7 @@ void RobotRunner::run() {
 
   static int count_ini(0);
   ++count_ini;
+  ROS_DEBUG("count_ini = %d", count_ini);
   if (count_ini < 10) {
     _legController->setEnabled(false);
   } else if (20 < count_ini && count_ini < 30) {
@@ -123,7 +124,9 @@ void RobotRunner::run() {
     //   _robot_ctrl->Estop();
     // }else {
       // Controller
+      ROS_DEBUG("jpos_initializer->IsInitialized");
       if (!_jpos_initializer->IsInitialized(_legController)) {
+        ROS_DEBUG("DONE jpos_initializer->IsInitialized");
         Mat3<float> kpMat;
         Mat3<float> kdMat;
         // Update the jpos feedback gains
@@ -189,7 +192,9 @@ void RobotRunner::setupStep() {
   }
 
   // Setup the leg controller for a new iteration
+  // ROS_DEBUG("zeroCommand");
   _legController->zeroCommand();
+  // ROS_DEBUG("setEnabled");
   _legController->setEnabled(true);
   // _legController->setMaxTorqueCheetah3(208.5);
 
