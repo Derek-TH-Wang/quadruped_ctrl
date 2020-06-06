@@ -63,7 +63,8 @@
         "random": "cpp",
         "set": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "*.cuh": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/derek/ros_workspace/quadruped_ws/devel/lib/python2.7/dist-packages",

@@ -43,6 +43,7 @@ class SimulationBridge {
     _userParams = robot_ctrl->getUserControlParameters();
  }
 
+  void initSimulator();
   void run();
   // void handleControlParameters();
   void runRobotControl();
@@ -63,6 +64,7 @@ class SimulationBridge {
   // delete shared mem
   // SharedMemoryObject<SimulatorSyncronizedMessage> _sharedMemory;
   RobotControlParameters _robotParams;
+  VectorNavData _vectorNavData;
   // std::thread* sbus_thread;
     ControlParameters* _userParams = nullptr;
 

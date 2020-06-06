@@ -30,6 +30,7 @@ void SimulationBridge::run() {
 void SimulationBridge::runRobotControl() {
   if (_firstControllerRun) {
     printf("[Simulator Driver] First run of robot controller...\n");
+    initSimulator();
     std::string packagePath = ros::package::getPath("quadruped_robot");
     try {
       _robotParams.initializeFromYamlFile(packagePath + "/config/mini-cheetah-defaults.yaml");
@@ -77,7 +78,7 @@ void SimulationBridge::runRobotControl() {
     // // _robotRunner->tiBoardData = _sharedMemory().simToRobot.tiBoardData;
     _robotRunner->robotType = _robot;
     //derektodo: imu callback function in this file, sensor_msgs/Imu.msg
-    // _robotRunner->vectorNavData = &_sharedMemory().simToRobot.vectorNav;
+    _robotRunner->vectorNavData = &_vectorNavData;
     // _robotRunner->cheaterState = &_sharedMemory().simToRobot.cheaterState;//simulation only
     // _robotRunner->spiCommand = &_sharedMemory().robotToSim.spiCommand;
     // // _robotRunner->tiBoardCommand = _sharedMemory().robotToSim.tiBoardCommand;
@@ -89,4 +90,8 @@ void SimulationBridge::runRobotControl() {
     _firstControllerRun = false;
   }
   _robotRunner->run();
+}
+
+void SimulationBridge::initSimulator() {
+  _vectorNavData.quat << 1, 0, 0, 0;
 }

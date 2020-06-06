@@ -5,8 +5,8 @@
  * for mini cheetah and cheetah 3
  */
 
+#include <ros/ros.h>
 #include <unistd.h>
-
 #include "RobotRunner.h"
 #include "Controllers/ContactEstimator.h"
 #include "Controllers/OrientationEstimator.h"
@@ -94,11 +94,13 @@ void RobotRunner::init() {
 void RobotRunner::run() {
   // Run the state estimator step
   //_stateEstimator->run(cheetahMainVisualization);
+  ROS_DEBUG("state estimator run");
   _stateEstimator->run();
   //cheetahMainVisualization->p = _stateEstimate.position;
   // visualizationData->clear();
 
   // Update the data from the robot
+  ROS_DEBUG("setupStep");
   setupStep();
 
   static int count_ini(0);
@@ -141,10 +143,12 @@ void RobotRunner::run() {
         }
       } else {
         // Run Control 
+        ROS_DEBUG("runController");
         _robot_ctrl->runController();
         // cheetahMainVisualization->p = _stateEstimate.position;
 
         // Update Visualization
+        ROS_DEBUG("updateVisualization");
         _robot_ctrl->updateVisualization();
         // cheetahMainVisualization->p = _stateEstimate.position;
       }

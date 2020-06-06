@@ -25,6 +25,7 @@ class ContactEstimator : public GenericEstimator<T> {
    * estimated contact state
    */
   virtual void run() {
+    ROS_DEBUG("contact");
     this->_stateEstimatorData.result->contactEstimate =
         *this->_stateEstimatorData.contactPhase;
   }

@@ -61,6 +61,7 @@ LinearKFPositionVelocityEstimator<T>::LinearKFPositionVelocityEstimator() {}
  */
 template <typename T>
 void LinearKFPositionVelocityEstimator<T>::run() {
+    ROS_DEBUG("pos");
   T process_noise_pimu =
       this->_stateEstimatorData.parameters->imu_process_noise_position;
   T process_noise_vimu =
