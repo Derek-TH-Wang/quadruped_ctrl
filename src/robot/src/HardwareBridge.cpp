@@ -136,8 +136,8 @@ void MiniCheetahHardwareBridge::run() {
 
 
   for (;;) {
-    usleep(1000000);
-    // printf("joy %f\n", _robotRunner->driverCommand->leftStickAnalog[0]);
+    usleep(5*1000);
+    ros::spinOnce();
   }
 }
 

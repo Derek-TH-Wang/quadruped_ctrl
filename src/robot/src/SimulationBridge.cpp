@@ -20,6 +20,7 @@ void SimulationBridge::run() {
     // bool firstRun = true;
     for (;;) {
       runRobotControl();
+      ros::spinOnce();
     }
 }
 

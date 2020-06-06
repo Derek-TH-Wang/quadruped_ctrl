@@ -3,23 +3,29 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ros/ros.h>
+#include <ros/package.h>
 
 DataReader::DataReader(const RobotType& type, FSM_StateName stateNameIn) : _type(type) {
+  std::string filePath;
+  std::string packagePath = ros::package::getPath("quadruped_robot");
   if (_type == RobotType::MINI_CHEETAH) {
     
     if (stateNameIn == FSM_StateName::BACKFLIP) {
       //load_control_plan(THIS_COM "user/WBC_Controller/WBC_States/BackFlip/data/mc_flip.dat");
-      load_control_plan("./config/mc_flip.dat");
+      filePath = packagePath + "/config/mc_flip.dat";
+      load_control_plan(filePath.c_str());
       printf("[Backflip DataReader] Setup for mini cheetah\n");
     }
     else if (stateNameIn == FSM_StateName::FRONTJUMP) {
       //load_control_plan(THIS_COM "user/MIT_Controller/Controllers/FrontJump/front_jump_data.dat"); // front_jump_data.dat for succesfull test 1 file
-      load_control_plan("./config/front_jump_pitchup_v2.dat");
+      filePath = packagePath + "/config/front_jump_pitchup_v2.dat";
+      load_control_plan(filePath.c_str());
       printf("[Front Jump DataReader] Setup for mini cheetah\n");
     }
   } else {
     printf("[Backflip DataReader] Setup for cheetah 3\n");
-    load_control_plan("./user/WBC_Controller/WBC_States/BackFlip/data/backflip.dat");
+    // load_control_plan(packagePath + "src/user/WBC_Controller/WBC_States/BackFlip/data/backflip.dat");
   }
   printf("[Backflip DataReader] Constructed.\n");
 }
