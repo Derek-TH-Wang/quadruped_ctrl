@@ -52,7 +52,8 @@ void RobotRunner::init() {
   initializeStateEstimator();
 
   _desiredStateCommand = new DesiredStateCommand<float>(
-      controlParameters, &_stateEstimate, controlParameters->controller_dt);
+      driverCommand, controlParameters, &_stateEstimate,
+      controlParameters->controller_dt);
 
   // Controller initializations
   _robot_ctrl->_model = &_model;

@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "Controllers/StateEstimatorContainer.h"
+#include "SimUtilities/GamepadCommand.h"
 #include "cppTypes.h"
 
 template <typename T>
@@ -87,10 +88,7 @@ class DesiredStateCommand {
   // Holds the instantaneous desired state and future desired state trajectory
   DesiredStateData<T> data;
 
-  // delete rc
-  // const rc_control_settings* rcCommand;
-  // delete gamepad
-  // const GamepadCommand* gamepadCommand;
+  const GamepadCommand* gamepadCommand;
 
   bool trigger_pressed = false;
 

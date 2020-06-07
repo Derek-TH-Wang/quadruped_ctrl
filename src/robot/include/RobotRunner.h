@@ -33,6 +33,7 @@ class RobotRunner : public PeriodicTask {
   void initializeStateEstimator();
   virtual ~RobotRunner();
 
+  GamepadCommand* driverCommand;
   RobotController* _robot_ctrl;
   RobotType robotType;
   VectorNavData* vectorNavData;
