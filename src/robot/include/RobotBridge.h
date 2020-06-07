@@ -41,14 +41,13 @@ class RobotBridge {
  */
 class MiniCheetahRobotBridge : public RobotBridge {
  public:
-  MiniCheetahRobotBridge(RobotController* rc,
-                            bool load_parameters_from_file);
+  MiniCheetahRobotBridge(RobotController* rc, std::string runningType);
   void initHardware();
   void run();
 
  private:
   VectorNavData _vectorNavData;
-  bool _load_parameters_from_file;
+  std::string _runningType;
 };
 
 #endif

@@ -18,10 +18,10 @@
 
 #include "Utilities/Utilities_print.h"
 
-MiniCheetahRobotBridge::MiniCheetahRobotBridge(
-    RobotController* robot_ctrl, bool load_parameters_from_file)
+MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController* robot_ctrl,
+                                               std::string runningType)
     : RobotBridge(robot_ctrl) {
-  _load_parameters_from_file = load_parameters_from_file;
+  _runningType = runningType;
 }
 
 /*!
@@ -31,59 +31,37 @@ void MiniCheetahRobotBridge::run() {
   std::string packagePath = ros::package::getPath("quadruped_robot");
   initHardware();
 
-  if (_load_parameters_from_file) {
-    printf("[Hardware Bridge] Loading parameters from file...\n");
-
+  printf("[Hardware Bridge] Loading parameters from file...\n");
+  try {
+    _robotParams.initializeFromYamlFile(packagePath +
+                                        "/config/mini-cheetah-defaults.yaml");
+  } catch (std::exception& e) {
+    printf("Failed to initialize robot parameters from yaml file: %s\n",
+           e.what());
+    exit(1);
+  }
+  if (!_robotParams.isFullyInitialized()) {
+    printf("Failed to initialize all robot parameters\n");
+    exit(1);
+  }
+  printf("Loaded robot parameters\n");
+  if (_userControlParameters) {
     try {
-      _robotParams.initializeFromYamlFile(packagePath +
-                                          "/config/mini-cheetah-defaults.yaml");
+      _userControlParameters->initializeFromYamlFile(
+          packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
     } catch (std::exception& e) {
-      printf("Failed to initialize robot parameters from yaml file: %s\n",
+      printf("Failed to initialize user parameters from yaml file: %s\n",
              e.what());
       exit(1);
     }
-
-    if (!_robotParams.isFullyInitialized()) {
-      printf("Failed to initialize all robot parameters\n");
+    if (!_userControlParameters->isFullyInitialized()) {
+      printf("Failed to initialize all user parameters\n");
       exit(1);
     }
-
-    printf("Loaded robot parameters\n");
-
-    if (_userControlParameters) {
-      try {
-        _userControlParameters->initializeFromYamlFile(
-            packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
-      } catch (std::exception& e) {
-        printf("Failed to initialize user parameters from yaml file: %s\n",
-               e.what());
-        exit(1);
-      }
-
-      if (!_userControlParameters->isFullyInitialized()) {
-        printf("Failed to initialize all user parameters\n");
-        exit(1);
-      }
-
-      printf("Loaded user parameters\n");
-    } else {
-      printf("Did not load user parameters because there aren't any\n");
-    }
+    printf("Loaded user parameters\n");
   } else {
-    printf("[Hardware Bridge] Loading parameters over LCM...\n");
-    while (!_robotParams.isFullyInitialized()) {
-      printf("[Hardware Bridge] Waiting for robot parameters...\n");
-      usleep(1000000);
-    }
-
-    if (_userControlParameters) {
-      while (!_userControlParameters->isFullyInitialized()) {
-        printf("[Hardware Bridge] Waiting for user parameters...\n");
-        usleep(1000000);
-      }
-    }
+    printf("Did not load user parameters because there aren't any\n");
   }
-
   printf("[Hardware Bridge] Got all parameters, starting up!\n");
 
   _robotRunner = new RobotRunner(_controller, &taskManager,
@@ -101,7 +79,7 @@ void MiniCheetahRobotBridge::run() {
   // robot controller start
   _robotRunner->start();
 
-  for (;;) {
+  while(ros::ok()) {
     usleep(5 * 1000);
     ros::spinOnce();
   }
