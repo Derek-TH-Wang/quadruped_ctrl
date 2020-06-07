@@ -29,7 +29,7 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController* robot_ctrl,
  */
 void MiniCheetahRobotBridge::run() {
   std::string packagePath = ros::package::getPath("quadruped_robot");
-  initHardware();
+  initRobot();
 
   printf("[Hardware Bridge] Loading parameters from file...\n");
   try {
@@ -64,11 +64,15 @@ void MiniCheetahRobotBridge::run() {
   }
   printf("[Hardware Bridge] Got all parameters, starting up!\n");
 
-  _robotRunner = new RobotRunner(_controller, &taskManager,
-                                 _robotParams.controller_dt, "robot-control");
+  _robotRunner =
+      new RobotRunner(_controller, &taskManager, _robotParams.controller_dt,
+                      "robot-control", _runningType);
   _robotRunner->robotType = RobotType::MINI_CHEETAH;
+  // derektodo: gamepad callback function in this file, geometry_msgs/Twist.msg
+  _robotRunner->driverCommand = &_gamepadCommand;
   // derektodo: imu callback function in this file, sensor_msgs/Imu.msg
   _robotRunner->vectorNavData = &_vectorNavData;
+  // derektodo: parm callback function in this file
   _robotRunner->controlParameters = &_robotParams;
 
   _firstRun = false;
@@ -79,8 +83,9 @@ void MiniCheetahRobotBridge::run() {
   // robot controller start
   _robotRunner->start();
 
-  while(ros::ok()) {
+  while (ros::ok()) {
     usleep(5 * 1000);
+    // derektodo: imu, gamepad, parm callback
     ros::spinOnce();
   }
 }
@@ -88,7 +93,7 @@ void MiniCheetahRobotBridge::run() {
 /*!
  * Initialize Mini Cheetah specific hardware
  */
-void MiniCheetahRobotBridge::initHardware() {
+void MiniCheetahRobotBridge::initRobot() {
   _vectorNavData.quat << 1, 0, 0, 0;
-  // derektodo: init sdk
+  // derektodo: init sdk, jointstates rostpic
 }

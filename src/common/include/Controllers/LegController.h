@@ -2,21 +2,18 @@
  *  @brief Common Leg Control Interface and Leg Control Algorithms
  *
  *  Implements low-level leg control for Mini Cheetah and Cheetah 3 Robots
- *  Abstracts away the difference between the SPIne and the TI Boards (the low level leg control boards)
- *  All quantities are in the "leg frame" which has the same orientation as the
- * body frame, but is shifted so that 0,0,0 is at the ab/ad pivot (the "hip
- * frame").
+ *  Abstracts away the difference between the SPIne and the TI Boards (the low
+ * level leg control boards) All quantities are in the "leg frame" which has the
+ * same orientation as the body frame, but is shifted so that 0,0,0 is at the
+ * ab/ad pivot (the "hip frame").
  */
 
 #ifndef PROJECT_LEGCONTROLLER_H
 #define PROJECT_LEGCONTROLLER_H
 
-#include "cppTypes.h"
-// #include "leg_control_command_lcmt.hpp"
-// #include "leg_control_data_lcmt.hpp"
 #include "Dynamics/Quadruped.h"
 #include "SimUtilities/SpineBoard.h"
-// #include "SimUtilities/ti_boardcontrol.h"
+#include "cppTypes.h"
 
 /*!
  * Data sent from the control algorithm to the legs.
@@ -51,31 +48,23 @@ struct LegControllerData {
 };
 
 /*!
- * Controller for 4 legs of a quadruped.  Works for both Mini Cheetah and Cheetah 3
+ * Controller for 4 legs of a quadruped.  Works for both Mini Cheetah and
+ * Cheetah 3
  */
 template <typename T>
 class LegController {
  public:
-  LegController(Quadruped<T>& quad) : _quadruped(quad) {
+  LegController(Quadruped<T>& quad, std::string runningType)
+      : _quadruped(quad) {
     for (auto& data : datas) data.setQuadruped(_quadruped);
+    _runningType = runningType;
   }
 
   void zeroCommand();
   void edampCommand(RobotType robot, T gain);
   void updateData(const SpiData* spiData);
-  //delete ti
-  // void updateData(const TiBoardData* tiBoardData);
-  // void updateCommand(TiBoardCommand* tiBoardCommand);
   void updateCommand(SpiCommand* spiCommand);
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
-  // delet lcm
-  // void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt* command);
-void setLcm();
-
-  /*!
-   * Set the maximum torque.  This only works on cheetah 3!
-   */
-  // void setMaxTorqueCheetah3(T tau) { _maxTorque = tau; }
 
   LegControllerCommand<T> commands[4];
   LegControllerData<T> datas[4];
@@ -84,6 +73,7 @@ void setLcm();
   T _maxTorque = 0;
   bool _zeroEncoders = false;
   u32 _calibrateEncoders = 0;
+  std::string _runningType = "sim";
 };
 
 template <typename T>

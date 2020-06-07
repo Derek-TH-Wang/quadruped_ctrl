@@ -20,9 +20,10 @@
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl,
                          PeriodicTaskManager* manager, float period,
-                         std::string name)
+                         std::string name, std::string runningType)
     : PeriodicTask(manager, period, name) {
   _robot_ctrl = robot_ctrl;
+  _runningType = runningType;
 }
 
 /**
@@ -45,7 +46,7 @@ void RobotRunner::init() {
       new JPosInitializer<float>(3., controlParameters->controller_dt);
 
   // Always initialize the leg controller and state entimator
-  _legController = new LegController<float>(_quadruped);
+  _legController = new LegController<float>(_quadruped, _runningType);
   _stateEstimator = new StateEstimatorContainer<float>(  // cheaterState,
       vectorNavData, _legController->datas, &_stateEstimate, controlParameters);
   initializeStateEstimator();
@@ -126,11 +127,8 @@ void RobotRunner::run() {
 void RobotRunner::setupStep() {
   // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    // derektodo: get joint pvc from sdk
     // _legController->updateData(spiData);
   } else if (robotType == RobotType::CHEETAH_3) {
-    // delete ti
-    // _legController->updateData(tiBoardData);
   } else {
     assert(false);
   }
@@ -144,11 +142,8 @@ void RobotRunner::setupStep() {
  */
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
-    // derektodo: send sdk
     // _legController->updateCommand(spiCommand);
   } else if (robotType == RobotType::CHEETAH_3) {
-    // delete ti
-    // _legController->updateCommand(tiBoardCommand);
   } else {
     assert(false);
   }

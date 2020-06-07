@@ -28,6 +28,7 @@ class RobotBridge {
  protected:
   PeriodicTaskManager taskManager;
   PrintTaskStatus statusTask;
+  GamepadCommand _gamepadCommand;
 
   bool _firstRun = true;
   RobotRunner* _robotRunner = nullptr;
@@ -37,17 +38,17 @@ class RobotBridge {
 };
 
 /*!
- * Interface between robot and hardware specialized for Mini Cheetah
+ * Interface between robot and hardware/simulator specialized for Mini Cheetah
  */
 class MiniCheetahRobotBridge : public RobotBridge {
  public:
   MiniCheetahRobotBridge(RobotController* rc, std::string runningType);
-  void initHardware();
+  void initRobot();
   void run();
 
  private:
   VectorNavData _vectorNavData;
-  std::string _runningType;
+  std::string _runningType = "sim";
 };
 
 #endif

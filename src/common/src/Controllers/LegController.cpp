@@ -83,15 +83,20 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
 template <typename T>
 void LegController<T>::updateData(const SpiData* spiData) {
   for (int leg = 0; leg < 4; leg++) {
-    // q:
-    datas[leg].q(0) = spiData->q_abad[leg];
-    datas[leg].q(1) = spiData->q_hip[leg];
-    datas[leg].q(2) = spiData->q_knee[leg];
+    // derektodo: get sdk or jointstates
+    if (_runningType == "sim") {
+    } else if (_runningType == "real") {
+    } else {
+    }
+    // // q:
+    // datas[leg].q(0) = spiData->q_abad[leg];
+    // datas[leg].q(1) = spiData->q_hip[leg];
+    // datas[leg].q(2) = spiData->q_knee[leg];
 
-    // qd
-    datas[leg].qd(0) = spiData->qd_abad[leg];
-    datas[leg].qd(1) = spiData->qd_hip[leg];
-    datas[leg].qd(2) = spiData->qd_knee[leg];
+    // // qd
+    // datas[leg].qd(0) = spiData->qd_abad[leg];
+    // datas[leg].qd(1) = spiData->qd_hip[leg];
+    // datas[leg].qd(2) = spiData->qd_knee[leg];
 
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
@@ -101,29 +106,6 @@ void LegController<T>::updateData(const SpiData* spiData) {
     datas[leg].v = datas[leg].J * datas[leg].qd;
   }
 }
-
-/*!
- * Update the "leg data" from a TI Board message
- */
-//delete ti
-// template <typename T>
-// void LegController<T>::updateData(const TiBoardData* tiBoardData) {
-//   for (int leg = 0; leg < 4; leg++) {
-//     for (int joint = 0; joint < 3; joint++) {
-//       datas[leg].q(joint) = tiBoardData[leg].q[joint];
-//       datas[leg].qd(joint) = tiBoardData[leg].dq[joint];
-//       datas[leg].p(joint) = tiBoardData[leg].position[joint];
-//       datas[leg].v(joint) = tiBoardData[leg].velocity[joint];
-
-//       // J and p
-//       computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &datas[leg].J,
-//                                        nullptr, leg);
-//       datas[leg].tauEstimate[joint] = tiBoardData[leg].tau[joint];
-//     }
-//     //printf("%d leg, position: %f, %f, %f\n", leg, datas[leg].p[0], datas[leg].p[1], datas[leg].p[2]);
-//     //printf("%d leg, velocity: %f, %f, %f\n", leg, datas[leg].v[0], datas[leg].v[1], datas[leg].v[2]);
-//   }
-// }
 
 /*!
  * Update the "leg command" for the SPIne board message
@@ -146,28 +128,33 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
 
+    // derektodo: set sdk or jointstates
+    if (_runningType == "sim") {
+    } else if (_runningType == "real") {
+    } else {
+    }
     // set command:
-    spiCommand->tau_abad_ff[leg] = legTorque(0);
-    spiCommand->tau_hip_ff[leg] = legTorque(1);
-    spiCommand->tau_knee_ff[leg] = legTorque(2);
+    // spiCommand->tau_abad_ff[leg] = legTorque(0);
+    // spiCommand->tau_hip_ff[leg] = legTorque(1);
+    // spiCommand->tau_knee_ff[leg] = legTorque(2);
 
-    // joint space pd
-    // joint space PD
-    spiCommand->kd_abad[leg] = commands[leg].kdJoint(0, 0);
-    spiCommand->kd_hip[leg] = commands[leg].kdJoint(1, 1);
-    spiCommand->kd_knee[leg] = commands[leg].kdJoint(2, 2);
+    // // joint space pd
+    // // joint space PD
+    // spiCommand->kd_abad[leg] = commands[leg].kdJoint(0, 0);
+    // spiCommand->kd_hip[leg] = commands[leg].kdJoint(1, 1);
+    // spiCommand->kd_knee[leg] = commands[leg].kdJoint(2, 2);
 
-    spiCommand->kp_abad[leg] = commands[leg].kpJoint(0, 0);
-    spiCommand->kp_hip[leg] = commands[leg].kpJoint(1, 1);
-    spiCommand->kp_knee[leg] = commands[leg].kpJoint(2, 2);
+    // spiCommand->kp_abad[leg] = commands[leg].kpJoint(0, 0);
+    // spiCommand->kp_hip[leg] = commands[leg].kpJoint(1, 1);
+    // spiCommand->kp_knee[leg] = commands[leg].kpJoint(2, 2);
 
-    spiCommand->q_des_abad[leg] = commands[leg].qDes(0);
-    spiCommand->q_des_hip[leg] = commands[leg].qDes(1);
-    spiCommand->q_des_knee[leg] = commands[leg].qDes(2);
+    // spiCommand->q_des_abad[leg] = commands[leg].qDes(0);
+    // spiCommand->q_des_hip[leg] = commands[leg].qDes(1);
+    // spiCommand->q_des_knee[leg] = commands[leg].qDes(2);
 
-    spiCommand->qd_des_abad[leg] = commands[leg].qdDes(0);
-    spiCommand->qd_des_hip[leg] = commands[leg].qdDes(1);
-    spiCommand->qd_des_knee[leg] = commands[leg].qdDes(2);
+    // spiCommand->qd_des_abad[leg] = commands[leg].qdDes(0);
+    // spiCommand->qd_des_hip[leg] = commands[leg].qdDes(1);
+    // spiCommand->qd_des_knee[leg] = commands[leg].qdDes(2);
 
     // estimate torque
     datas[leg].tauEstimate =
@@ -175,85 +162,12 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
 
-    spiCommand->flags[leg] = _legsEnabled ? 1 : 0;
+    // spiCommand->flags[leg] = _legsEnabled ? 1 : 0;
   }
 }
 
-constexpr float CHEETAH_3_ZERO_OFFSET[4][3] = {{1.f, 4.f, 7.f},
-                                               {2.f, 5.f, 8.f},
-                                               {3.f, 6.f, 9.f}};
-/*!
- * Update the "leg command" for the TI Board
- */
-//delete ti
-// template <typename T>
-// void LegController<T>::updateCommand(TiBoardCommand* tiBoardCommand) {
-//   for (int leg = 0; leg < 4; leg++) {
-//     Vec3<T> tauFF = commands[leg].tauFeedForward.template cast<T>();
-
-
-//     for (int joint = 0; joint < 3; joint++) {
-//       tiBoardCommand[leg].kp[joint] = commands[leg].kpCartesian(joint, joint);
-//       tiBoardCommand[leg].kd[joint] = commands[leg].kdCartesian(joint, joint);
-//       tiBoardCommand[leg].tau_ff[joint] = tauFF[joint];
-//       tiBoardCommand[leg].position_des[joint] = commands[leg].pDes[joint];
-//       tiBoardCommand[leg].velocity_des[joint] = commands[leg].vDes[joint];
-//       tiBoardCommand[leg].force_ff[joint] =
-//           commands[leg].forceFeedForward[joint];
-//       tiBoardCommand[leg].q_des[joint] = commands[leg].qDes[joint];
-//       tiBoardCommand[leg].qd_des[joint] = commands[leg].qdDes[joint];
-//       tiBoardCommand[leg].kp_joint[joint] = commands[leg].kpJoint(joint, joint);
-//       tiBoardCommand[leg].kd_joint[joint] = commands[leg].kdJoint(joint, joint);
-//       tiBoardCommand[leg].zero_offset[joint] = CHEETAH_3_ZERO_OFFSET[leg][joint];
-//     }
-
-//     // please only send 1 or 0 here or the robot will explode.
-//     tiBoardCommand[leg].enable = _legsEnabled ? 1 : 0;
-//     tiBoardCommand[leg].max_torque = _maxTorque;
-//     tiBoardCommand[leg].zero = _zeroEncoders ? 1 : 0;
-//     if(_calibrateEncoders) {
-//       tiBoardCommand[leg].enable = _calibrateEncoders + 1;
-//     }
-
-//     if(_zeroEncoders) {
-//       tiBoardCommand[leg].enable = 0;
-//     }
-
-//   }
-// }
-
-/*!
- * Set LCM debug data from leg commands and data
- */
-// delet lcm
-// template<typename T>
-// void LegController<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_command_lcmt *lcmCommand) {
-//     for(int leg = 0; leg < 4; leg++) {
-//         for(int axis = 0; axis < 3; axis++) {
-//             int idx = leg*3 + axis;
-//             lcmData->q[idx] = datas[leg].q[axis];
-//             lcmData->qd[idx] = datas[leg].qd[axis];
-//             lcmData->p[idx] = datas[leg].p[axis];
-//             lcmData->v[idx] = datas[leg].v[axis];
-//             lcmData->tau_est[idx] = datas[leg].tauEstimate[axis];
-
-//             lcmCommand->tau_ff[idx] = commands[leg].tauFeedForward[axis];
-//             lcmCommand->f_ff[idx] = commands[leg].forceFeedForward[axis];
-//             lcmCommand->q_des[idx] = commands[leg].qDes[axis];
-//             lcmCommand->qd_des[idx] = commands[leg].qdDes[axis];
-//             lcmCommand->p_des[idx] = commands[leg].pDes[axis];
-//             lcmCommand->v_des[idx] = commands[leg].vDes[axis];
-//             lcmCommand->kp_cartesian[idx] = commands[leg].kpCartesian(axis, axis);
-//             lcmCommand->kd_cartesian[idx] = commands[leg].kdCartesian(axis, axis);
-//             lcmCommand->kp_joint[idx] = commands[leg].kpJoint(axis, axis);
-//             lcmCommand->kd_joint[idx] = commands[leg].kdJoint(axis, axis);
-//         }
-//     }
-// }
-template<typename T>
-void LegController<T>::setLcm() {
-
-}
+constexpr float CHEETAH_3_ZERO_OFFSET[4][3] = {
+    {1.f, 4.f, 7.f}, {2.f, 5.f, 8.f}, {3.f, 6.f, 9.f}};
 
 template struct LegControllerCommand<double>;
 template struct LegControllerCommand<float>;
@@ -292,18 +206,22 @@ void computeLegJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat3<T>* J,
     J->operator()(0, 0) = 0;
     J->operator()(0, 1) = l3 * c23 + l2 * c2;
     J->operator()(0, 2) = l3 * c23;
-    J->operator()(1, 0) = l3 * c1 * c23 + l2 * c1 * c2 - (l1+l4) * sideSign * s1;
+    J->operator()(1, 0) =
+        l3 * c1 * c23 + l2 * c1 * c2 - (l1 + l4) * sideSign * s1;
     J->operator()(1, 1) = -l3 * s1 * s23 - l2 * s1 * s2;
     J->operator()(1, 2) = -l3 * s1 * s23;
-    J->operator()(2, 0) = l3 * s1 * c23 + l2 * c2 * s1 + (l1+l4) * sideSign * c1;
+    J->operator()(2, 0) =
+        l3 * s1 * c23 + l2 * c2 * s1 + (l1 + l4) * sideSign * c1;
     J->operator()(2, 1) = l3 * c1 * s23 + l2 * c1 * s2;
     J->operator()(2, 2) = l3 * c1 * s23;
   }
 
   if (p) {
     p->operator()(0) = l3 * s23 + l2 * s2;
-    p->operator()(1) = (l1+l4) * sideSign * c1 + l3 * (s1 * c23) + l2 * c2 * s1;
-    p->operator()(2) = (l1+l4) * sideSign * s1 - l3 * (c1 * c23) - l2 * c1 * c2;
+    p->operator()(1) =
+        (l1 + l4) * sideSign * c1 + l3 * (s1 * c23) + l2 * c2 * s1;
+    p->operator()(2) =
+        (l1 + l4) * sideSign * s1 - l3 * (c1 * c23) - l2 * c1 * c2;
   }
 }
 

@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     hw.run();
     ROS_INFO("[Quadruped] loop run() has finished!");
   } else {
-    ROS_ERROR("[ERROR] unknown robot");
+    ROS_ERROR("unknown robot");
     return 0;
   }
 

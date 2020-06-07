@@ -23,7 +23,7 @@ class RobotRunner : public PeriodicTask {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  RobotRunner(RobotController*, PeriodicTaskManager*, float, std::string);
+  RobotRunner(RobotController*, PeriodicTaskManager*, float, std::string, std::string);
   using PeriodicTask::PeriodicTask;
   void init() override;
   void run() override;
@@ -56,6 +56,7 @@ class RobotRunner : public PeriodicTask {
 
   FloatingBaseModel<float> _model;
   u64 _iterations = 0;
+  std::string _runningType = "sim";
 };
 
 #endif  // PROJECT_ROBOTRUNNER_H
