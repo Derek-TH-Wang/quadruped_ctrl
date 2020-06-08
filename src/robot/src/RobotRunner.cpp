@@ -83,7 +83,7 @@ void RobotRunner::run() {
 
   static int count_ini(0);
   ++count_ini;
-  ROS_INFO("count_ini = %d", count_ini);
+  ROS_DEBUG("count_ini = %d", count_ini);
   if (count_ini < 10) {
     _legController->setEnabled(false);
   } else if (20 < count_ini && count_ini < 30) {

@@ -13,6 +13,11 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
+add_service_files(
+  FILES
+  QuadrupedCmd.srv
+)
+
 generate_messages(
   DEPENDENCIES
   std_msgs

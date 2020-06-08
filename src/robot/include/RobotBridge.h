@@ -9,10 +9,14 @@
 #ifndef PROJECT_ROBOTBRIDGE_H
 #define PROJECT_ROBOTBRIDGE_H
 
+#include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Imu.h>
+
 #include <string>
 
 #include "RobotRunner.h"
 #include "Utilities/PeriodicTask.h"
+#include "quadruped_robot/QuadrupedCmd.h"
 
 /*!
  * Interface between robot and hardware
@@ -49,6 +53,18 @@ class MiniCheetahRobotBridge : public RobotBridge {
  private:
   VectorNavData _vectorNavData;
   std::string _runningType = "sim";
+
+  ros::NodeHandle n;
+  ros::Subscriber imuBodySub;
+  ros::Subscriber cmdVelSub;
+  ros::ServiceServer ctrlMode;
+  ros::ServiceServer gaitType;
+  void SubImuBody(const sensor_msgs::Imu& msg);
+  void SubCmdVel(const geometry_msgs::Twist& msg);
+  bool ServiceCtrlMode(quadruped_robot::QuadrupedCmd::Request& req,
+                       quadruped_robot::QuadrupedCmd::Response& res);
+  bool ServiceGaitType(quadruped_robot::QuadrupedCmd::Request& req,
+                       quadruped_robot::QuadrupedCmd::Response& res);
 };
 
 #endif
