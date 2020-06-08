@@ -40,6 +40,11 @@ void LegControllerData<T>::zero() {
   tauEstimate = Vec3<T>::Zero();
 }
 
+template <typename T>
+void LegController<T>::SubJS(const sensor_msgs::JointState& msg) {
+  _pos = msg.position;
+  _vel = msg.velocity;
+}
 /*!
  * Zero all leg commands.  This should be run *before* any control code, so if
  * the control code is confused and doesn't change the leg command, the legs
@@ -81,29 +86,36 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
  * Update the "leg data" from a SPIne board message
  */
 template <typename T>
-void LegController<T>::updateData(const SpiData* spiData) {
-  for (int leg = 0; leg < 4; leg++) {
-    // derektodo: get sdk or jointstates
-    if (_runningType == "sim") {
-    } else if (_runningType == "real") {
-    } else {
+void LegController<T>::updateData() {
+  int tempLeg;
+  if (_runningType == "sim") {
+    for (int leg = 0; leg < 4; leg++) {
+      if (leg == 0) {
+        tempLeg = 2;
+      } else if (leg == 1) {
+        tempLeg = 0;
+      } else if (leg == 2) {
+        tempLeg = 3;
+      } else if (leg == 3) {
+        tempLeg = 1;
+      }
+      // q:
+      datas[leg].q(0) = _pos.at(tempLeg * 3 + 0);
+      datas[leg].q(1) = _pos.at(tempLeg * 3 + 1);
+      datas[leg].q(2) = _pos.at(tempLeg * 3 + 2);
+      // qd
+      datas[leg].qd(0) = _vel.at(tempLeg * 3 + 0);
+      datas[leg].qd(1) = _vel.at(tempLeg * 3 + 1);
+      datas[leg].qd(2) = _vel.at(tempLeg * 3 + 2);
+      // J and p
+      computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q,
+                                       &(datas[leg].J), &(datas[leg].p), leg);
+      // v
+      datas[leg].v = datas[leg].J * datas[leg].qd;
     }
-    // // q:
-    // datas[leg].q(0) = spiData->q_abad[leg];
-    // datas[leg].q(1) = spiData->q_hip[leg];
-    // datas[leg].q(2) = spiData->q_knee[leg];
-
-    // // qd
-    // datas[leg].qd(0) = spiData->qd_abad[leg];
-    // datas[leg].qd(1) = spiData->qd_hip[leg];
-    // datas[leg].qd(2) = spiData->qd_knee[leg];
-
-    // J and p
-    computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
-                                     &(datas[leg].p), leg);
-
-    // v
-    datas[leg].v = datas[leg].J * datas[leg].qd;
+  } else if (_runningType == "real") {
+  } else {
+    ROS_ERROR("err running type when getting data");
   }
 }
 
@@ -111,7 +123,9 @@ void LegController<T>::updateData(const SpiData* spiData) {
  * Update the "leg command" for the SPIne board message
  */
 template <typename T>
-void LegController<T>::updateCommand(SpiCommand* spiCommand) {
+void LegController<T>::updateCommand() {
+  int tempLeg;
+
   for (int leg = 0; leg < 4; leg++) {
     // tauFF
     Vec3<T> legTorque = commands[leg].tauFeedForward;
@@ -128,41 +142,33 @@ void LegController<T>::updateCommand(SpiCommand* spiCommand) {
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
 
-    // derektodo: set sdk or jointstates
-    if (_runningType == "sim") {
-    } else if (_runningType == "real") {
-    } else {
+    // trans to real robot order
+    if (leg == 0) {
+      tempLeg = 2;
+    } else if (leg == 1) {
+      tempLeg = 0;
+    } else if (leg == 2) {
+      tempLeg = 3;
+    } else if (leg == 3) {
+      tempLeg = 1;
     }
-    // set command:
-    // spiCommand->tau_abad_ff[leg] = legTorque(0);
-    // spiCommand->tau_hip_ff[leg] = legTorque(1);
-    // spiCommand->tau_knee_ff[leg] = legTorque(2);
-
-    // // joint space pd
-    // // joint space PD
-    // spiCommand->kd_abad[leg] = commands[leg].kdJoint(0, 0);
-    // spiCommand->kd_hip[leg] = commands[leg].kdJoint(1, 1);
-    // spiCommand->kd_knee[leg] = commands[leg].kdJoint(2, 2);
-
-    // spiCommand->kp_abad[leg] = commands[leg].kpJoint(0, 0);
-    // spiCommand->kp_hip[leg] = commands[leg].kpJoint(1, 1);
-    // spiCommand->kp_knee[leg] = commands[leg].kpJoint(2, 2);
-
-    // spiCommand->q_des_abad[leg] = commands[leg].qDes(0);
-    // spiCommand->q_des_hip[leg] = commands[leg].qDes(1);
-    // spiCommand->q_des_knee[leg] = commands[leg].qDes(2);
-
-    // spiCommand->qd_des_abad[leg] = commands[leg].qdDes(0);
-    // spiCommand->qd_des_hip[leg] = commands[leg].qdDes(1);
-    // spiCommand->qd_des_knee[leg] = commands[leg].qdDes(2);
+    _setTau.at(tempLeg * 3 + 0) = legTorque(0, 0);
+    _setTau.at(tempLeg * 3 + 1) = legTorque(0, 1);
+    _setTau.at(tempLeg * 3 + 2) = legTorque(0, 2);
 
     // estimate torque
     datas[leg].tauEstimate =
         legTorque +
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
-
-    // spiCommand->flags[leg] = _legsEnabled ? 1 : 0;
+  }
+  // derektodo: set sdk or jointstates
+  if (_runningType == "sim") {
+    _setJsMsg.header.stamp = ros::Time::now();
+    _setJsMsg.effort = _setTau;
+  } else if (_runningType == "real") {
+  } else {
+    ROS_ERROR("err running type when setting data");
   }
 }
 

@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "Controllers/StateEstimatorContainer.h"
-#include "SimUtilities/GamepadCommand.h"
+#include "GamepadCommand.h"
 #include "cppTypes.h"
 
 template <typename T>

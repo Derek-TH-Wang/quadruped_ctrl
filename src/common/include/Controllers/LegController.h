@@ -11,8 +11,10 @@
 #ifndef PROJECT_LEGCONTROLLER_H
 #define PROJECT_LEGCONTROLLER_H
 
+#include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
+
 #include "Dynamics/Quadruped.h"
-#include "SimUtilities/SpineBoard.h"
 #include "cppTypes.h"
 
 /*!
@@ -58,12 +60,18 @@ class LegController {
       : _quadruped(quad) {
     for (auto& data : datas) data.setQuadruped(_quadruped);
     _runningType = runningType;
+    _getPos.resize(12);
+    _getVel.resize(12);
+    _setTau.resize(12);
+    _setJsMsg.name = "abduct_fl,	thigh_fl,	knee_fl, abduct_hl	thigh_hl	knee_hl, abduct_fr	thigh_fr	knee_fr, abduct_hr	thigh_hr	knee_hr";
+    jsPub = n.advertise<sensor_msgs::JointState>("/set_js", 10);
+    jsSub = n.subscribe("/get_js", 10, &LegController::SubJS, this);
   }
 
   void zeroCommand();
   void edampCommand(RobotType robot, T gain);
-  void updateData(const SpiData* spiData);
-  void updateCommand(SpiCommand* spiCommand);
+  void updateData();
+  void updateCommand();
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
 
   LegControllerCommand<T> commands[4];
@@ -73,7 +81,15 @@ class LegController {
   T _maxTorque = 0;
   bool _zeroEncoders = false;
   u32 _calibrateEncoders = 0;
+
+ private:
   std::string _runningType = "sim";
+  ros::NodeHandle n;
+  ros::Publisher jsPub;
+  ros::Subscriber jsSub;
+  sensor_msgs::JointState _setJsMsg;
+  void SubJS(const sensor_msgs::JointState& msg);
+  std::vector<double> _getPos, _getVel, _setTau;
 };
 
 template <typename T>

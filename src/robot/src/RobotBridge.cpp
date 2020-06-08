@@ -62,12 +62,11 @@ bool MiniCheetahRobotBridge::ServiceCtrlMode(
   // STAND_UP 1
   // BALANCE_STAND 3
   // LOCOMOTION 4
-  // LOCOMOTION_TEST 5
   // RECOVERY_STAND 6
   // BACKFLIP 9
   // FRONTJUMP 11
-  if (req.cmd < 0 || req.cmd == 2 || req.cmd == 7 || req.cmd == 8 ||
-      req.cmd == 10 || req.cmd > 11) {
+  if (req.cmd < 0 || req.cmd == 2 || req.cmd == 5 || req.cmd == 7 ||
+      req.cmd == 8 || req.cmd == 10 || req.cmd > 11) {
     res.result = -1;
     res.description = "wrong input ctrl mode cmd";
     ROS_ERROR("wrong input ctrl mode cmd");
@@ -178,5 +177,5 @@ void MiniCheetahRobotBridge::run() {
  */
 void MiniCheetahRobotBridge::initRobot() {
   _vectorNavData.quat << 1, 0, 0, 0;
-  // derektodo: init sdk, jointstates rostpic
+  // derektodo: init sdk, jointstates rostpic need to confirm
 }
