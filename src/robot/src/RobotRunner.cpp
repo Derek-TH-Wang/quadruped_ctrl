@@ -128,7 +128,7 @@ void RobotRunner::run() {
 void RobotRunner::setupStep() {
   // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    _legController->updateData();
+    _legController->getRobotData();
   } else if (robotType == RobotType::CHEETAH_3) {
   } else {
     assert(false);
@@ -143,7 +143,7 @@ void RobotRunner::setupStep() {
  */
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
-    // _legController->updateCommand();
+    _legController->setRobotData();
   } else if (robotType == RobotType::CHEETAH_3) {
   } else {
     assert(false);

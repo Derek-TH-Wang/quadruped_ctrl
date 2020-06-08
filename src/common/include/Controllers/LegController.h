@@ -63,15 +63,31 @@ class LegController {
     _getPos.resize(12);
     _getVel.resize(12);
     _setTau.resize(12);
-    _setJsMsg.name = "abduct_fl,	thigh_fl,	knee_fl, abduct_hl	thigh_hl	knee_hl, abduct_fr	thigh_fr	knee_fr, abduct_hr	thigh_hr	knee_hr";
+    _setJsMsg.name.resize(12);
+    _setJsMsg.position.resize(12);
+    _setJsMsg.velocity.resize(12);
+    _setJsMsg.effort.resize(12);
+    _setJsMsg.name[0] = "abduct_fl";
+    _setJsMsg.name[1] = "thigh_fl";
+    _setJsMsg.name[2] = "knee_fl";
+    _setJsMsg.name[3] = "abduct_hl";
+    _setJsMsg.name[4] = "thigh_hl";
+    _setJsMsg.name[5] = "knee_hl";
+    _setJsMsg.name[6] = "abduct_fr";
+    _setJsMsg.name[7] = "thigh_fr";
+    _setJsMsg.name[8] = "knee_fr";
+    _setJsMsg.name[9] = "abduct_hr";
+    _setJsMsg.name[10] = "thigh_hr";
+    _setJsMsg.name[11] = "knee_hr";
+
     jsPub = n.advertise<sensor_msgs::JointState>("/set_js", 10);
     jsSub = n.subscribe("/get_js", 10, &LegController::SubJS, this);
   }
 
   void zeroCommand();
   void edampCommand(RobotType robot, T gain);
-  void updateData();
-  void updateCommand();
+  void getRobotData();
+  void setRobotData();
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
 
   LegControllerCommand<T> commands[4];

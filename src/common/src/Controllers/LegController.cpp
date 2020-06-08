@@ -42,8 +42,8 @@ void LegControllerData<T>::zero() {
 
 template <typename T>
 void LegController<T>::SubJS(const sensor_msgs::JointState& msg) {
-  _pos = msg.position;
-  _vel = msg.velocity;
+  _getPos = msg.position;
+  _getVel = msg.velocity;
 }
 /*!
  * Zero all leg commands.  This should be run *before* any control code, so if
@@ -82,11 +82,8 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
   }
 }
 
-/*!
- * Update the "leg data" from a SPIne board message
- */
 template <typename T>
-void LegController<T>::updateData() {
+void LegController<T>::getRobotData() {
   int tempLeg;
   if (_runningType == "sim") {
     for (int leg = 0; leg < 4; leg++) {
@@ -100,13 +97,13 @@ void LegController<T>::updateData() {
         tempLeg = 1;
       }
       // q:
-      datas[leg].q(0) = _pos.at(tempLeg * 3 + 0);
-      datas[leg].q(1) = _pos.at(tempLeg * 3 + 1);
-      datas[leg].q(2) = _pos.at(tempLeg * 3 + 2);
+      datas[leg].q(0) = _getPos.at(tempLeg * 3 + 0);
+      datas[leg].q(1) = _getPos.at(tempLeg * 3 + 1);
+      datas[leg].q(2) = _getPos.at(tempLeg * 3 + 2);
       // qd
-      datas[leg].qd(0) = _vel.at(tempLeg * 3 + 0);
-      datas[leg].qd(1) = _vel.at(tempLeg * 3 + 1);
-      datas[leg].qd(2) = _vel.at(tempLeg * 3 + 2);
+      datas[leg].qd(0) = _getVel.at(tempLeg * 3 + 0);
+      datas[leg].qd(1) = _getVel.at(tempLeg * 3 + 1);
+      datas[leg].qd(2) = _getVel.at(tempLeg * 3 + 2);
       // J and p
       computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q,
                                        &(datas[leg].J), &(datas[leg].p), leg);
@@ -119,11 +116,8 @@ void LegController<T>::updateData() {
   }
 }
 
-/*!
- * Update the "leg command" for the SPIne board message
- */
 template <typename T>
-void LegController<T>::updateCommand() {
+void LegController<T>::setRobotData() {
   int tempLeg;
 
   for (int leg = 0; leg < 4; leg++) {
@@ -141,6 +135,18 @@ void LegController<T>::updateCommand() {
 
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
+    if (leg == 0) {
+      std::cout << "J: \n" << datas[leg].J.transpose() << std::endl;
+      std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1, 0)
+                << " " << footForce(2, 0) << std::endl;
+      std::cout << "commands[leg].pDes = " << commands[leg].pDes(0, 0) << " "
+                << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2, 0)
+                << std::endl;
+      // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes <<
+      // std::endl;
+      std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1, 0)
+                << " " << legTorque(2, 0) << std::endl;
+    }
 
     // trans to real robot order
     if (leg == 0) {
@@ -153,8 +159,8 @@ void LegController<T>::updateCommand() {
       tempLeg = 1;
     }
     _setTau.at(tempLeg * 3 + 0) = legTorque(0, 0);
-    _setTau.at(tempLeg * 3 + 1) = legTorque(0, 1);
-    _setTau.at(tempLeg * 3 + 2) = legTorque(0, 2);
+    _setTau.at(tempLeg * 3 + 1) = legTorque(1, 0);
+    _setTau.at(tempLeg * 3 + 2) = legTorque(2, 0);
 
     // estimate torque
     datas[leg].tauEstimate =
@@ -166,6 +172,7 @@ void LegController<T>::updateCommand() {
   if (_runningType == "sim") {
     _setJsMsg.header.stamp = ros::Time::now();
     _setJsMsg.effort = _setTau;
+    jsPub.publish(_setJsMsg);
   } else if (_runningType == "real") {
   } else {
     ROS_ERROR("err running type when setting data");
