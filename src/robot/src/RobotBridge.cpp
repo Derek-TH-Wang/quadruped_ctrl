@@ -177,5 +177,5 @@ void MiniCheetahRobotBridge::run() {
  */
 void MiniCheetahRobotBridge::initRobot() {
   _vectorNavData.quat << 1, 0, 0, 0;
-  // derektodo: init sdk, jointstates rostpic need to confirm
+  // derektodo: real robot: init sdk, simulator: waitForMessage jointstates rostpic
 }

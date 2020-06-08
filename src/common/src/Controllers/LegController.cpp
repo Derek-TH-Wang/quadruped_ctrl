@@ -111,6 +111,7 @@ void LegController<T>::getRobotData() {
       datas[leg].v = datas[leg].J * datas[leg].qd;
     }
   } else if (_runningType == "real") {
+    //derektodo: sdk get data
   } else {
     ROS_ERROR("err running type when getting data");
   }
@@ -168,12 +169,12 @@ void LegController<T>::setRobotData() {
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
   }
-  // derektodo: set sdk or jointstates
   if (_runningType == "sim") {
     _setJsMsg.header.stamp = ros::Time::now();
     _setJsMsg.effort = _setTau;
     jsPub.publish(_setJsMsg);
   } else if (_runningType == "real") {
+    //derektodo: sdk set data
   } else {
     ROS_ERROR("err running type when setting data");
   }
