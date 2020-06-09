@@ -30,6 +30,8 @@ void DesiredStateCommand<T>::convertToStateCommands() {
   joystickRight = gamepadCommand->rightStickAnalog;
   trigger_pressed = gamepadCommand->a;
 
+  // std::cout << "joystickLeft = " << joystickLeft << std::endl;
+  // std::cout << "joystickRight = " << joystickRight << std::endl;
   joystickLeft[0] *= -1.f;
   joystickRight[0] *= -1.f;
 

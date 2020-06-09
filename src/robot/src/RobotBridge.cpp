@@ -51,8 +51,8 @@ void MiniCheetahRobotBridge::SubCmdVel(const geometry_msgs::Twist &msg) {
   _gamepadCommand.leftStickAnalog(0, 0) = -msg.linear.y;
   _gamepadCommand.leftStickAnalog(1, 0) = msg.linear.x;
 
-  _gamepadCommand.rightStickAnalog(0, 0) = -msg.angular.y;
-  _gamepadCommand.rightStickAnalog(1, 0) = msg.angular.x;
+  _gamepadCommand.rightStickAnalog(0, 0) = msg.angular.x;
+  _gamepadCommand.rightStickAnalog(1, 0) = msg.angular.y;
 }
 
 bool MiniCheetahRobotBridge::ServiceCtrlMode(

@@ -137,16 +137,16 @@ void LegController<T>::setRobotData() {
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
     if (leg == 0) {
-      std::cout << "J: \n" << datas[leg].J.transpose() << std::endl;
-      std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1, 0)
-                << " " << footForce(2, 0) << std::endl;
-      std::cout << "commands[leg].pDes = " << commands[leg].pDes(0, 0) << " "
-                << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2, 0)
-                << std::endl;
-      // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes <<
-      // std::endl;
-      std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1, 0)
-                << " " << legTorque(2, 0) << std::endl;
+      // std::cout << "J: \n" << datas[leg].J.transpose() << std::endl;
+      // std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1, 0)
+      //           << " " << footForce(2, 0) << std::endl;
+      // std::cout << "commands[leg].pDes = " << commands[leg].pDes(0, 0) << " "
+      //           << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2, 0)
+      //           << std::endl;
+      // // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes <<
+      // // std::endl;
+      // std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1, 0)
+      //           << " " << legTorque(2, 0) << std::endl;
     }
 
     // trans to real robot order
