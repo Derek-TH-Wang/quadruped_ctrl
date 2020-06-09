@@ -111,7 +111,7 @@ void LegController<T>::getRobotData() {
       datas[leg].v = datas[leg].J * datas[leg].qd;
     }
   } else if (_runningType == "real") {
-    //derektodo: sdk get data
+    // derektodo: sdk get data
   } else {
     ROS_ERROR("err running type when getting data");
   }
@@ -138,14 +138,18 @@ void LegController<T>::setRobotData() {
     legTorque += datas[leg].J.transpose() * footForce;
     if (leg == 0) {
       // std::cout << "J: \n" << datas[leg].J.transpose() << std::endl;
-      // std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1, 0)
+      // std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1,
+      // 0)
       //           << " " << footForce(2, 0) << std::endl;
       // std::cout << "commands[leg].pDes = " << commands[leg].pDes(0, 0) << " "
-      //           << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2, 0)
+      //           << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2,
+      //           0)
       //           << std::endl;
-      // // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes <<
+      // // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes
+      // <<
       // // std::endl;
-      // std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1, 0)
+      // std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1,
+      // 0)
       //           << " " << legTorque(2, 0) << std::endl;
     }
 
@@ -169,12 +173,15 @@ void LegController<T>::setRobotData() {
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
   }
+  for (int i = 0; i < 12; i++) {
+    _setTau.at(i) *= _actuatorCompensate[i];
+  }
   if (_runningType == "sim") {
     _setJsMsg.header.stamp = ros::Time::now();
     _setJsMsg.effort = _setTau;
     jsPub.publish(_setJsMsg);
   } else if (_runningType == "real") {
-    //derektodo: sdk set data
+    // derektodo: sdk set data
   } else {
     ROS_ERROR("err running type when setting data");
   }
