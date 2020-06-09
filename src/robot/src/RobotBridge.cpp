@@ -177,5 +177,10 @@ void MiniCheetahRobotBridge::run() {
  */
 void MiniCheetahRobotBridge::initRobot() {
   _vectorNavData.quat << 1, 0, 0, 0;
-  // derektodo: real robot: init sdk, simulator: waitForMessage jointstates rostpic
+  // derektodo: real robot: init sdk, simulator: waitForMessage jointstates
+  // get[leg].q = -0.21983 -0.800412 1.88037
+  // get[leg].q = 0.220756 -0.800612 1.87995
+  // get[leg].q = -0.270671 -0.824693 1.95178
+  // get[leg].q = 0.271815 -0.825016 1.95177
+  // 0, 45 , 100
 }

@@ -106,7 +106,7 @@ class LegController {
   sensor_msgs::JointState _setJsMsg;
   void SubJS(const sensor_msgs::JointState& msg);
   std::vector<double> _getPos, _getVel, _setTau;
-  double _actuatorCompensate[12] = {1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0};
+  double _actuatorCompensate[12] = {-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
 };
 
 template <typename T>
