@@ -20,10 +20,9 @@
 
 RobotRunner::RobotRunner(RobotController* robot_ctrl,
                          PeriodicTaskManager* manager, float period,
-                         std::string name, std::string runningType)
+                         std::string name)
     : PeriodicTask(manager, period, name) {
   _robot_ctrl = robot_ctrl;
-  _runningType = runningType;
 }
 
 /**
@@ -46,7 +45,7 @@ void RobotRunner::init() {
       new JPosInitializer<float>(3., controlParameters->controller_dt);
 
   // Always initialize the leg controller and state entimator
-  _legController = new LegController<float>(_quadruped, _runningType);
+  _legController = new LegController<float>(_quadruped);
   _stateEstimator = new StateEstimatorContainer<float>(  // cheaterState,
       vectorNavData, _legController->datas, &_stateEstimate, controlParameters);
   initializeStateEstimator();
@@ -126,11 +125,10 @@ void RobotRunner::run() {
  * Before running user code, setup the leg control and estimators
  */
 void RobotRunner::setupStep() {
-  // Update the leg data
   if (robotType == RobotType::MINI_CHEETAH) {
-    _legController->getRobotData();
-  } else if (robotType == RobotType::CHEETAH_3) {
+    _legController->updateGetRobotData(robotData);
   } else {
+    ROS_ERROR("err robot type when getting data");
     assert(false);
   }
   _legController->zeroCommand();
@@ -138,14 +136,13 @@ void RobotRunner::setupStep() {
 }
 
 /*!
- * After the user code, send leg commands, update state estimate, and publish
- * debug data
+ * After the user code, send leg commands, update state estimate
  */
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
-    _legController->setRobotData();
-  } else if (robotType == RobotType::CHEETAH_3) {
+    _legController->updateSetRobotData(robotData);
   } else {
+    ROS_ERROR("err robot type when setting data");
     assert(false);
   }
   _iterations++;

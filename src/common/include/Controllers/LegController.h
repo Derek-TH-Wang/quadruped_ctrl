@@ -12,10 +12,16 @@
 #define PROJECT_LEGCONTROLLER_H
 
 #include <ros/ros.h>
-#include <sensor_msgs/JointState.h>
 
 #include "Dynamics/Quadruped.h"
 #include "cppTypes.h"
+
+struct RobotData {
+  double getJointPos[12] = {0.0};
+  double getJointVel[12] = {0.0};
+  double setJointPos[12] = {0.0};
+  double setJointTau[12] = {0.0};
+};
 
 /*!
  * Data sent from the control algorithm to the legs.
@@ -56,38 +62,14 @@ struct LegControllerData {
 template <typename T>
 class LegController {
  public:
-  LegController(Quadruped<T>& quad, std::string runningType)
-      : _quadruped(quad) {
+  LegController(Quadruped<T>& quad) : _quadruped(quad) {
     for (auto& data : datas) data.setQuadruped(_quadruped);
-    _runningType = runningType;
-    _getPos.resize(12);
-    _getVel.resize(12);
-    _setTau.resize(12);
-    _setJsMsg.name.resize(12);
-    _setJsMsg.position.resize(12);
-    _setJsMsg.velocity.resize(12);
-    _setJsMsg.effort.resize(12);
-    _setJsMsg.name[0] = "abduct_fl";
-    _setJsMsg.name[1] = "thigh_fl";
-    _setJsMsg.name[2] = "knee_fl";
-    _setJsMsg.name[3] = "abduct_hl";
-    _setJsMsg.name[4] = "thigh_hl";
-    _setJsMsg.name[5] = "knee_hl";
-    _setJsMsg.name[6] = "abduct_fr";
-    _setJsMsg.name[7] = "thigh_fr";
-    _setJsMsg.name[8] = "knee_fr";
-    _setJsMsg.name[9] = "abduct_hr";
-    _setJsMsg.name[10] = "thigh_hr";
-    _setJsMsg.name[11] = "knee_hr";
-
-    jsPub = n.advertise<sensor_msgs::JointState>("/set_js", 10);
-    jsSub = n.subscribe("/get_js", 10, &LegController::SubJS, this);
   }
 
   void zeroCommand();
   void edampCommand(RobotType robot, T gain);
-  void getRobotData();
-  void setRobotData();
+  void updateGetRobotData(RobotData* robotData);
+  void updateSetRobotData(RobotData* robotData);
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
 
   LegControllerCommand<T> commands[4];
@@ -99,14 +81,6 @@ class LegController {
   u32 _calibrateEncoders = 0;
 
  private:
-  std::string _runningType = "sim";
-  ros::NodeHandle n;
-  ros::Publisher jsPub;
-  ros::Subscriber jsSub;
-  sensor_msgs::JointState _setJsMsg;
-  void SubJS(const sensor_msgs::JointState& msg);
-  std::vector<double> _getPos, _getVel, _setTau;
-  double _actuatorCompensate[12] = {-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
 };
 
 template <typename T>

@@ -40,11 +40,6 @@ void LegControllerData<T>::zero() {
   tauEstimate = Vec3<T>::Zero();
 }
 
-template <typename T>
-void LegController<T>::SubJS(const sensor_msgs::JointState& msg) {
-  _getPos = msg.position;
-  _getVel = msg.velocity;
-}
 /*!
  * Zero all leg commands.  This should be run *before* any control code, so if
  * the control code is confused and doesn't change the leg command, the legs
@@ -83,42 +78,36 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
 }
 
 template <typename T>
-void LegController<T>::getRobotData() {
+void LegController<T>::updateGetRobotData(RobotData* robotData) {
   int tempLeg;
-  if (_runningType == "sim") {
-    for (int leg = 0; leg < 4; leg++) {
-      if (leg == 0) {
-        tempLeg = 2;
-      } else if (leg == 1) {
-        tempLeg = 0;
-      } else if (leg == 2) {
-        tempLeg = 3;
-      } else if (leg == 3) {
-        tempLeg = 1;
-      }
-      // q:
-      datas[leg].q(0) = _getPos.at(tempLeg * 3 + 0);
-      datas[leg].q(1) = _getPos.at(tempLeg * 3 + 1);
-      datas[leg].q(2) = _getPos.at(tempLeg * 3 + 2);
-      // qd
-      datas[leg].qd(0) = _getVel.at(tempLeg * 3 + 0);
-      datas[leg].qd(1) = _getVel.at(tempLeg * 3 + 1);
-      datas[leg].qd(2) = _getVel.at(tempLeg * 3 + 2);
-      // J and p
-      computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q,
-                                       &(datas[leg].J), &(datas[leg].p), leg);
-      // v
-      datas[leg].v = datas[leg].J * datas[leg].qd;
+  for (int leg = 0; leg < 4; leg++) {
+    if (leg == 0) {
+      tempLeg = 2;
+    } else if (leg == 1) {
+      tempLeg = 0;
+    } else if (leg == 2) {
+      tempLeg = 3;
+    } else if (leg == 3) {
+      tempLeg = 1;
     }
-  } else if (_runningType == "real") {
-    // derektodo: sdk get data
-  } else {
-    ROS_ERROR("err running type when getting data");
+    // q:
+    datas[leg].q(0) = robotData->getJointPos[tempLeg * 3 + 0];
+    datas[leg].q(1) = robotData->getJointPos[tempLeg * 3 + 1];
+    datas[leg].q(2) = robotData->getJointPos[tempLeg * 3 + 2];
+    // qd
+    datas[leg].qd(0) = robotData->getJointVel[tempLeg * 3 + 0];
+    datas[leg].qd(1) = robotData->getJointVel[tempLeg * 3 + 1];
+    datas[leg].qd(2) = robotData->getJointVel[tempLeg * 3 + 2];
+    // J and p
+    computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
+                                     &(datas[leg].p), leg);
+    // v
+    datas[leg].v = datas[leg].J * datas[leg].qd;
   }
 }
 
 template <typename T>
-void LegController<T>::setRobotData() {
+void LegController<T>::updateSetRobotData(RobotData* robotData) {
   int tempLeg;
 
   for (int leg = 0; leg < 4; leg++) {
@@ -163,27 +152,18 @@ void LegController<T>::setRobotData() {
     } else if (leg == 3) {
       tempLeg = 1;
     }
-    _setTau.at(tempLeg * 3 + 0) = legTorque(0, 0);
-    _setTau.at(tempLeg * 3 + 1) = legTorque(1, 0);
-    _setTau.at(tempLeg * 3 + 2) = legTorque(2, 0);
+    robotData->setJointPos[tempLeg * 3 + 0] = commands[leg].qDes(0, 0);
+    robotData->setJointPos[tempLeg * 3 + 1] = commands[leg].qDes(1, 0);
+    robotData->setJointPos[tempLeg * 3 + 2] = commands[leg].qDes(2, 0);
+    robotData->setJointTau[tempLeg * 3 + 0] = legTorque(0, 0);
+    robotData->setJointTau[tempLeg * 3 + 1] = legTorque(1, 0);
+    robotData->setJointTau[tempLeg * 3 + 2] = legTorque(2, 0);
 
     // estimate torque
     datas[leg].tauEstimate =
         legTorque +
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
-  }
-  for (int i = 0; i < 12; i++) {
-    _setTau.at(i) *= _actuatorCompensate[i];
-  }
-  if (_runningType == "sim") {
-    _setJsMsg.header.stamp = ros::Time::now();
-    _setJsMsg.effort = _setTau;
-    jsPub.publish(_setJsMsg);
-  } else if (_runningType == "real") {
-    // derektodo: sdk set data
-  } else {
-    ROS_ERROR("err running type when setting data");
   }
 }
 

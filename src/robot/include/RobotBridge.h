@@ -11,6 +11,7 @@
 
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/JointState.h>
 
 #include <string>
 
@@ -33,6 +34,7 @@ class RobotBridge {
   PeriodicTaskManager taskManager;
   PrintTaskStatus statusTask;
   GamepadCommand _gamepadCommand;
+  RobotData _robotData;
 
   bool _firstRun = true;
   RobotRunner* _robotRunner = nullptr;
@@ -53,12 +55,18 @@ class MiniCheetahRobotBridge : public RobotBridge {
  private:
   VectorNavData _vectorNavData;
   std::string _runningType = "sim";
+  double _actuatorCompensate[12] = {-1.0, 1.0,  1.0,  1.0, 1.0,  1.0,
+                                    -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
 
   ros::NodeHandle n;
+  ros::Publisher jsPub;
+  ros::Subscriber jsSub;
   ros::Subscriber imuBodySub;
   ros::Subscriber cmdVelSub;
   ros::ServiceServer ctrlMode;
   ros::ServiceServer gaitType;
+  sensor_msgs::JointState _setJsMsg;
+  void SubJS(const sensor_msgs::JointState& msg);
   void SubImuBody(const sensor_msgs::Imu& msg);
   void SubCmdVel(const geometry_msgs::Twist& msg);
   bool ServiceCtrlMode(quadruped_robot::QuadrupedCmd::Request& req,

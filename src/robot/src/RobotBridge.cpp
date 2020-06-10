@@ -22,6 +22,24 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
                                                std::string runningType)
     : RobotBridge(robot_ctrl) {
   _runningType = runningType;
+  _setJsMsg.name.resize(12);
+  _setJsMsg.position.resize(12);
+  _setJsMsg.velocity.resize(12);
+  _setJsMsg.effort.resize(12);
+  _setJsMsg.name[0] = "abduct_fl";
+  _setJsMsg.name[1] = "thigh_fl";
+  _setJsMsg.name[2] = "knee_fl";
+  _setJsMsg.name[3] = "abduct_hl";
+  _setJsMsg.name[4] = "thigh_hl";
+  _setJsMsg.name[5] = "knee_hl";
+  _setJsMsg.name[6] = "abduct_fr";
+  _setJsMsg.name[7] = "thigh_fr";
+  _setJsMsg.name[8] = "knee_fr";
+  _setJsMsg.name[9] = "abduct_hr";
+  _setJsMsg.name[10] = "thigh_hr";
+  _setJsMsg.name[11] = "knee_hr";
+  jsPub = n.advertise<sensor_msgs::JointState>("/set_js", 10);
+  jsSub = n.subscribe("/get_js", 10, &MiniCheetahRobotBridge::SubJS, this);
   imuBodySub =
       n.subscribe("/imu_body", 10, &MiniCheetahRobotBridge::SubImuBody, this);
   cmdVelSub =
@@ -30,6 +48,13 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
                                 &MiniCheetahRobotBridge::ServiceCtrlMode, this);
   gaitType = n.advertiseService("gait_type",
                                 &MiniCheetahRobotBridge::ServiceGaitType, this);
+}
+
+void MiniCheetahRobotBridge::SubJS(const sensor_msgs::JointState &msg) {
+  for (int i = 0; i < 12; i++) {
+    _robotData.getJointPos[i] = msg.position[i];
+    _robotData.getJointVel[i] = msg.velocity[i];
+  }
 }
 
 void MiniCheetahRobotBridge::SubImuBody(const sensor_msgs::Imu &msg) {
@@ -150,13 +175,13 @@ void MiniCheetahRobotBridge::run() {
   }
   printf("[Hardware Bridge] Got all parameters, starting up!\n");
 
-  _robotRunner =
-      new RobotRunner(_controller, &taskManager, _robotParams.controller_dt,
-                      "robot-control", _runningType);
+  _robotRunner = new RobotRunner(_controller, &taskManager,
+                                 _robotParams.controller_dt, "robot-control");
   _robotRunner->robotType = RobotType::MINI_CHEETAH;
   _robotRunner->driverCommand = &_gamepadCommand;
   _robotRunner->vectorNavData = &_vectorNavData;
   _robotRunner->controlParameters = &_robotParams;
+  _robotRunner->robotData = &_robotData;
 
   _firstRun = false;
 
@@ -168,6 +193,21 @@ void MiniCheetahRobotBridge::run() {
 
   while (ros::ok()) {
     usleep(5 * 1000);
+    for (int i = 0; i < 12; i++) {
+      _robotData.setJointTau[i] *= _actuatorCompensate[i];
+    }
+    if (_runningType == "sim") {
+      _setJsMsg.header.stamp = ros::Time::now();
+      for (int i = 0; i < 12; i++) {
+        _setJsMsg.effort[i] = _robotData.setJointTau[i];
+      }
+      jsPub.publish(_setJsMsg);
+    } else if (_runningType == "real") {
+      // derektodo: sdk set data
+    } else {
+      ROS_ERROR("err running type when setting data");
+      assert(false);
+    }
     ros::spinOnce();
   }
 }
