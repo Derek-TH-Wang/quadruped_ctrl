@@ -57,6 +57,8 @@ class MiniCheetahRobotBridge : public RobotBridge {
   std::string _runningType = "sim";
   double _actuatorCompensate[12] = {-1.0, 1.0,  1.0,  1.0, 1.0,  1.0,
                                     -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
+  double _initRobotJointPos[12] = {0.0, -0.8, 1.75,  0.0, -0.8, 1.75,
+                                   0.0, 0.8,  -1.75, 0.0, 0.8,  -1.75};
 
   ros::NodeHandle n;
   ros::Publisher jsPub;

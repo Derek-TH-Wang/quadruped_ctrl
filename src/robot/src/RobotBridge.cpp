@@ -23,9 +23,6 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
     : RobotBridge(robot_ctrl) {
   _runningType = runningType;
   _setJsMsg.name.resize(12);
-  _setJsMsg.position.resize(12);
-  _setJsMsg.velocity.resize(12);
-  _setJsMsg.effort.resize(12);
   _setJsMsg.name[0] = "abduct_fl";
   _setJsMsg.name[1] = "thigh_fl";
   _setJsMsg.name[2] = "knee_fl";
@@ -218,9 +215,18 @@ void MiniCheetahRobotBridge::run() {
 void MiniCheetahRobotBridge::initRobot() {
   _vectorNavData.quat << 1, 0, 0, 0;
   // derektodo: real robot: init sdk, simulator: waitForMessage jointstates
-  // get[leg].q = -0.21983 -0.800412 1.88037
-  // get[leg].q = 0.220756 -0.800612 1.87995
-  // get[leg].q = -0.270671 -0.824693 1.95178
-  // get[leg].q = 0.271815 -0.825016 1.95177
-  // 0, 45 , 100
+  if (_runningType == "sim") {
+    _setJsMsg.header.stamp = ros::Time::now();
+    for (int i = 0; i < 12; i++) {
+      _setJsMsg.position[i] = _initRobotJointPos[i];
+    }
+    jsPub.publish(_setJsMsg);
+    _setJsMsg.position.clear();
+  _setJsMsg.effort.resize(12);
+  } else if (_runningType == "real") {
+    // derektodo: sdk set init data
+  } else {
+    ROS_ERROR("err running type when setting data");
+    assert(false);
+  }
 }

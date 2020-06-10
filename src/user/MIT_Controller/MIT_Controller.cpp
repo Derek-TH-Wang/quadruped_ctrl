@@ -7,12 +7,8 @@ MIT_Controller::MIT_Controller():RobotController(){  }
  * Initializes the Control FSM.
  */
 void MIT_Controller::initializeController() {
-  // Initialize a new GaitScheduler object
-  _gaitScheduler = new GaitScheduler<float>(&userParameters, _controlParameters->controller_dt);
-
-  // Initialize a new ContactEstimator object
-  //_contactEstimator = new ContactEstimator<double>();
-  ////_contactEstimator->initialize();
+  // Initialize a new GaitScheduler object, dt = 5ms
+  _gaitScheduler = new GaitScheduler<float>(&userParameters, _controlParameters->controller_dt);  
 
   // Initializes the Control FSM with all the required data
   _controlFSM = new ControlFSM<float>(_quadruped, _stateEstimator,
@@ -25,10 +21,10 @@ void MIT_Controller::initializeController() {
  * Calculate the commands for the leg controllers using the ControlFSM logic.
  */
 void MIT_Controller::runController() {
-  // Find the current gait schedule
+  // Calculate gait phase state in realtime
   _gaitScheduler->step();
 
-  // Find the desired state trajectory
+  // Find the desired state trajectory according to gamepad input vel
   _desiredStateCommand->convertToStateCommands();
 
   // Run the Control FSM code
