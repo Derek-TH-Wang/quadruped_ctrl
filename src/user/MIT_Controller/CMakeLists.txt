@@ -7,8 +7,6 @@ include_directories("../../third-party/")
 include_directories(SYSTEM "../../third-party/qpOASES/include")
 include_directories("../../third-party/ParamHandler")
 
-# include_directories("../../lcm-types/cpp")
-# include_directories("/usr/local/include/lcm/")   # lcm includes
 include_directories("/usr/local/include/eigen3")   # lcm includes
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
@@ -21,7 +19,5 @@ file(GLOB_RECURSE sources
 
 add_subdirectory(Controllers/WBC)
 add_subdirectory(Controllers/WBC_Ctrl)
-# add_subdirectory(Controllers/VisionMPC)
 
 add_library(ctrller SHARED ${sources} MIT_Controller.cpp)
-#target_link_libraries(ctrller)
