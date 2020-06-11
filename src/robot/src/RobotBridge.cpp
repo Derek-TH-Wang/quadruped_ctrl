@@ -41,10 +41,11 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
       n.subscribe("/imu_body", 10, &MiniCheetahRobotBridge::SubImuBody, this);
   cmdVelSub =
       n.subscribe("/cmd_vel", 10, &MiniCheetahRobotBridge::SubCmdVel, this);
-  ctrlMode = n.advertiseService("ctrl_mode",
-                                &MiniCheetahRobotBridge::ServiceCtrlMode, this);
-  gaitType = n.advertiseService("gait_type",
-                                &MiniCheetahRobotBridge::ServiceGaitType, this);
+  robotCtrlMode = n.advertiseService(
+      "ctrl_mode", &MiniCheetahRobotBridge::ServiceCtrlMode, this);
+  robotGaitType = n.advertiseService(
+      "gait_type", &MiniCheetahRobotBridge::ServiceGaitType, this);
+  jointCtrlMode = n.serviceClient<quadruped_robot::QuadrupedCmd>("set_jm");
 }
 
 void MiniCheetahRobotBridge::SubJS(const sensor_msgs::JointState &msg) {
@@ -133,44 +134,41 @@ bool MiniCheetahRobotBridge::ServiceGaitType(
 }
 
 /*!
- * Main method for Mini Cheetah
+ * Main method for quadruped robot
  */
 void MiniCheetahRobotBridge::run() {
   std::string packagePath = ros::package::getPath("quadruped_robot");
-  initRobot();
-
-  printf("[Hardware Bridge] Loading parameters from file...\n");
   try {
     _robotParams.initializeFromYamlFile(packagePath +
                                         "/config/mini-cheetah-defaults.yaml");
   } catch (std::exception &e) {
-    printf("Failed to initialize robot parameters from yaml file: %s\n",
-           e.what());
+    ROS_ERROR("Failed to initialize robot parameters from yaml file: %s",
+              e.what());
     exit(1);
   }
   if (!_robotParams.isFullyInitialized()) {
-    printf("Failed to initialize all robot parameters\n");
+    ROS_ERROR("Failed to initialize all robot parameters");
     exit(1);
   }
-  printf("Loaded robot parameters\n");
-  if (_userControlParameters) {
-    try {
-      _userControlParameters->initializeFromYamlFile(
-          packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
-    } catch (std::exception &e) {
-      printf("Failed to initialize user parameters from yaml file: %s\n",
-             e.what());
-      exit(1);
-    }
-    if (!_userControlParameters->isFullyInitialized()) {
-      printf("Failed to initialize all user parameters\n");
-      exit(1);
-    }
-    printf("Loaded user parameters\n");
-  } else {
-    printf("Did not load user parameters because there aren't any\n");
+  try {
+    _userControlParameters->initializeFromYamlFile(
+        packagePath + "/config/mc-mit-ctrl-user-parameters.yaml");
+  } catch (std::exception &e) {
+    ROS_ERROR("Failed to initialize user parameters from yaml file: %s",
+              e.what());
+    exit(1);
   }
-  printf("[Hardware Bridge] Got all parameters, starting up!\n");
+  if (!_userControlParameters->isFullyInitialized()) {
+    ROS_ERROR("Failed to initialize all user parameters");
+    exit(1);
+  }
+  ROS_WARN("Got all parameters, starting up!");
+
+  if (!initRobot()) {
+    ROS_ERROR("init robot failed");
+    exit(1);
+  }
+  ROS_WARN("init robot successful");
 
   _robotRunner = new RobotRunner(_controller, &taskManager,
                                  _robotParams.controller_dt, "robot-control");
@@ -188,6 +186,17 @@ void MiniCheetahRobotBridge::run() {
   // robot controller start
   _robotRunner->start();
 
+  // set to current mode
+  setJm.request.cmd = 0;
+  if (jointCtrlMode.call(setJm)) {
+    ROS_WARN("set JM to current mode");
+    // usleep(100 * 1000);
+  } else {
+    ROS_ERROR("Failed to call JM while setting current mode");
+    return false;
+  }
+
+  // main loop
   while (ros::ok()) {
     usleep(5 * 1000);
     for (int i = 0; i < 12; i++) {
@@ -210,23 +219,44 @@ void MiniCheetahRobotBridge::run() {
 }
 
 /*!
- * Initialize Mini Cheetah specific hardware
+ * Initialize quadruped robot
  */
-void MiniCheetahRobotBridge::initRobot() {
+bool MiniCheetahRobotBridge::initRobot() {
+  quadruped_robot::QuadrupedCmd setJm;
   _vectorNavData.quat << 1, 0, 0, 0;
   // derektodo: real robot: init sdk, simulator: waitForMessage jointstates
   if (_runningType == "sim") {
+    // set to profile position mode
+    setJm.request.cmd = 1;
+    if (jointCtrlMode.call(setJm)) {
+      ROS_WARN("set JM to profile position mode");
+      usleep(100 * 1000);
+    } else {
+      ROS_ERROR("Failed to call JM while setting profile position mode");
+      return false;
+    }
+
+    // set to init pose in profile position mode
+    _setJsMsg.position.resize(12);
     _setJsMsg.header.stamp = ros::Time::now();
     for (int i = 0; i < 12; i++) {
       _setJsMsg.position[i] = _initRobotJointPos[i];
     }
     jsPub.publish(_setJsMsg);
     _setJsMsg.position.clear();
-  _setJsMsg.effort.resize(12);
+    _setJsMsg.effort.resize(12);
   } else if (_runningType == "real") {
     // derektodo: sdk set init data
   } else {
     ROS_ERROR("err running type when setting data");
-    assert(false);
+    return false;
   }
+
+  // set to stand up ctrl mode in controller
+  ControlParameter &param = _robotParams.collection.lookup("control_mode");
+  ControlParameterValue v;
+  v.d = 1.0;  // STAND_UP
+  param.set(v, ControlParameterValueKind::DOUBLE);
+
+  return true;
 }

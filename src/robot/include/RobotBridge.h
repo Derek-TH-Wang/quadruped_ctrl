@@ -49,7 +49,7 @@ class RobotBridge {
 class MiniCheetahRobotBridge : public RobotBridge {
  public:
   MiniCheetahRobotBridge(RobotController* rc, std::string runningType);
-  void initRobot();
+  bool initRobot();
   void run();
 
  private:
@@ -65,8 +65,9 @@ class MiniCheetahRobotBridge : public RobotBridge {
   ros::Subscriber jsSub;
   ros::Subscriber imuBodySub;
   ros::Subscriber cmdVelSub;
-  ros::ServiceServer ctrlMode;
-  ros::ServiceServer gaitType;
+  ros::ServiceServer robotCtrlMode;
+  ros::ServiceServer robotGaitType;
+  ros::ServiceClient jointCtrlMode;
   sensor_msgs::JointState _setJsMsg;
   void SubJS(const sensor_msgs::JointState& msg);
   void SubImuBody(const sensor_msgs::Imu& msg);

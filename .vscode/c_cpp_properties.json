@@ -8,6 +8,7 @@
             "includePath": [
                 "/opt/ros/melodic/include/**",
                 "/usr/include/**",
+                "~/ros_workspace/quadruped_ws/devel/include/**",
                 "~/ros_workspace/quadruped_ws/src/quadruped_robot/src/**"
             ],
             "name": "ROS",
