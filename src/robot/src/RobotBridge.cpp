@@ -62,10 +62,10 @@ void MiniCheetahRobotBridge::SubImuBody(const sensor_msgs::Imu &msg) {
   _vectorNavData.accelerometer(1, 0) = msg.linear_acceleration.y;
   _vectorNavData.accelerometer(2, 0) = msg.linear_acceleration.z;
 
-  _vectorNavData.quat(0, 0) = msg.orientation.w;
-  _vectorNavData.quat(1, 0) = msg.orientation.x;
-  _vectorNavData.quat(2, 0) = msg.orientation.y;
-  _vectorNavData.quat(3, 0) = msg.orientation.z;
+  _vectorNavData.quat(0, 0) = msg.orientation.x;
+  _vectorNavData.quat(1, 0) = msg.orientation.y;
+  _vectorNavData.quat(2, 0) = msg.orientation.z;
+  _vectorNavData.quat(3, 0) = msg.orientation.w;
 
   _vectorNavData.gyro(0, 0) = msg.angular_velocity.x;
   _vectorNavData.gyro(1, 0) = msg.angular_velocity.y;

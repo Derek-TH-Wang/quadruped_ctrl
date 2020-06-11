@@ -19,11 +19,11 @@
  */
 template <typename T>
 void VectorNavOrientationEstimator<T>::run() {
-    // ROS_DEBUG("ori ");
-    // ROS_DEBUG("ori = %f", this->_stateEstimatorData.vectorNavData->quat[0]);
-    // ROS_DEBUG("ori = %f", this->_stateEstimatorData.vectorNavData->quat[1]);
-    // ROS_DEBUG("ori = %f", this->_stateEstimatorData.vectorNavData->quat[2]);
-    // ROS_DEBUG("ori = %f", this->_stateEstimatorData.vectorNavData->quat[3]);
+    // std::cout << "quat = " << this->_stateEstimatorData.vectorNavData->quat[0] << " " << 
+    // this->_stateEstimatorData.vectorNavData->quat[1] << " " << 
+    // this->_stateEstimatorData.vectorNavData->quat[2] << " " << 
+    // this->_stateEstimatorData.vectorNavData->quat[3] << std::endl;
+
   this->_stateEstimatorData.result->orientation[0] =
       this->_stateEstimatorData.vectorNavData->quat[3];
   this->_stateEstimatorData.result->orientation[1] =
