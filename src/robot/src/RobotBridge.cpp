@@ -19,9 +19,11 @@
 #include "Utilities/Utilities_print.h"
 
 MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
-                                               std::string runningType)
+                                               std::string runningType,
+                                               std::string actuatorMode)
     : RobotBridge(robot_ctrl) {
   _runningType = runningType;
+  _actuatorMode = actuatorMode;
   _setJsMsg.name.resize(12);
   _setJsMsg.name[0] = "abduct_fl";
   _setJsMsg.name[1] = "thigh_fl";
@@ -133,10 +135,7 @@ bool MiniCheetahRobotBridge::ServiceGaitType(
   return true;
 }
 
-/*!
- * Main method for quadruped robot
- */
-void MiniCheetahRobotBridge::run() {
+bool MiniCheetahRobotBridge::GetParmFromFile() {
   std::string packagePath = ros::package::getPath("quadruped_robot");
   try {
     _robotParams.initializeFromYamlFile(packagePath +
@@ -163,76 +162,21 @@ void MiniCheetahRobotBridge::run() {
     exit(1);
   }
   ROS_WARN("Got all parameters, starting up!");
-
-  if (!initRobot()) {
-    ROS_ERROR("init robot failed");
-    exit(1);
-  }
-  ROS_WARN("init robot successful");
-
-  _robotRunner = new RobotRunner(_controller, &taskManager,
-                                 _robotParams.controller_dt, "robot-control");
-  _robotRunner->robotType = RobotType::MINI_CHEETAH;
-  _robotRunner->driverCommand = &_gamepadCommand;
-  _robotRunner->vectorNavData = &_vectorNavData;
-  _robotRunner->controlParameters = &_robotParams;
-  _robotRunner->robotData = &_robotData;
-
-  _firstRun = false;
-
-  // init control thread
-  statusTask.start();
-
-  // robot controller start
-  _robotRunner->start();
-
-  // set to current mode
-  setJm.request.cmd = 0;
-  if (jointCtrlMode.call(setJm)) {
-    ROS_WARN("set JM to current mode");
-    // usleep(100 * 1000);
-  } else {
-    ROS_ERROR("Failed to call JM while setting current mode");
-    return false;
-  }
-
-  // main loop
-  while (ros::ok()) {
-    usleep(5 * 1000);
-    for (int i = 0; i < 12; i++) {
-      _robotData.setJointTau[i] *= _actuatorCompensate[i];
-    }
-    if (_runningType == "sim") {
-      _setJsMsg.header.stamp = ros::Time::now();
-      for (int i = 0; i < 12; i++) {
-        _setJsMsg.effort[i] = _robotData.setJointTau[i];
-      }
-      jsPub.publish(_setJsMsg);
-    } else if (_runningType == "real") {
-      // derektodo: sdk set data
-    } else {
-      ROS_ERROR("err running type when setting data");
-      assert(false);
-    }
-    ros::spinOnce();
-  }
+  return true;
 }
 
 /*!
  * Initialize quadruped robot
  */
-bool MiniCheetahRobotBridge::initRobot() {
-  quadruped_robot::QuadrupedCmd setJm;
-  _vectorNavData.quat << 1, 0, 0, 0;
-  // derektodo: real robot: init sdk, simulator: waitForMessage jointstates
+bool MiniCheetahRobotBridge::InitRobot() {
   if (_runningType == "sim") {
     // set to profile position mode
-    setJm.request.cmd = 1;
-    if (jointCtrlMode.call(setJm)) {
+    _setJm.request.cmd = 1;
+    if (jointCtrlMode.call(_setJm)) {
       ROS_WARN("set JM to profile position mode");
       usleep(100 * 1000);
     } else {
-      ROS_ERROR("Failed to call JM while setting profile position mode");
+      ROS_ERROR("Failed to call Jm while setting profile position mode");
       return false;
     }
 
@@ -244,7 +188,6 @@ bool MiniCheetahRobotBridge::initRobot() {
     }
     jsPub.publish(_setJsMsg);
     _setJsMsg.position.clear();
-    _setJsMsg.effort.resize(12);
   } else if (_runningType == "real") {
     // derektodo: sdk set init data
   } else {
@@ -258,5 +201,97 @@ bool MiniCheetahRobotBridge::initRobot() {
   v.d = 1.0;  // STAND_UP
   param.set(v, ControlParameterValueKind::DOUBLE);
 
+  // get init sensor data
+  ros::spinOnce();
+  ros::spinOnce();
+  ros::spinOnce();
   return true;
+}
+
+/*!
+ * Main method for quadruped robot
+ */
+void MiniCheetahRobotBridge::Run() {
+  // get parm from file
+  if (!GetParmFromFile()) {
+    ROS_ERROR("GetParmFromFile failed");
+    exit(1);
+  }
+
+  // init robot
+  if (!InitRobot()) {
+    ROS_ERROR("init robot failed");
+    exit(1);
+  }
+  ROS_WARN("init robot successful");
+
+  // connect robotRunner
+  _robotRunner = new RobotRunner(_controller, &taskManager,
+                                 _robotParams.controller_dt, "robot-control");
+  _robotRunner->robotType = RobotType::MINI_CHEETAH;
+  _robotRunner->driverCommand = &_gamepadCommand;
+  _robotRunner->vectorNavData = &_vectorNavData;
+  _robotRunner->controlParameters = &_robotParams;
+  _robotRunner->robotData = &_robotData;
+
+  // init control thread
+  statusTask.start();
+
+  // robot controller start
+  _robotRunner->start();
+
+  // set actuator mode
+  if (_runningType == "sim") {
+    if (_actuatorMode == "torque") {
+      _setJsMsg.position.clear();
+      _setJsMsg.effort.resize(12);
+      _setJm.request.cmd = 0;
+    } else if (_actuatorMode == "position") {
+      _setJsMsg.effort.clear();
+      _setJsMsg.position.resize(12);
+      _setJm.request.cmd = 1;
+    } else {
+      ROS_ERROR("wrong actuator mode");
+      exit(1);
+    }
+    if (jointCtrlMode.call(_setJm)) {
+      ROS_WARN("set JM to current mode");
+    } else {
+      ROS_ERROR("Failed to call JM while setting current mode");
+      exit(1);
+    }
+  } else {
+    // derektodo: set sdk mode
+  }
+
+  // main loop
+  while (ros::ok()) {
+    usleep(5 * 1000);
+    for (int i = 0; i < 12; i++) {
+      _robotData.setJointTau[i] *= _actuatorCompensate[i];
+    }
+    if (_actuatorMode == "torque") {
+      if (_runningType == "sim") {
+        _setJsMsg.header.stamp = ros::Time::now();
+        for (int i = 0; i < 12; i++) {
+          _setJsMsg.effort[i] = _robotData.setJointTau[i];
+        }
+        jsPub.publish(_setJsMsg);
+      } else {
+        // derektodo: sdk set data
+      }
+    } else {
+      if (_runningType == "sim") {
+        _setJsMsg.header.stamp = ros::Time::now();
+        for (int i = 0; i < 12; i++) {
+          _setJsMsg.position[i] = _robotData.setJointPos[i];
+        }
+        jsPub.publish(_setJsMsg);
+      } else {
+        // derektodo: sdk set data
+      }
+    }
+    ros::spinOnce();
+  }
+  ROS_WARN("exit main loop");
 }

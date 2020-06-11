@@ -36,7 +36,6 @@ class RobotBridge {
   GamepadCommand _gamepadCommand;
   RobotData _robotData;
 
-  bool _firstRun = true;
   RobotRunner* _robotRunner = nullptr;
   RobotControlParameters _robotParams;
   RobotController* _controller = nullptr;
@@ -48,13 +47,15 @@ class RobotBridge {
  */
 class MiniCheetahRobotBridge : public RobotBridge {
  public:
-  MiniCheetahRobotBridge(RobotController* rc, std::string runningType);
-  bool initRobot();
-  void run();
+  MiniCheetahRobotBridge(RobotController* rc, std::string runningType, std::string actuatorMode);
+  bool GetParmFromFile();
+  bool InitRobot();
+  void Run();
 
  private:
   VectorNavData _vectorNavData;
   std::string _runningType = "sim";
+  std::string _actuatorMode = "torque";
   double _actuatorCompensate[12] = {-1.0, 1.0,  1.0,  1.0, 1.0,  1.0,
                                     -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
   double _initRobotJointPos[12] = {0.0, -0.8, 1.75,  0.0, -0.8, 1.75,
@@ -69,6 +70,7 @@ class MiniCheetahRobotBridge : public RobotBridge {
   ros::ServiceServer robotGaitType;
   ros::ServiceClient jointCtrlMode;
   sensor_msgs::JointState _setJsMsg;
+  quadruped_robot::QuadrupedCmd _setJm;
   void SubJS(const sensor_msgs::JointState& msg);
   void SubImuBody(const sensor_msgs::Imu& msg);
   void SubCmdVel(const geometry_msgs::Twist& msg);

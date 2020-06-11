@@ -13,17 +13,19 @@ int main(int argc, char** argv) {
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                  ros::console::levels::Info);
 
-  std::string robotSelect, runningType;
+  std::string robotSelect, runningType, actuatorMode;
   n.getParam("/main_parm/robot_select/", robotSelect);
   n.getParam("/main_parm/running_type/", runningType);
+  n.getParam("/main_parm/actuator_mode/", actuatorMode);
   ROS_INFO("Quadruped:  %s", robotSelect.c_str());
   ROS_INFO("Driver: %s", runningType.c_str());
+  ROS_INFO("Actuator Mode: %s", actuatorMode.c_str());
 
   RobotController* ctrl = new MIT_Controller();
 
   if (robotSelect == "MINI_CHEETAH") {
-    MiniCheetahRobotBridge hw(ctrl, runningType);
-    hw.run();
+    MiniCheetahRobotBridge bridge(ctrl, runningType, actuatorMode);
+    bridge.Run();
     ROS_INFO("[Quadruped] loop run() has finished!");
   } else {
     ROS_ERROR("unknown robot");
