@@ -141,6 +141,16 @@ void RobotRunner::setupStep() {
 void RobotRunner::finalizeStep() {
   if (robotType == RobotType::MINI_CHEETAH) {
     _legController->updateSetRobotData(robotData);
+    // std::cout << "update tau = ";
+    // for (int i = 0; i < 12; i++) {
+    //   std::cout << robotData->setJointTau[i] << " ";
+    // }
+    // std::cout << std::endl;
+    std::cout << "update pos = ";
+    for (int i = 0; i < 12; i++) {
+      std::cout << robotData->setJointPos[i] << " ";
+    }
+    std::cout << std::endl;
   } else {
     ROS_ERROR("err robot type when setting data");
     assert(false);

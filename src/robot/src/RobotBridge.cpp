@@ -164,24 +164,24 @@ bool MiniCheetahRobotBridge::GetParmFromFile() {
  */
 bool MiniCheetahRobotBridge::InitRobot() {
   if (_runningType == "sim") {
-    // set to profile position mode
-    _setJm.request.cmd = 1;
-    if (jointCtrlMode.call(_setJm)) {
-      ROS_WARN("set JM to profile position mode");
-      usleep(100 * 1000);
-    } else {
-      ROS_ERROR("Failed to call Jm while setting profile position mode");
-      return false;
-    }
+    // // set to profile position mode
+    // _setJm.request.cmd = 1;
+    // if (jointCtrlMode.call(_setJm)) {
+    //   ROS_WARN("set JM to profile position mode");
+    //   usleep(100 * 1000);
+    // } else {
+    //   ROS_ERROR("Failed to call Jm while setting profile position mode");
+    //   return false;
+    // }
 
-    // set to init pose in profile position mode
-    _setJsMsg.position.resize(12);
-    _setJsMsg.header.stamp = ros::Time::now();
-    for (int i = 0; i < 12; i++) {
-      _setJsMsg.position[i] = _initRobotJointPos[i];
-    }
-    jsPub.publish(_setJsMsg);
-    _setJsMsg.position.clear();
+    // // set to init pose in profile position mode
+    // _setJsMsg.position.resize(12);
+    // _setJsMsg.header.stamp = ros::Time::now();
+    // for (int i = 0; i < 12; i++) {
+    //   _setJsMsg.position[i] = _initRobotJointPos[i];
+    // }
+    // jsPub.publish(_setJsMsg);
+    // _setJsMsg.position.clear();
   } else if (_runningType == "real") {
     // derektodo: sdk set init data
   } else {
@@ -189,11 +189,11 @@ bool MiniCheetahRobotBridge::InitRobot() {
     return false;
   }
 
-  // set to stand up ctrl mode in controller
-  ControlParameter &param = _robotParams.collection.lookup("control_mode");
-  ControlParameterValue v;
-  v.d = 1.0;  // STAND_UP
-  param.set(v, ControlParameterValueKind::DOUBLE);
+  // // set to stand up ctrl mode in controller
+  // ControlParameter &param = _robotParams.collection.lookup("control_mode");
+  // ControlParameterValue v;
+  // v.d = 1.0;  // STAND_UP
+  // param.set(v, ControlParameterValueKind::DOUBLE);
 
   // get init sensor data
   ros::spinOnce();
@@ -261,15 +261,18 @@ void MiniCheetahRobotBridge::Run() {
   // main loop
   while (ros::ok()) {
     usleep(5 * 1000);
-    for (int i = 0; i < 12; i++) {
-      _robotData.setJointTau[i] *= _actuatorCompensate[i];
-    }
     if (_actuatorMode == "torque") {
       if (_runningType == "sim") {
         _setJsMsg.header.stamp = ros::Time::now();
         for (int i = 0; i < 12; i++) {
-          _setJsMsg.effort[i] = _robotData.setJointTau[i];
+          _setJsMsg.effort[i] =
+              _robotData.setJointTau[i] * _actuatorCompensate[i];
         }
+        std::cout << "effort = ";
+        for (int i = 0; i < 12; i++) {
+          std::cout << _setJsMsg.effort[i] << " ";
+        }
+        std::cout << std::endl;
         jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data
@@ -278,9 +281,10 @@ void MiniCheetahRobotBridge::Run() {
       if (_runningType == "sim") {
         _setJsMsg.header.stamp = ros::Time::now();
         for (int i = 0; i < 12; i++) {
-          _setJsMsg.position[i] = _robotData.setJointPos[i];
+          _setJsMsg.position[i] =
+              _robotData.setJointPos[i] * _actuatorCompensate[i];
         }
-        jsPub.publish(_setJsMsg);
+        // jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data
       }
