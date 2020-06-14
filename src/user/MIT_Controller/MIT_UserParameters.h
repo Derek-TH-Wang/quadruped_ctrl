@@ -7,6 +7,26 @@ class MIT_UserParameters : public ControlParameters {
 public:
   MIT_UserParameters()
       : ControlParameters("user-parameters"),
+        INIT_PARAMETER(sim_kpCartesian_fl),
+        INIT_PARAMETER(sim_kpCartesian_hl),
+        INIT_PARAMETER(sim_kpCartesian_fr),
+        INIT_PARAMETER(sim_kpCartesian_hr),
+
+        INIT_PARAMETER(sim_kdCartesian_fl),
+        INIT_PARAMETER(sim_kdCartesian_hl),
+        INIT_PARAMETER(sim_kdCartesian_fr),
+        INIT_PARAMETER(sim_kdCartesian_hr),
+
+        INIT_PARAMETER(real_kpCartesian_fl),
+        INIT_PARAMETER(real_kpCartesian_hl),
+        INIT_PARAMETER(real_kpCartesian_fr),
+        INIT_PARAMETER(real_kpCartesian_hr),
+
+        INIT_PARAMETER(real_kdCartesian_fl),
+        INIT_PARAMETER(real_kdCartesian_hl),
+        INIT_PARAMETER(real_kdCartesian_fr),
+        INIT_PARAMETER(real_kdCartesian_hr),
+
         INIT_PARAMETER(cmpc_gait),
         INIT_PARAMETER(cmpc_x_drag),
         INIT_PARAMETER(cmpc_use_sparse),
@@ -78,6 +98,26 @@ public:
         INIT_PARAMETER(gait_min_stance_time)
 
   {}
+
+  DECLARE_PARAMETER(Vec3<double>, sim_kpCartesian_fl);
+  DECLARE_PARAMETER(Vec3<double>, sim_kpCartesian_hl);
+  DECLARE_PARAMETER(Vec3<double>, sim_kpCartesian_fr);
+  DECLARE_PARAMETER(Vec3<double>, sim_kpCartesian_hr);
+
+  DECLARE_PARAMETER(Vec3<double>, sim_kdCartesian_fl);
+  DECLARE_PARAMETER(Vec3<double>, sim_kdCartesian_hl);
+  DECLARE_PARAMETER(Vec3<double>, sim_kdCartesian_fr);
+  DECLARE_PARAMETER(Vec3<double>, sim_kdCartesian_hr);
+
+  DECLARE_PARAMETER(Vec3<double>, real_kpCartesian_fl);
+  DECLARE_PARAMETER(Vec3<double>, real_kpCartesian_hl);
+  DECLARE_PARAMETER(Vec3<double>, real_kpCartesian_fr);
+  DECLARE_PARAMETER(Vec3<double>, real_kpCartesian_hr);
+
+  DECLARE_PARAMETER(Vec3<double>, real_kdCartesian_fl);
+  DECLARE_PARAMETER(Vec3<double>, real_kdCartesian_hl);
+  DECLARE_PARAMETER(Vec3<double>, real_kdCartesian_fr);
+  DECLARE_PARAMETER(Vec3<double>, real_kdCartesian_hr);
 
   DECLARE_PARAMETER(double, cmpc_gait);
   DECLARE_PARAMETER(double, cmpc_x_drag);

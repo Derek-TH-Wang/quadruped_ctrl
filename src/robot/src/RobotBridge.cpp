@@ -18,12 +18,8 @@
 
 #include "Utilities/Utilities_print.h"
 
-MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl,
-                                               std::string runningType,
-                                               std::string actuatorMode)
+MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl)
     : RobotBridge(robot_ctrl) {
-  _runningType = runningType;
-  _actuatorMode = actuatorMode;
   std::string jointName[12] = {
       "abduct_fl", "thigh_fl", "knee_fl", "abduct_hl", "thigh_hl", "knee_hl",
       "abduct_fr", "thigh_fr", "knee_fr", "abduct_hr", "thigh_hr", "knee_hr"};
@@ -163,7 +159,7 @@ bool MiniCheetahRobotBridge::GetParmFromFile() {
  * Initialize quadruped robot
  */
 bool MiniCheetahRobotBridge::InitRobot() {
-  if (_runningType == "sim") {
+  if (_robotParams.running_type == 0) {
     // // set to profile position mode
     // _setJm.request.cmd = 1;
     // if (jointCtrlMode.call(_setJm)) {
@@ -182,7 +178,7 @@ bool MiniCheetahRobotBridge::InitRobot() {
     // }
     // jsPub.publish(_setJsMsg);
     // _setJsMsg.position.clear();
-  } else if (_runningType == "real") {
+  } else if (_robotParams.running_type == 1) {
     // derektodo: sdk set init data
   } else {
     ROS_ERROR("err running type when setting data");
@@ -235,12 +231,12 @@ void MiniCheetahRobotBridge::Run() {
   _robotRunner->start();
 
   // set actuator mode
-  if (_runningType == "sim") {
-    if (_actuatorMode == "torque") {
+  if (_robotParams.running_type == 0) {
+    if (_robotParams.actuator_mode == 0) {
       _setJsMsg.position.clear();
       _setJsMsg.effort.resize(12);
       _setJm.request.cmd = 0;
-    } else if (_actuatorMode == "position") {
+    } else if (_robotParams.actuator_mode == 1) {
       _setJsMsg.effort.clear();
       _setJsMsg.position.resize(12);
       _setJm.request.cmd = 1;
@@ -261,8 +257,8 @@ void MiniCheetahRobotBridge::Run() {
   // main loop
   while (ros::ok()) {
     usleep(5 * 1000);
-    if (_actuatorMode == "torque") {
-      if (_runningType == "sim") {
+    if (_robotParams.actuator_mode == 0) {
+      if (_robotParams.running_type == 0) {
         _setJsMsg.header.stamp = ros::Time::now();
         for (int i = 0; i < 12; i++) {
           _setJsMsg.effort[i] =
@@ -278,7 +274,7 @@ void MiniCheetahRobotBridge::Run() {
         // derektodo: sdk set data
       }
     } else {
-      if (_runningType == "sim") {
+      if (_robotParams.running_type == 0) {
         _setJsMsg.header.stamp = ros::Time::now();
         for (int i = 0; i < 12; i++) {
           _setJsMsg.position[i] =

@@ -15,7 +15,7 @@
 template <typename T>
 FSM_State_StandUp<T>::FSM_State_StandUp(ControlFSMData<T>* _controlFSMData)
     : FSM_State<T>(_controlFSMData, FSM_StateName::STAND_UP, "STAND_UP"),
-_ini_foot_pos(4){
+      _ini_foot_pos(4) {
   // Do nothing
   // Set the pre controls safety checks
   this->checkSafeOrientation = false;
@@ -36,7 +36,7 @@ void FSM_State_StandUp<T>::onEnter() {
   // Reset iteration counter
   iter = 0;
 
-  for(size_t leg(0); leg<4; ++leg){
+  for (size_t leg(0); leg < 4; ++leg) {
     _ini_foot_pos[leg] = this->_data->_legController->datas[leg].p;
   }
 }
@@ -46,25 +46,81 @@ void FSM_State_StandUp<T>::onEnter() {
  */
 template <typename T>
 void FSM_State_StandUp<T>::run() {
-
-  if(this->_data->_quadruped->_robotType == RobotType::MINI_CHEETAH) {
+  if (this->_data->_quadruped->_robotType == RobotType::MINI_CHEETAH) {
     T hMax = 0.25;
-    T progress = 1.2 * iter * this->_data->controlParameters->controller_dt;
+    T progress = 1.5 * iter * this->_data->controlParameters->controller_dt;
 
-    if (progress > 1.){ progress = 1.; }
+    if (progress > 1.) {
+      progress = 1.;
+    }
 
-    for(int i = 0; i < 2; i++) {
-      this->_data->_legController->commands[i].kpCartesian = Vec3<T>(800, 500, 500).asDiagonal();
-      this->_data->_legController->commands[i].kdCartesian = Vec3<T>(10, 8, 8).asDiagonal();
+    // this->_data->_legController->commands[0].kpCartesian =
+    //     Vec3<T>(300, 500, 450).asDiagonal();
+    // this->_data->_legController->commands[0].kdCartesian =
+    //     Vec3<T>(10, 8, 8).asDiagonal();
+    // this->_data->_legController->commands[1].kpCartesian =
+    //     Vec3<T>(300, 450, 450).asDiagonal();
+    // this->_data->_legController->commands[1].kdCartesian =
+    //     Vec3<T>(10, 8, 8).asDiagonal();
+    // this->_data->_legController->commands[2].kpCartesian =
+    //     Vec3<T>(300, 250, 200).asDiagonal();
+    // this->_data->_legController->commands[2].kdCartesian =
+    //     Vec3<T>(10, 8, 8).asDiagonal();
+    // this->_data->_legController->commands[3].kpCartesian =
+    //     Vec3<T>(300, 300, 300).asDiagonal();
+    // this->_data->_legController->commands[3].kdCartesian =
+    //     Vec3<T>(10, 8, 8).asDiagonal();
+
+    if (this->_data->controlParameters->running_type == 0) {  // simulation
+      for (int i = 0; i < 3; i++) {
+        this->_data->_legController->commands[0].kpCartesian(i, i) =
+            this->_data->userParameters->sim_kpCartesian_fr[i];
+        this->_data->_legController->commands[0].kdCartesian(i, i) =
+            this->_data->userParameters->sim_kdCartesian_fr[i];
+
+        this->_data->_legController->commands[1].kpCartesian(i, i) =
+            this->_data->userParameters->sim_kpCartesian_fl[i];
+        this->_data->_legController->commands[1].kdCartesian(i, i) =
+            this->_data->userParameters->sim_kdCartesian_fl[i];
+
+        this->_data->_legController->commands[2].kpCartesian(i, i) =
+            this->_data->userParameters->sim_kpCartesian_hr[i];
+        this->_data->_legController->commands[2].kdCartesian(i, i) =
+            this->_data->userParameters->sim_kdCartesian_hr[i];
+
+        this->_data->_legController->commands[3].kpCartesian(i, i) =
+            this->_data->userParameters->sim_kpCartesian_hl[i];
+        this->_data->_legController->commands[3].kdCartesian(i, i) =
+            this->_data->userParameters->sim_kdCartesian_hl[i];
+      }
+    } else {  // real robot
+      for (int i = 0; i < 3; i++) {
+        this->_data->_legController->commands[0].kpCartesian(i, i) =
+            this->_data->userParameters->real_kpCartesian_fr[i];
+        this->_data->_legController->commands[0].kdCartesian(i, i) =
+            this->_data->userParameters->real_kdCartesian_fr[i];
+
+        this->_data->_legController->commands[1].kpCartesian(i, i) =
+            this->_data->userParameters->real_kpCartesian_fl[i];
+        this->_data->_legController->commands[1].kdCartesian(i, i) =
+            this->_data->userParameters->real_kdCartesian_fl[i];
+
+        this->_data->_legController->commands[2].kpCartesian(i, i) =
+            this->_data->userParameters->real_kpCartesian_hr[i];
+        this->_data->_legController->commands[2].kdCartesian(i, i) =
+            this->_data->userParameters->real_kdCartesian_hr[i];
+
+        this->_data->_legController->commands[3].kpCartesian(i, i) =
+            this->_data->userParameters->real_kpCartesian_hl[i];
+        this->_data->_legController->commands[3].kdCartesian(i, i) =
+            this->_data->userParameters->real_kdCartesian_hl[i];
+      }
     }
-    for(int i = 2; i < 4; i++) {
-      this->_data->_legController->commands[i].kpCartesian = Vec3<T>(800, 500, 250).asDiagonal();
-      this->_data->_legController->commands[i].kdCartesian = Vec3<T>(10, 8, 8).asDiagonal();
-    }
-    for(int i = 0; i < 4; i++) {
+
+    for (int i = 0; i < 4; i++) {
       this->_data->_legController->commands[i].pDes = _ini_foot_pos[i];
-      this->_data->_legController->commands[i].pDes[2] = 
-        progress*(-hMax) + (1. - progress) * _ini_foot_pos[i][2];
+      this->_data->_legController->commands[i].pDes[2] =
+          progress * (-hMax) + (1. - progress) * _ini_foot_pos[i][2];
     }
   }
 }
@@ -92,10 +148,9 @@ FSM_StateName FSM_State_StandUp<T>::checkTransition() {
       this->nextStateName = FSM_StateName::LOCOMOTION;
       break;
 
-    // case K_VISION:
-    //   this->nextStateName = FSM_StateName::VISION;
-    //   break;
-
+      // case K_VISION:
+      //   this->nextStateName = FSM_StateName::VISION;
+      //   break;
 
     case K_PASSIVE:  // normal c
       this->nextStateName = FSM_StateName::PASSIVE;
@@ -133,10 +188,9 @@ TransitionData<T> FSM_State_StandUp<T>::transition() {
       this->transitionData.done = true;
       break;
 
-    // case FSM_StateName::VISION:
-    //   this->transitionData.done = true;
-    //   break;
-
+      // case FSM_StateName::VISION:
+      //   this->transitionData.done = true;
+      //   break;
 
     default:
       std::cout << "[CONTROL FSM] Something went wrong in transition"

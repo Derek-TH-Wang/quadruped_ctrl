@@ -47,15 +47,13 @@ class RobotBridge {
  */
 class MiniCheetahRobotBridge : public RobotBridge {
  public:
-  MiniCheetahRobotBridge(RobotController* rc, std::string runningType, std::string actuatorMode);
+  MiniCheetahRobotBridge(RobotController* rc);
   bool GetParmFromFile();
   bool InitRobot();
   void Run();
 
  private:
   VectorNavData _vectorNavData;
-  std::string _runningType = "sim";
-  std::string _actuatorMode = "torque";
   double _actuatorCompensate[12] = {-1.0, 1.0,  1.0,  1.0, 1.0,  1.0,
                                     -1.0, -1.0, -1.0, 1.0, -1.0, -1.0};
   double _initRobotJointPos[12] = {0.0, -0.8, 1.75,  0.0, -0.8, 1.75,

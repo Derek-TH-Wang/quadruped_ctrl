@@ -22,6 +22,10 @@ class RobotControlParameters : public ControlParameters {
    */
   RobotControlParameters()
       : ControlParameters("robot-parameters"),
+        INIT_PARAMETER(robot_select),
+        INIT_PARAMETER(running_type),
+        INIT_PARAMETER(actuator_mode),
+
         INIT_PARAMETER(myValue),
         INIT_PARAMETER(control_mode),
         INIT_PARAMETER(testValue),
@@ -40,6 +44,10 @@ class RobotControlParameters : public ControlParameters {
         INIT_PARAMETER(foot_sensor_noise_velocity),
         INIT_PARAMETER(foot_height_sensor_noise),
         INIT_PARAMETER(use_rc){}
+
+  DECLARE_PARAMETER(s64, robot_select)
+  DECLARE_PARAMETER(s64, running_type)
+  DECLARE_PARAMETER(s64, actuator_mode)
 
   DECLARE_PARAMETER(double, myValue)
   DECLARE_PARAMETER(double, control_mode)

@@ -1,6 +1,10 @@
 # Generated on Sat Feb  9 13:18:45 2019
 __collection-name__: robot-parameters
 
+robot_select: 0 # 0: quadruped robot
+running_type: 0 # 0: sim, 1:real
+actuator_mode: 0 # 0:torque, 1:position
+
 controller_dt     : 0.002 #0.002
 control_mode      : 0
 myValue           : 2222

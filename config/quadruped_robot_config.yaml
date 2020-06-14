@@ -1,5 +1,0 @@
-main_parm:
-  robot_select: MINI_CHEETAH
-  running_type: sim
-  actuator_mode: torque
-  

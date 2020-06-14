@@ -1,5 +1,4 @@
 <launch>
-        <rosparam command="load" file="$(find quadruped_robot)/config/quadruped_robot_config.yaml"/>
 
         <node name="quadruped_ctrl" pkg="quadruped_robot" type="quadruped_ctrl" respawn="false" output="screen"/>
 
