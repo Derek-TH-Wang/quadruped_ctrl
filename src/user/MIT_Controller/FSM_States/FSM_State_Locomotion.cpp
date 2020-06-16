@@ -262,6 +262,11 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     vDes_backup[leg] = this->_data->_legController->commands[leg].vDes;
     Kp_backup[leg] = this->_data->_legController->commands[leg].kpCartesian;
     Kd_backup[leg] = this->_data->_legController->commands[leg].kdCartesian;
+    // std::cout << "leg = " << leg << std::endl;
+    // std::cout << "pDes = " << this->_data->_legController->commands[leg].pDes << std::endl;
+    // std::cout << "vDes = " << this->_data->_legController->commands[leg].vDes << std::endl;
+    // std::cout << "kpCartesian = " << this->_data->_legController->commands[leg].kpCartesian << std::endl;
+    // std::cout << "kdCartesian = " << this->_data->_legController->commands[leg].kdCartesian << std::endl;
   }
 
   if(this->_data->userParameters->use_wbc > 0.9){
@@ -286,6 +291,11 @@ void FSM_State_Locomotion<T>::LocomotionControlStep() {
     this->_data->_legController->commands[leg].vDes = vDes_backup[leg];
     //this->_data->_legController->commands[leg].kpCartesian = Kp_backup[leg];
     this->_data->_legController->commands[leg].kdCartesian = Kd_backup[leg];
+    // std::cout << "leg1 = " << leg << std::endl;
+    // std::cout << "pDes1 = " << this->_data->_legController->commands[leg].pDes << std::endl;
+    // std::cout << "vDes 1= " << this->_data->_legController->commands[leg].vDes << std::endl;
+    // std::cout << "kpCartesian1 = " << this->_data->_legController->commands[leg].kpCartesian << std::endl;
+    // std::cout << "kdCartesian1 = " << this->_data->_legController->commands[leg].kdCartesian << std::endl;
   }
 
 }

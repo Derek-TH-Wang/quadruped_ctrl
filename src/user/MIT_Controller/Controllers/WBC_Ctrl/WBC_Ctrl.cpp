@@ -7,12 +7,34 @@ WBC_Ctrl<T>::WBC_Ctrl(FloatingBaseModel<T> model):
   _full_config(cheetah::num_act_joint + 7),
   _tau_ff(cheetah::num_act_joint),
   _des_jpos(cheetah::num_act_joint),
-    //delete lcm
   _des_jvel(cheetah::num_act_joint)
-  // _wbcLCM(getLcmUrl(255))
 {
   _iter = 0;
   _full_config.setZero();
+  _tau_ff.setZero();
+  _des_jpos.setZero();
+  _des_jvel.setZero();
+  
+  std::cout << "_tau_ff0 = ";
+  for (int i = 0; i < 12; i++) {
+    std::cout << _tau_ff[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "_des_jpos = ";
+  for (int i = 0; i < 12; i++) {
+    std::cout << _des_jpos[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "_des_jvel = ";
+  for (int i = 0; i < 12; i++) {
+    std::cout << _des_jvel[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "_full_config = ";
+  for (int i = 0; i < 17; i++) {
+    std::cout << _full_config[i] << " ";
+  }
+  std::cout << std::endl;
 
   _model = model;
   _kin_wbc = new KinWBC<T>(cheetah::dim_config);
@@ -64,6 +86,10 @@ void WBC_Ctrl<T>::_ComputeWBC() {
 
   // WBIC
   _wbic->UpdateSetting(_A, _Ainv, _coriolis, _grav);
+  // std::cout << "_A = " << _A << std::endl;
+  // std::cout << "_Ainv = " << _Ainv << std::endl;
+  // std::cout << "_coriolis = " << _coriolis << std::endl;
+  // std::cout << "_grav = " << _grav << std::endl;
   _wbic->MakeTorque(_tau_ff, _wbic_data);
 }
 
@@ -157,6 +183,9 @@ void WBC_Ctrl<T>::_UpdateModel(const StateEstimate<T> & state_est,
       _full_config[3*leg + i + 6] = _state.q[3*leg + i];
     }
   }
+  // std::cout << "_state.bodyOrientation = " << _state.bodyOrientation << std::endl;
+  // std::cout << "_state.bodyPosition = " << _state.bodyPosition << std::endl;
+  // std::cout << "_state.bodyVelocity = " << _state.bodyVelocity << std::endl;
   _model.setState(_state);
 
   _model.contactJacobians();

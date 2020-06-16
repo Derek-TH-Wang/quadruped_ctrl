@@ -37,7 +37,9 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
     _SetInEqualityConstraint();
     WB::_WeightedInverse(_Jc, WB::Ainv_, JcBar);
     qddot_pre = JcBar * (-_JcDotQdot);
+    // std::cout << "qddot_pre1 = " << qddot_pre << std::endl;
     Npre = _eye - JcBar * _Jc;
+    //  pretty_print(_Jc, std::cout, "_Jc");
     // pretty_print(JcBar, std::cout, "JcBar");
     // pretty_print(_JcDotQdot, std::cout, "JcDotQdot");
     // pretty_print(qddot_pre, std::cout, "qddot 1");
@@ -61,7 +63,12 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
     JtPre = Jt * Npre;
     WB::_WeightedInverse(JtPre, WB::Ainv_, JtBar);
 
+    // std::cout << "JtBar = " << JtBar << std::endl;
+    // std::cout << "xddot = " << xddot << std::endl;
+    // std::cout << "JtDotQdot = " << JtDotQdot << std::endl;
+    // std::cout << "Jt = " << Jt << std::endl;
     qddot_pre += JtBar * (xddot - JtDotQdot - Jt * qddot_pre);
+    // std::cout << "qddot_pre3 = " << qddot_pre << std::endl;
     Npre = Npre * (_eye - JtBar * JtPre);
 
     // pretty_print(xddot, std::cout, "xddot");
@@ -74,6 +81,7 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
 
   // Set equality constraints
   _SetEqualityConstraint(qddot_pre);
+  // std::cout << "qddot_pre4 = " << qddot_pre << std::endl;
 
   // printf("G:\n");
   // std::cout<<G<<std::endl;
@@ -87,8 +95,18 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
   (void)f;
 
   // pretty_print(qddot_pre, std::cout, "qddot_cmd");
+  std::cout << "cmd1 = ";
+  for (int i = 0; i < 12; i++) {
+    std::cout << cmd[i] << " ";
+  }
+  std::cout << std::endl;
   for (size_t i(0); i < _dim_floating; ++i) qddot_pre[i] += z[i];
   _GetSolution(qddot_pre, cmd);
+  std::cout << "cmd2 = ";
+  for (int i = 0; i < 12; i++) {
+    std::cout << cmd[i] << " ";
+  }
+  std::cout << std::endl;
 
   _data->_opt_result = DVec<T>(_dim_opt);
   for (size_t i(0); i < _dim_opt; ++i) {

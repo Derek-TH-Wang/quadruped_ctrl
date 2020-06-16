@@ -14,7 +14,12 @@ class Task {
         op_cmd_(dim),
         pos_err_(dim),
         vel_des_(dim),
-        acc_des_(dim) {}
+        acc_des_(dim) {
+          op_cmd_.setZero();
+          pos_err_.setZero();
+          vel_des_.setZero();
+          acc_des_.setZero();
+        }
 
   virtual ~Task() {}
 

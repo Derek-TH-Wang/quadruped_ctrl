@@ -7,6 +7,7 @@
 
 #include "Math/Interpolation.h"
 #include "Controllers/FootSwingTrajectory.h"
+#include <iostream>
 
 /*!
  * Compute foot swing trajectory with a bezier curve
@@ -16,6 +17,10 @@
 template <typename T>
 void FootSwingTrajectory<T>::computeSwingTrajectoryBezier(T phase, T swingTime) {
   _p = Interpolate::cubicBezier<Vec3<T>>(_p0, _pf, phase);
+  //   std::cout << "p = " << _p << std::endl;
+  // std::cout << "v = " << _v << std::endl;
+  //   std::cout << "_p0 = " << _p0 << std::endl;
+  // std::cout << "_pf = " << _pf << std::endl;
   _v = Interpolate::cubicBezierFirstDerivative<Vec3<T>>(_p0, _pf, phase) / swingTime;
   _a = Interpolate::cubicBezierSecondDerivative<Vec3<T>>(_p0, _pf, phase) / (swingTime * swingTime);
 

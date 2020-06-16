@@ -80,24 +80,39 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
 template <typename T>
 void LegController<T>::updateGetRobotData(RobotData* robotData) {
   int tempLeg;
+  double quadruped2MIT[3];
+
   for (int leg = 0; leg < 4; leg++) {
     if (leg == 0) {
       tempLeg = 2;
+      quadruped2MIT[0] = -1.0;
+      quadruped2MIT[1] = -1.0;
+      quadruped2MIT[2] = -1.0;
     } else if (leg == 1) {
       tempLeg = 0;
+      quadruped2MIT[0] = -1.0;
+      quadruped2MIT[1] =  1.0;
+      quadruped2MIT[2] =  1.0;
     } else if (leg == 2) {
       tempLeg = 3;
+      quadruped2MIT[0] =  1.0;
+      quadruped2MIT[1] = -1.0;
+      quadruped2MIT[2] = -1.0;
     } else if (leg == 3) {
       tempLeg = 1;
+      quadruped2MIT[0] =  1.0;
+      quadruped2MIT[1] =  1.0;
+      quadruped2MIT[2] =  1.0;
     }
     // q:
-    datas[leg].q(0) = robotData->getJointPos[tempLeg * 3 + 0];
-    datas[leg].q(1) = robotData->getJointPos[tempLeg * 3 + 1];
-    datas[leg].q(2) = robotData->getJointPos[tempLeg * 3 + 2];
+    datas[leg].q(0) = robotData->getJointPos[tempLeg * 3 + 0] * quadruped2MIT[0];
+    datas[leg].q(1) = robotData->getJointPos[tempLeg * 3 + 1] * quadruped2MIT[1];
+    datas[leg].q(2) = robotData->getJointPos[tempLeg * 3 + 2] * quadruped2MIT[2];
     // qd
-    datas[leg].qd(0) = robotData->getJointVel[tempLeg * 3 + 0];
-    datas[leg].qd(1) = robotData->getJointVel[tempLeg * 3 + 1];
-    datas[leg].qd(2) = robotData->getJointVel[tempLeg * 3 + 2];
+    datas[leg].qd(0) = robotData->getJointVel[tempLeg * 3 + 0] * quadruped2MIT[0];
+    datas[leg].qd(1) = robotData->getJointVel[tempLeg * 3 + 1] * quadruped2MIT[1];
+    datas[leg].qd(2) = robotData->getJointVel[tempLeg * 3 + 2] * quadruped2MIT[2];
+
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
                                      &(datas[leg].p), leg);
@@ -117,6 +132,9 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     // forceFF
     Vec3<T> footForce = commands[leg].forceFeedForward;
 
+    // std::cout << leg << " legTorque = " << legTorque(0, 0) << " " << legTorque(1,0) << " "
+    //           << legTorque(2,0) << std::endl;
+
     // cartesian PD
     footForce +=
         commands[leg].kpCartesian * (commands[leg].pDes - datas[leg].p);
@@ -125,21 +143,41 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
 
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
-    if (leg == 0) {
-      // std::cout << "J: \n" << datas[leg].J.transpose() << std::endl;
-      // std::cout << "footForce = " << footForce(0, 0) << " " << footForce(1,
+
+    //derektodo: 
+    // for (int i=0; i<3; i++) {
+    //   if(legTorque[i] > 10) {
+    //     legTorque[i] = 10;
+    //   }
+    //   if(legTorque[i] < -10) {
+    //     legTorque[i] = -10;
+    //   }
+    // }
+
+    // if (footForce(0, 0) != 0 && footForce(1, 0) != 0 && footForce(2, 0) != 0)
+    {
+      std::cout << leg << std::endl;
+      // std::cout << "tauFeedForward = " << commands[leg].tauFeedForward(0, 0)
+      //           << " " << commands[leg].tauFeedForward(1, 0) << " "
+      //           << commands[leg].tauFeedForward(2, 0) << std::endl;
+      // std::cout << "commands[" << leg << "].pDes = " << commands[leg].pDes(0,
       // 0)
-      //           << " " << footForce(2, 0) << std::endl;
-      // std::cout << "commands[leg].pDes = " << commands[leg].pDes(0, 0) << " "
-      //           << commands[leg].pDes(1, 0) << " " << commands[leg].pDes(2,
-      //           0)
-      //           << std::endl;
-      // // std::cout << leg << " commands[leg].vDes = " << commands[leg].vDes
-      // <<
-      // // std::endl;
-      // std::cout << "legTorque1 = " << legTorque(0, 0) << " " << legTorque(1,
+      //           << " " << commands[leg].pDes(1, 0) << " "
+      //           << commands[leg].pDes(2, 0) << std::endl;
+      // std::cout << "commands[" << leg << "].vDes = " << commands[leg].vDes(0,
       // 0)
-      //           << " " << legTorque(2, 0) << std::endl;
+      //           << " " << commands[leg].vDes(1, 0) << " "
+      //           << commands[leg].vDes(2, 0) << std::endl;
+      // std::cout << "commands[" << leg
+      //           << "].kpCartesian = " << commands[leg].kpCartesian(0, 0) << " "
+      //           << commands[leg].kpCartesian(1, 1) << " "
+      //           << commands[leg].kpCartesian(2, 2) << std::endl;
+      // std::cout << "commands[" << leg
+      //           << "].kdCartesian = " << commands[leg].kdCartesian(0, 0) << " "
+      //           << commands[leg].kdCartesian(1, 1) << " "
+      //           << commands[leg].kdCartesian(2, 2) << std::endl;
+      std::cout << " legTorque = " << legTorque(0, 0) << " " << legTorque(1,0) << " "
+              << legTorque(2,0) << std::endl;
     }
 
     // trans to real robot order

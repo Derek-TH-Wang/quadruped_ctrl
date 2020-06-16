@@ -61,6 +61,7 @@ LinearKFPositionVelocityEstimator<T>::LinearKFPositionVelocityEstimator() {}
  */
 template <typename T>
 void LinearKFPositionVelocityEstimator<T>::run() {
+    // std::cout << "_xhat0 = " << _xhat << std::endl;
     // ROS_DEBUG("pos");
   T process_noise_pimu =
       this->_stateEstimatorData.parameters->imu_process_noise_position;
@@ -95,12 +96,14 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   Mat3<T> Rbod = this->_stateEstimatorData.result->rBody.transpose();
   // in old code, Rbod * se_acc + g
   Vec3<T> a = this->_stateEstimatorData.result->aWorld + g; 
-  // std::cout << "A WORLD\n" << a << "\n";
+//   std::cout << "this->_stateEstimatorData.result->aWorld\n" << this->_stateEstimatorData.result->aWorld << "\n";
+//   std::cout << "A WORLD\n" << a << "\n";
   Vec4<T> pzs = Vec4<T>::Zero();
   Vec4<T> trusts = Vec4<T>::Zero();
   Vec3<T> p0, v0;
   p0 << _xhat[0], _xhat[1], _xhat[2];
   v0 << _xhat[3], _xhat[4], _xhat[5];
+//   std::cout << "_xhat1 = " << _xhat << std::endl;
 
   for (int i = 0; i < 4; i++) {
     int i1 = 3 * i;
@@ -149,9 +152,13 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     _vs.segment(i1, 3) = (1.0f - trust) * v0 + trust * (-dp_f);
     pzs(i) = (1.0f - trust) * (p0(2) + p_f(2));
   }
+//   std::cout << "_xhat2 = " << _xhat << std::endl;
 
   Eigen::Matrix<T, 28, 1> y;
   y << _ps, _vs, pzs;
+//   std::cout << "A = " << _A  << std::endl;
+//   std::cout << "B = " << _B  << std::endl;
+//   std::cout << "a = " << a  << std::endl;
   _xhat = _A * _xhat + _B * a;
   Eigen::Matrix<T, 18, 18> At = _A.transpose();
   Eigen::Matrix<T, 18, 18> Pm = _A * _P * At + Q;
@@ -159,11 +166,11 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   Eigen::Matrix<T, 28, 1> yModel = _C * _xhat;
   Eigen::Matrix<T, 28, 1> ey = y - yModel;
   Eigen::Matrix<T, 28, 28> S = _C * Pm * Ct + R;
-
+    // std::cout << "_xhat3 = " << _xhat << std::endl;
   // todo compute LU only once
   Eigen::Matrix<T, 28, 1> S_ey = S.lu().solve(ey);
   _xhat += Pm * Ct * S_ey;
-
+    // std::cout << "_xhat4 = " << _xhat << std::endl;
   Eigen::Matrix<T, 28, 18> S_C = S.lu().solve(_C);
   _P = (Eigen::Matrix<T, 18, 18>::Identity() - Pm * Ct * S_C) * Pm;
 
@@ -177,6 +184,7 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   }
 
   this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
+//   std::cout << "this->_stateEstimatorData.result->position = " << this->_stateEstimatorData.result->position << std::endl;
   this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
   this->_stateEstimatorData.result->vBody =
       this->_stateEstimatorData.result->rBody *

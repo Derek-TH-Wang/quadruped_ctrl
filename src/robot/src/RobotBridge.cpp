@@ -38,6 +38,11 @@ MiniCheetahRobotBridge::MiniCheetahRobotBridge(RobotController *robot_ctrl)
   robotGaitType = n.advertiseService(
       "gait_type", &MiniCheetahRobotBridge::ServiceGaitType, this);
   jointCtrlMode = n.serviceClient<quadruped_robot::QuadrupedCmd>("set_jm");
+  sleep(1);
+  ros::spinOnce();
+  ros::spinOnce();
+  ros::spinOnce();
+  ROS_WARN("RobotBridge");
 }
 
 void MiniCheetahRobotBridge::SubJS(const sensor_msgs::JointState &msg) {
@@ -264,11 +269,18 @@ void MiniCheetahRobotBridge::Run() {
           _setJsMsg.effort[i] =
               _robotData.setJointTau[i] * _actuatorCompensate[i];
         }
-        std::cout << "effort = ";
-        for (int i = 0; i < 12; i++) {
-          std::cout << _setJsMsg.effort[i] << " ";
+        if (_setJsMsg.effort[0] != 0) {
+          // std::cout << "effort = ";
+          // for (int i = 0; i < 12; i++) {
+          //   std::cout << _setJsMsg.effort[i] << " ";
+          // }
+          // std::cout << std::endl;
+          // std::cout << "pos = ";
+          // for (int i = 0; i < 12; i++) {
+          //   std::cout << _robotData.setJointPos[i] << " ";
+          // }
+          // std::cout << std::endl;
         }
-        std::cout << std::endl;
         jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data

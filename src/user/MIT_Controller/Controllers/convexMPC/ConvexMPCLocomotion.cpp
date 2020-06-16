@@ -204,6 +204,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 
 
   for(int i = 0; i < 4; i++) {
+    // std::cout << "seResult.position = " << seResult.position << std::endl;
+    // std::cout << "data._quadruped->getHipLocation(i) = " << data._quadruped->getHipLocation(i) << std::endl;
+    // std::cout << "data._legController->datas[i].p = " << data._legController->datas[i].p << std::endl;
     pFoot[i] = seResult.position + 
       seResult.rBody.transpose() * (data._quadruped->getHipLocation(i) + 
           data._legController->datas[i].p);
@@ -333,7 +336,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     }
   }
 #endif
-
+  // std::cout << "swingStates[foot] = " << swingStates << std::endl;
   for(int foot = 0; foot < 4; foot++)
   {
     float contactState = contactStates[foot];
@@ -373,6 +376,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
       goalSphere->color = {0.2, 1, 0.2, 0.7};
       actualSphere->color = {0.8, 0.2, 0.2, 0.7};
 #endif
+      // std::cout << "swingState = " << swingState << " swingTimes[foot] = " << swingTimes[foot] << std::endl;
       footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState, swingTimes[foot]);
 
 
@@ -382,9 +386,14 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
 
       Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
       Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
+      // std::cout << "pDesFootWorld = " << footSwingTrajectories[foot].getPosition() << " vDesFootWorld = " << footSwingTrajectories[foot].getVelocity() << std::endl;
       Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) 
         - data._quadruped->getHipLocation(foot);
       Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
+      // std::cout << "1pDes = " << pDesLeg << std::endl;
+      // std::cout << "1vDes = " << vDesLeg << std::endl;
+      // std::cout << "1kpCartesian = " << Kp << std::endl;
+      // std::cout << "1kdCartesian = " << Kd << std::endl;
 
       // Update for WBC
       pFoot_des[foot] = pDesFootWorld;
@@ -433,6 +442,11 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         data._legController->commands[foot].vDes = vDesLeg;
         data._legController->commands[foot].kpCartesian = 0.*Kp_stance;
         data._legController->commands[foot].kdCartesian = Kd_stance;
+        // std::cout << "foot = " << foot << std::endl;
+        // std::cout << "2pDes = " << data._legController->commands[foot].pDes << std::endl;
+        // std::cout << "2vDes = " << data._legController->commands[foot].vDes << std::endl;
+        // std::cout << "2kpCartesian = " << data._legController->commands[foot].kpCartesian << std::endl;
+        // std::cout << "2kdCartesian = " << data._legController->commands[foot].kdCartesian << std::endl;
       }
       //            cout << "Foot " << foot << " force: " << f_ff[foot].transpose() << "\n";
       se_contactState[foot] = contactState;
