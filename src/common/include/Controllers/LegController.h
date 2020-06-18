@@ -87,4 +87,7 @@ template <typename T>
 void computeLegJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat3<T>* J,
                                    Vec3<T>* p, int leg);
 
+template <typename T>
+void computeLegIK(Quadruped<T>& quad, Vec3<T> pDes, Vec3<T>& qDes);
+
 #endif  // PROJECT_LEGCONTROLLER_H

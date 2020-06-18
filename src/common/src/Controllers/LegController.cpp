@@ -91,27 +91,33 @@ void LegController<T>::updateGetRobotData(RobotData* robotData) {
     } else if (leg == 1) {
       tempLeg = 0;
       quadruped2MIT[0] = -1.0;
-      quadruped2MIT[1] =  1.0;
-      quadruped2MIT[2] =  1.0;
+      quadruped2MIT[1] = 1.0;
+      quadruped2MIT[2] = 1.0;
     } else if (leg == 2) {
       tempLeg = 3;
-      quadruped2MIT[0] =  1.0;
+      quadruped2MIT[0] = 1.0;
       quadruped2MIT[1] = -1.0;
       quadruped2MIT[2] = -1.0;
     } else if (leg == 3) {
       tempLeg = 1;
-      quadruped2MIT[0] =  1.0;
-      quadruped2MIT[1] =  1.0;
-      quadruped2MIT[2] =  1.0;
+      quadruped2MIT[0] = 1.0;
+      quadruped2MIT[1] = 1.0;
+      quadruped2MIT[2] = 1.0;
     }
     // q:
-    datas[leg].q(0) = robotData->getJointPos[tempLeg * 3 + 0] * quadruped2MIT[0];
-    datas[leg].q(1) = robotData->getJointPos[tempLeg * 3 + 1] * quadruped2MIT[1];
-    datas[leg].q(2) = robotData->getJointPos[tempLeg * 3 + 2] * quadruped2MIT[2];
+    datas[leg].q(0) =
+        robotData->getJointPos[tempLeg * 3 + 0] * quadruped2MIT[0];
+    datas[leg].q(1) =
+        robotData->getJointPos[tempLeg * 3 + 1] * quadruped2MIT[1];
+    datas[leg].q(2) =
+        robotData->getJointPos[tempLeg * 3 + 2] * quadruped2MIT[2];
     // qd
-    datas[leg].qd(0) = robotData->getJointVel[tempLeg * 3 + 0] * quadruped2MIT[0];
-    datas[leg].qd(1) = robotData->getJointVel[tempLeg * 3 + 1] * quadruped2MIT[1];
-    datas[leg].qd(2) = robotData->getJointVel[tempLeg * 3 + 2] * quadruped2MIT[2];
+    datas[leg].qd(0) =
+        robotData->getJointVel[tempLeg * 3 + 0] * quadruped2MIT[0];
+    datas[leg].qd(1) =
+        robotData->getJointVel[tempLeg * 3 + 1] * quadruped2MIT[1];
+    datas[leg].qd(2) =
+        robotData->getJointVel[tempLeg * 3 + 2] * quadruped2MIT[2];
 
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
@@ -132,7 +138,8 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     // forceFF
     Vec3<T> footForce = commands[leg].forceFeedForward;
 
-    // std::cout << leg << " legTorque = " << legTorque(0, 0) << " " << legTorque(1,0) << " "
+    // std::cout << leg << " legTorque = " << legTorque(0, 0) << " " <<
+    // legTorque(1,0) << " "
     //           << legTorque(2,0) << std::endl;
 
     // cartesian PD
@@ -144,7 +151,18 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     // Torque
     legTorque += datas[leg].J.transpose() * footForce;
 
-    //derektodo: 
+    // qDes
+    for (int leg = 0; leg < 4; leg++) {
+      if (commands[leg].pDes[0] == 0 && commands[leg].pDes[1] == 0 &&
+          commands[leg].pDes[2] == 0) {
+        commands[leg].qDes = datas[leg].q;
+      } else {
+        commands[leg].pDes[2] += 0.003;
+        computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes);
+      }
+    }
+
+    // derektodo:
     // for (int i=0; i<3; i++) {
     //   if(legTorque[i] > 10) {
     //     legTorque[i] = 10;
@@ -156,7 +174,7 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
 
     // if (footForce(0, 0) != 0 && footForce(1, 0) != 0 && footForce(2, 0) != 0)
     {
-      std::cout << leg << std::endl;
+      // std::cout << leg << std::endl;
       // std::cout << "tauFeedForward = " << commands[leg].tauFeedForward(0, 0)
       //           << " " << commands[leg].tauFeedForward(1, 0) << " "
       //           << commands[leg].tauFeedForward(2, 0) << std::endl;
@@ -169,15 +187,20 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
       //           << " " << commands[leg].vDes(1, 0) << " "
       //           << commands[leg].vDes(2, 0) << std::endl;
       // std::cout << "commands[" << leg
-      //           << "].kpCartesian = " << commands[leg].kpCartesian(0, 0) << " "
+      //           << "].kpCartesian = " << commands[leg].kpCartesian(0, 0) << "
+      //           "
       //           << commands[leg].kpCartesian(1, 1) << " "
       //           << commands[leg].kpCartesian(2, 2) << std::endl;
       // std::cout << "commands[" << leg
-      //           << "].kdCartesian = " << commands[leg].kdCartesian(0, 0) << " "
+      //           << "].kdCartesian = " << commands[leg].kdCartesian(0, 0) << "
+      //           "
       //           << commands[leg].kdCartesian(1, 1) << " "
       //           << commands[leg].kdCartesian(2, 2) << std::endl;
-      std::cout << " legTorque = " << legTorque(0, 0) << " " << legTorque(1,0) << " "
-              << legTorque(2,0) << std::endl;
+      // std::cout << " legTorque = " << legTorque(0, 0) << " " <<
+      // legTorque(1,0) << " "
+      //         << legTorque(2,0) << std::endl;
+      // std::cout << "datas[" << leg << "].p = " << datas[leg].q[0] << " " <<
+      // datas[leg].q[1] << " " << datas[leg].q[2] << std::endl;
     }
 
     // trans to real robot order
@@ -203,6 +226,28 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
   }
+
+  // for (int leg = 0; leg < 4; leg++) {
+  //   std::cout << "setp = " << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
+  //             << " " << commands[leg].pDes(2, 0) << " ";
+  // }
+  // std::cout << std::endl;
+  // for (int leg = 0; leg < 4; leg++) {
+  //   std::cout << "getp = " << datas[leg].p(0, 0) << " " << datas[leg].p(1, 0) << " "
+  //             << datas[leg].p(2, 0) << " ";
+  // }
+  // std::cout << std::endl;
+
+  // for (int leg = 0; leg < 4; leg++) {
+  //   std::cout << "setq = " << commands[leg].qDes(0, 0) << " " << commands[leg].qDes(1, 0)
+  //             << " " << commands[leg].qDes(2, 0) << " ";
+  // }
+  // std::cout << std::endl;
+  // for (int leg = 0; leg < 4; leg++) {
+  //   std::cout << "getq = " << datas[leg].q(0, 0) << " " << datas[leg].q(1, 0) << " "
+  //             << datas[leg].q(2, 0) << " ";
+  // }
+  // std::cout << std::endl;
 }
 
 constexpr float CHEETAH_3_ZERO_OFFSET[4][3] = {
@@ -272,3 +317,22 @@ template void computeLegJacobianAndPosition<float>(Quadruped<float>& quad,
                                                    Vec3<float>& q,
                                                    Mat3<float>* J,
                                                    Vec3<float>* p, int leg);
+
+template <typename T>
+void computeLegIK(Quadruped<T>& quad, Vec3<T> pDes, Vec3<T>& qDes) {
+  T l1 = quad._abadLinkLength;
+  T l2 = quad._hipLinkLength;
+  T l3 = quad._kneeLinkLength;
+  T tempL = sqrt(pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2]);
+  T tempL23 = sqrt(tempL * tempL - l1 * l1);
+  T angle1 = fabs(
+      acos((l1 * l1 + tempL * tempL - tempL23 * tempL23) / (2 * l1 * tempL)));
+  T tempAngle1 = acos(fabs(pDes[1]) / tempL);
+  qDes[0] = -(angle1 - tempAngle1);
+  T angle2 = fabs(acos((l2 * l2 + tempL * tempL - l3 * l3) / (2 * l2 * tempL)));
+  T tempAngle2 = asin(pDes[0] / tempL);
+  qDes[1] = -(angle2 - tempAngle2);
+  T tempAngle3 =
+      fabs(acos((l2 * l2 + l3 * l3 - tempL * tempL) / (2 * l2 * l3)));
+  qDes[2] = 3.1415926535898 - tempAngle3;
+}

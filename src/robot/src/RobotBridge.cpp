@@ -233,7 +233,8 @@ void MiniCheetahRobotBridge::Run() {
   statusTask.start();
 
   // robot controller start
-  _robotRunner->start();
+  _robotRunner->init();
+  // _robotRunner->start();
 
   // set actuator mode
   if (_robotParams.running_type == 0) {
@@ -250,7 +251,7 @@ void MiniCheetahRobotBridge::Run() {
       exit(1);
     }
     if (jointCtrlMode.call(_setJm)) {
-      ROS_WARN("set JM to current mode");
+      ROS_WARN("set JM mode");
     } else {
       ROS_ERROR("Failed to call JM while setting current mode");
       exit(1);
@@ -261,7 +262,8 @@ void MiniCheetahRobotBridge::Run() {
 
   // main loop
   while (ros::ok()) {
-    usleep(5 * 1000);
+    // usleep(1 * 1000);
+    _robotRunner->run();
     if (_robotParams.actuator_mode == 0) {
       if (_robotParams.running_type == 0) {
         _setJsMsg.header.stamp = ros::Time::now();
@@ -269,18 +271,13 @@ void MiniCheetahRobotBridge::Run() {
           _setJsMsg.effort[i] =
               _robotData.setJointTau[i] * _actuatorCompensate[i];
         }
-        if (_setJsMsg.effort[0] != 0) {
+        // if (_setJsMsg.effort[0] != 0) {
           // std::cout << "effort = ";
           // for (int i = 0; i < 12; i++) {
           //   std::cout << _setJsMsg.effort[i] << " ";
           // }
           // std::cout << std::endl;
-          // std::cout << "pos = ";
-          // for (int i = 0; i < 12; i++) {
-          //   std::cout << _robotData.setJointPos[i] << " ";
-          // }
-          // std::cout << std::endl;
-        }
+        // }
         jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data
@@ -292,7 +289,12 @@ void MiniCheetahRobotBridge::Run() {
           _setJsMsg.position[i] =
               _robotData.setJointPos[i] * _actuatorCompensate[i];
         }
-        // jsPub.publish(_setJsMsg);
+        // std::cout << "q = ";
+        //   for (int i = 0; i < 12; i++) {
+        //     std::cout << _robotData.setJointPos[i] << " ";
+        //   }
+        //   std::cout << std::endl;
+        jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data
       }

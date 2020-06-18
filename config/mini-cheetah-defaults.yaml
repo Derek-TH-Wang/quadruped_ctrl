@@ -3,9 +3,9 @@ __collection-name__: robot-parameters
 
 robot_select: 0 # 0: quadruped robot
 running_type: 0 # 0: sim, 1:real
-actuator_mode: 0 # 0:torque, 1:position
+actuator_mode: 1 # 0:torque, 1:position
 
-controller_dt     : 0.002 #0.002
+controller_dt     : 0.003 #0.002
 control_mode      : 0
 myValue           : 2222
 #stand_kd_cartesian: [11,11,11]

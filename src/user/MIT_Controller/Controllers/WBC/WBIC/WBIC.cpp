@@ -2,6 +2,7 @@
 #include <Utilities/Timer.h>
 #include <eigen3/Eigen/LU>
 #include <eigen3/Eigen/SVD>
+#include <ros/ros.h>
 
   template <typename T>
 WBIC<T>::WBIC(size_t num_qdot, const std::vector<ContactSpec<T>*>* contact_list,
@@ -95,14 +96,22 @@ void WBIC<T>::MakeTorque(DVec<T>& cmd, void* extra_input) {
   (void)f;
 
   // pretty_print(qddot_pre, std::cout, "qddot_cmd");
-  std::cout << "cmd1 = ";
+  ROS_INFO("cmd1 = ");
   for (int i = 0; i < 12; i++) {
     std::cout << cmd[i] << " ";
   }
   std::cout << std::endl;
   for (size_t i(0); i < _dim_floating; ++i) qddot_pre[i] += z[i];
   _GetSolution(qddot_pre, cmd);
-  std::cout << "cmd2 = ";
+  //derektodo:
+  for(int i=0; i<12; i++) {
+    if(cmd[i] > 10) {
+      cmd[i] = 10;
+    } else if(cmd[i] < -10) {
+      cmd[i] = -10;
+    }
+  }
+  ROS_INFO("cmd2 = ");
   for (int i = 0; i < 12; i++) {
     std::cout << cmd[i] << " ";
   }

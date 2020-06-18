@@ -244,6 +244,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   float interleave_gain = -0.2;
   //float v_abs = std::fabs(seResult.vBody[0]);
   float v_abs = std::fabs(v_des_robot[0]);
+
+  Vec3<float> tempPF[4];
+
   for(int i = 0; i < 4; i++)
   {
 
@@ -294,7 +297,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     Pf[2] = -0.003;
     //Pf[2] = 0.0;
     footSwingTrajectories[i].setFinalPosition(Pf);
-
+    tempPF[i] = Pf;
   }
 
   // calc gait
@@ -320,22 +323,6 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   //  StateEstimator* se = hw_i->state_estimator;
   Vec4<float> se_contactState(0,0,0,0);
 
-#ifdef DRAW_DEBUG_PATH
-  auto* trajectoryDebug = data.visualizationData->addPath();
-  if(trajectoryDebug) {
-    trajectoryDebug->num_points = 10;
-    trajectoryDebug->color = {0.2, 0.2, 0.7, 0.5};
-    for(int i = 0; i < 10; i++) {
-      trajectoryDebug->position[i][0] = trajAll[12*i + 3];
-      trajectoryDebug->position[i][1] = trajAll[12*i + 4];
-      trajectoryDebug->position[i][2] = trajAll[12*i + 5];
-      auto* ball = data.visualizationData->addSphere();
-      ball->radius = 0.01;
-      ball->position = trajectoryDebug->position[i];
-      ball->color = {1.0, 0.2, 0.2, 0.5};
-    }
-  }
-#endif
   // std::cout << "swingStates[foot] = " << swingStates << std::endl;
   for(int foot = 0; foot < 4; foot++)
   {
@@ -348,35 +335,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
         firstSwing[foot] = false;
         footSwingTrajectories[foot].setInitialPosition(pFoot[foot]);
       }
-
-#ifdef DRAW_DEBUG_SWINGS
-      auto* debugPath = data.visualizationData->addPath();
-      if(debugPath) {
-        debugPath->num_points = 100;
-        debugPath->color = {0.2,1,0.2,0.5};
-        float step = (1.f - swingState) / 100.f;
-        for(int i = 0; i < 100; i++) {
-          footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState + i * step, swingTimes[foot]);
-          debugPath->position[i] = footSwingTrajectories[foot].getPosition();
-        }
-      }
-      auto* finalSphere = data.visualizationData->addSphere();
-      if(finalSphere) {
-        finalSphere->position = footSwingTrajectories[foot].getPosition();
-        finalSphere->radius = 0.02;
-        finalSphere->color = {0.6, 0.6, 0.2, 0.7};
-      }
-      footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState, swingTimes[foot]);
-      auto* actualSphere = data.visualizationData->addSphere();
-      auto* goalSphere = data.visualizationData->addSphere();
-      goalSphere->position = footSwingTrajectories[foot].getPosition();
-      actualSphere->position = pFoot[foot];
-      goalSphere->radius = 0.02;
-      actualSphere->radius = 0.02;
-      goalSphere->color = {0.2, 1, 0.2, 0.7};
-      actualSphere->color = {0.8, 0.2, 0.2, 0.7};
-#endif
-      // std::cout << "swingState = " << swingState << " swingTimes[foot] = " << swingTimes[foot] << std::endl;
+      // std::cout << foot << ": "<< "swingState = " << swingState << " swingTimes[foot] = " << swingTimes[foot] << std::endl;
+      // std::cout << "p0 = " << pFoot[0][2] << "  " << pFoot[1][2] << " " << pFoot[2][2] << " " << pFoot[3][2] << std::endl;
+      // std::cout << "pf = " << tempPF[0][2] << "  " << tempPF[1][2] << " " << tempPF[2][2] << " " << tempPF[3][2] << std::endl;
       footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState, swingTimes[foot]);
 
 
@@ -412,18 +373,14 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     {
       firstSwing[foot] = true;
 
-#ifdef DRAW_DEBUG_SWINGS
-      auto* actualSphere = data.visualizationData->addSphere();
-      actualSphere->position = pFoot[foot];
-      actualSphere->radius = 0.02;
-      actualSphere->color = {0.2, 0.2, 0.8, 0.7};
-#endif
-
       Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
       Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
       Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) - data._quadruped->getHipLocation(foot);
       Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
       //cout << "Foot " << foot << " relative velocity desired: " << vDesLeg.transpose() << "\n";
+
+      // std::cout << foot << " pDesFootWorld = " << pDesFootWorld[0] << " " << pDesFootWorld[1] << " " << pDesFootWorld[2] << std::endl;
+      // std::cout << foot << " seResult.position = " << seResult.position[0] << " " << seResult.position[1] << " " << seResult.position[2] << std::endl;
 
       if(!data.userParameters->use_wbc){
         data._legController->commands[foot].pDes = pDesLeg;
