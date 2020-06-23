@@ -1,16 +1,16 @@
 # quadruped_robot
 
-###MIT mini cheetah simulation in pybullet
+### MIT mini cheetah simulation in pybullet
 
-###System requirements:
+### System requirements:
 Ubuntu 19.04, ROS Mellodic  
 
-###Dependency:
+### Dependency:
 ```
 git clone https://github.com/Derek-TH-Wang/cheetah.git
 ```
 
-###Running:
+### Running:
 ```
 rosrun cheetah QuadListener.py
 roslaunch quadruped_robot quadruped_robot.launch
