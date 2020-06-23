@@ -29,6 +29,7 @@ class RobotControlParameters : public ControlParameters {
         INIT_PARAMETER(myValue),
         INIT_PARAMETER(control_mode),
         INIT_PARAMETER(testValue),
+        INIT_PARAMETER(control_freq),
         INIT_PARAMETER(controller_dt),
         INIT_PARAMETER(stand_kp_cartesian),
         INIT_PARAMETER(stand_kd_cartesian),
@@ -52,6 +53,7 @@ class RobotControlParameters : public ControlParameters {
   DECLARE_PARAMETER(double, myValue)
   DECLARE_PARAMETER(double, control_mode)
   DECLARE_PARAMETER(double, testValue)
+  DECLARE_PARAMETER(double, control_freq)
   DECLARE_PARAMETER(double, controller_dt)
   DECLARE_PARAMETER(Vec3<double>, stand_kp_cartesian)
   DECLARE_PARAMETER(Vec3<double>, stand_kd_cartesian)

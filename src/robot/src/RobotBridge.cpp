@@ -261,6 +261,7 @@ void MiniCheetahRobotBridge::Run() {
   }
 
   // main loop
+  ros::Rate r(_robotParams.control_freq);
   while (ros::ok()) {
     // usleep(1 * 1000);
     _robotRunner->run();
@@ -272,11 +273,11 @@ void MiniCheetahRobotBridge::Run() {
               _robotData.setJointTau[i] * _actuatorCompensate[i];
         }
         // if (_setJsMsg.effort[0] != 0) {
-          // std::cout << "effort = ";
-          // for (int i = 0; i < 12; i++) {
-          //   std::cout << _setJsMsg.effort[i] << " ";
-          // }
-          // std::cout << std::endl;
+        // std::cout << "effort = ";
+        // for (int i = 0; i < 12; i++) {
+        //   std::cout << _setJsMsg.effort[i] << " ";
+        // }
+        // std::cout << std::endl;
         // }
         jsPub.publish(_setJsMsg);
       } else {
@@ -290,16 +291,17 @@ void MiniCheetahRobotBridge::Run() {
               _robotData.setJointPos[i] * _actuatorCompensate[i];
         }
         // std::cout << "q = ";
-        //   for (int i = 0; i < 12; i++) {
-        //     std::cout << _robotData.setJointPos[i] << " ";
-        //   }
-        //   std::cout << std::endl;
+        // for (int i = 0; i < 12; i++) {
+        //   std::cout << _robotData.setJointPos[i] << " ";
+        // }
+        // std::cout << std::endl;
         jsPub.publish(_setJsMsg);
       } else {
         // derektodo: sdk set data
       }
     }
     ros::spinOnce();
+    r.sleep();
   }
   ROS_WARN("exit main loop");
 }

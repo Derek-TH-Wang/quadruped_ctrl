@@ -251,13 +251,13 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
   }
 
   for (int leg = 0; leg < 4; leg++) {
-    // std::cout << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
-    //           << " " << commands[leg].pDes(2, 0) << " ";
+    std::cout << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
+              << " " << commands[leg].pDes(2, 0) << " ";
     // std::cout << commands[leg].forceFeedForward[0] << " "
     //           << commands[leg].forceFeedForward[1] << " "
     //           << commands[leg].forceFeedForward[2] << " ";
   }
-  // std::cout << std::endl;
+  std::cout << std::endl;
   // for (int leg = 0; leg < 4; leg++) {
   //   std::cout << "getp = " << datas[leg].p(0, 0) << " " << datas[leg].p(1, 0)
   //   << " "

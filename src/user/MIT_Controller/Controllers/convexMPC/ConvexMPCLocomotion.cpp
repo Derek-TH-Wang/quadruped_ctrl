@@ -1,7 +1,8 @@
 #include <iostream>
 #include <Utilities/Timer.h>
 #include <Utilities/Utilities_print.h>
-
+// #include <stdio.h>
+// #include <sys/time.h>
 #include "ConvexMPCLocomotion.h"
 #include "convexMPC_interface.h"
 #include "../../../../common/include/GraphSearch.h"
@@ -328,7 +329,11 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   Vec4<float> contactStates = gait->getContactState();
   Vec4<float> swingStates = gait->getSwingState();
   int* mpcTable = gait->getMpcTable();
-  updateMPCIfNeeded(mpcTable, data, omniMode);
+
+  if(data.controlParameters->actuator_mode == 0) 
+  { // save time. 20+ms per 6 period
+    updateMPCIfNeeded(mpcTable, data, omniMode);
+  }
 
   //  StateEstimator* se = hw_i->state_estimator;
   Vec4<float> se_contactState(0,0,0,0);
@@ -460,6 +465,8 @@ void ConvexMPCLocomotion::run(ControlFSMData<double>& data) {
 }
 
 void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float> &data, bool omniMode) {
+  // int lastT, currT;
+  // struct timeval tv;
   //iterationsBetweenMPC = 30;
   if((iterationCounter % iterationsBetweenMPC) == 0)
   {
@@ -549,13 +556,17 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, ControlFSMData<float>
       // std::cout << std::endl;
     }
     Timer solveTimer;
-
+// gettimeofday(&tv, NULL);
+// lastT = tv.tv_sec * 1000 + tv.tv_usec / 1000;
     if(_parameters->cmpc_use_sparse > 0.5) {
       solveSparseMPC(mpcTable, data);
     } else {
       solveDenseMPC(mpcTable, data);
     }
     //printf("TOTAL SOLVE TIME: %.3f\n", solveTimer.getMs());
+// gettimeofday(&tv, NULL);
+// currT = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+// printf("t:%ld \n", currT - lastT);
   }
 
 }
