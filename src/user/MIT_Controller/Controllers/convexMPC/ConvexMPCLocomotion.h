@@ -154,7 +154,7 @@ private:
   float x_comp_integral = 0;
   Vec3<float> pFoot[4];
   CMPC_Result<float> result;
-  float trajAll[12*36];
+  float trajAll[12*36] = {0.0};
 
   MIT_UserParameters* _parameters = nullptr;
   CMPC_Jump jump_state;

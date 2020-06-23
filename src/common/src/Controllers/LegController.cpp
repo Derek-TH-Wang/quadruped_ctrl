@@ -118,7 +118,7 @@ void LegController<T>::updateGetRobotData(RobotData* robotData) {
         robotData->getJointVel[tempLeg * 3 + 1] * quadruped2MIT[1];
     datas[leg].qd(2) =
         robotData->getJointVel[tempLeg * 3 + 2] * quadruped2MIT[2];
-
+    // std::cout << "robotData->getJointPos = " << datas[leg].q << std::endl;
     // J and p
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
                                      &(datas[leg].p), leg);
@@ -138,9 +138,8 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     // forceFF
     Vec3<T> footForce = commands[leg].forceFeedForward;
 
-    // std::cout << leg << " legTorque = " << legTorque(0, 0) << " " <<
-    // legTorque(1,0) << " "
-    //           << legTorque(2,0) << std::endl;
+    // std::cout << leg << " legTorque = " << legTorque(0, 0) << " "
+    //           << legTorque(1, 0) << " " << legTorque(2, 0) << std::endl;
 
     // cartesian PD
     footForce +=
@@ -152,15 +151,39 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     legTorque += datas[leg].J.transpose() * footForce;
 
     // qDes
-    for (int leg = 0; leg < 4; leg++) {
-      if (commands[leg].pDes[0] == 0 && commands[leg].pDes[1] == 0 &&
-          commands[leg].pDes[2] == 0) {
-        commands[leg].qDes = datas[leg].q;
-      } else {
-        commands[leg].pDes[2] += 0.003;
-        computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes);
-      }
+    // for (int leg = 0; leg < 4; leg++) {
+    if (commands[leg].pDes[0] == 0 && commands[leg].pDes[1] == 0 &&
+        commands[leg].pDes[2] == 0) {
+      commands[leg].qDes = datas[leg].q;
+      // std::cout << "1datas[leg].q = " << datas[leg].q << std::endl;
+    } else {
+      commands[leg].pDes[2] += 0.01;
+      computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes);
     }
+
+    // double leg0, leg1, leg2, leg3;
+    // int changeValue = 0;
+
+    // leg0 = commands[0].pDes[2];
+    // leg1 = commands[1].pDes[2];
+    // leg2 = commands[2].pDes[2];
+    // leg3 = commands[3].pDes[2];
+
+    // for (int leg = 0; leg < 4; leg++) {
+    //   if (commands[leg].pDes[0] == 0 && commands[leg].pDes[1] == 0 &&
+    //       commands[leg].pDes[2] == 0) {
+    //     commands[leg].qDes = datas[leg].q;
+    //   } else {
+    //     commands[leg].pDes[2] += 0.003;
+    //     if (leg == 3 && commands[0].pDes[2] == commands[1].pDes[2] ==
+    //     commands[2].pDes[2] == commands[3].pDes[2]) {
+    //       flag = true;
+    //       // commands[leg].pDes[2] = commands[leg + 3].pDes[2];
+    //       // std::cout << "111111111111111" << std::endl;
+    //     }
+    //     computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes);
+    //   }
+    // }
 
     // derektodo:
     // for (int i=0; i<3; i++) {
@@ -227,24 +250,30 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
   }
 
-  // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << "setp = " << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
-  //             << " " << commands[leg].pDes(2, 0) << " ";
-  // }
+  for (int leg = 0; leg < 4; leg++) {
+    // std::cout << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
+    //           << " " << commands[leg].pDes(2, 0) << " ";
+    // std::cout << commands[leg].forceFeedForward[0] << " "
+    //           << commands[leg].forceFeedForward[1] << " "
+    //           << commands[leg].forceFeedForward[2] << " ";
+  }
   // std::cout << std::endl;
   // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << "getp = " << datas[leg].p(0, 0) << " " << datas[leg].p(1, 0) << " "
+  //   std::cout << "getp = " << datas[leg].p(0, 0) << " " << datas[leg].p(1, 0)
+  //   << " "
   //             << datas[leg].p(2, 0) << " ";
   // }
   // std::cout << std::endl;
 
   // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << "setq = " << commands[leg].qDes(0, 0) << " " << commands[leg].qDes(1, 0)
+  //   std::cout << "setq = " << commands[leg].qDes(0, 0) << " " <<
+  //   commands[leg].qDes(1, 0)
   //             << " " << commands[leg].qDes(2, 0) << " ";
   // }
   // std::cout << std::endl;
   // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << "getq = " << datas[leg].q(0, 0) << " " << datas[leg].q(1, 0) << " "
+  //   std::cout << "getq = " << datas[leg].q(0, 0) << " " << datas[leg].q(1, 0)
+  //   << " "
   //             << datas[leg].q(2, 0) << " ";
   // }
   // std::cout << std::endl;

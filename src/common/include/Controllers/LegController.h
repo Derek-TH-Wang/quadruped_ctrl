@@ -81,6 +81,7 @@ class LegController {
   u32 _calibrateEncoders = 0;
 
  private:
+  bool flag = false;
 };
 
 template <typename T>

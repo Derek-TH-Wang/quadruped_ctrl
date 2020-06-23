@@ -184,6 +184,8 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   }
 
   this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
+  // this->_stateEstimatorData.result->position[0] = 0;
+  // this->_stateEstimatorData.result->position[1] = 0;
   // std::cout << "result->p = " 
   // << this->_stateEstimatorData.result->position[0] << " "
   // << this->_stateEstimatorData.result->position[1] << " "
