@@ -33,7 +33,7 @@ void VectorNavOrientationEstimator<T>::run() {
   this->_stateEstimatorData.result->orientation[3] =
       this->_stateEstimatorData.vectorNavData->quat[2];
 //   std::cout << "this->_stateEstimatorData.vectorNavData->accelerometer = " << this->_stateEstimatorData.vectorNavData->accelerometer << std::endl;
-//   std::cout << "this->_stateEstimatorData.result->orientation = " << this->_stateEstimatorData.result->orientation << std::endl;
+//   std::cout << "this->_stateEstimatorData.result->orientation = " << this->_stateEstimatorData.result->orientation.transpose() << std::endl;
 
   if(_b_first_visit){
     Vec3<T> rpy_ini = ori::quatToRPY(this->_stateEstimatorData.result->orientation);
@@ -41,12 +41,13 @@ void VectorNavOrientationEstimator<T>::run() {
     rpy_ini[1] = 0;
     _ori_ini_inv = rpyToQuat(-rpy_ini);
     _b_first_visit = false;
-  } else {
-      _ori_ini_inv = rpyToQuat(-ori::quatToRPY(this->_stateEstimatorData.result->orientation));
   }
+//   else {
+//       _ori_ini_inv = rpyToQuat(-ori::quatToRPY(this->_stateEstimatorData.result->orientation));
+//   }
 //   std::cout << "rpy_ini = " << ori::quatToRPY(this->_stateEstimatorData.result->orientation) << std::endl;
 //   std::cout << "_ori_ini_inv = " << rpyToQuat(-ori::quatToRPY(this->_stateEstimatorData.result->orientation)) << std::endl;
-//   std::cout << "_ori_ini_inv = " << _ori_ini_inv << std::endl;
+//   std::cout << "_ori_ini_inv = " << _ori_ini_inv.transpose() << std::endl;
   this->_stateEstimatorData.result->orientation = 
     ori::quatProduct(_ori_ini_inv, this->_stateEstimatorData.result->orientation);
 
@@ -72,7 +73,7 @@ void VectorNavOrientationEstimator<T>::run() {
 
 //   std::cout << "this->_stateEstimatorData.result->orientation = " << this->_stateEstimatorData.result->orientation.transpose() << std::endl;
 //   std::cout << "this->_stateEstimatorData.result->rpy = " << this->_stateEstimatorData.result->rpy.transpose() << std::endl;
-// //   std::cout << "this->_stateEstimatorData.result->rBody = " << this->_stateEstimatorData.result->rBody.transpose() << std::endl;
+//   std::cout << "this->_stateEstimatorData.result->rBody = " << this->_stateEstimatorData.result->rBody << std::endl;
 //   std::cout << "this->_stateEstimatorData.result->omegaBody = " << this->_stateEstimatorData.result->omegaBody.transpose() << std::endl;
 //   std::cout << "this->_stateEstimatorData.result->omegaWorld = " << this->_stateEstimatorData.result->omegaWorld.transpose() << std::endl;
 //   std::cout << "this->_stateEstimatorData.result->aBody = " << this->_stateEstimatorData.result->aBody.transpose() << std::endl;

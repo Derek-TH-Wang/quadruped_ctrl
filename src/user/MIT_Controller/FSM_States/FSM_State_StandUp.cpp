@@ -37,8 +37,13 @@ void FSM_State_StandUp<T>::onEnter() {
   iter = 0;
 
   for (size_t leg(0); leg < 4; ++leg) {
-    _ini_foot_pos[leg] = this->_data->_legController->datas[leg].p;
+    // _ini_foot_pos[leg] = this->_data->_legController->datas[leg].p;
   }
+  _ini_foot_pos[0] << 0.0, -0.08, -0.05;
+  _ini_foot_pos[1] << 0.0, 0.08, -0.05;
+  _ini_foot_pos[2] << 0.0, -0.08, -0.05;
+  _ini_foot_pos[3] << 0.0, 0.08, -0.05;
+     
 }
 
 /**
