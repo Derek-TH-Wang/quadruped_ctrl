@@ -213,14 +213,11 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   // std::cout << "rpy_int3 = " << rpy_int[0] << " " << rpy_int[1] << " " << rpy_int[2] << std::endl;
   // std::cout << "vword = " << seResult.vWorld[0] << " " << seResult.vWorld[1] << " " << seResult.vWorld[2] << std::endl;
   // std::cout << "rpy = " << seResult.rpy[0] << " " << seResult.rpy[1] << " " << seResult.rpy[2] << std::endl;
-  // std::cout << "getHipLocation = ";
-  // for(int i=0; i<4; i++) {
-    // std::cout << seResult.position.transpose() << " ";
-    // std::cout << data._quadruped->getHipLocation(i)[0] << " " << data._quadruped->getHipLocation(i)[1] << " " << data._quadruped->getHipLocation(i)[2] << " ";
-    // std::cout << data._legController->datas[i].p[0] << " " << data._legController->datas[i].p[1] << " " << data._legController->datas[i].p[2] << " ";
-  // }
-  // std::cout << std::endl;
+
   for(int i = 0; i < 4; i++) {
+    // std::cout << "seResult.position = " << seResult.position << std::endl;
+    // std::cout << "data._quadruped->getHipLocation(i) = " << data._quadruped->getHipLocation(i) << std::endl;
+    // std::cout << "data._legController->datas[i].p = " << data._legController->datas[i].p << std::endl;
     pFoot[i] = seResult.position + 
       seResult.rBody.transpose() * (data._quadruped->getHipLocation(i) + 
           data._legController->datas[i].p);
@@ -312,7 +309,9 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     //Pf[2] = 0.0;
     footSwingTrajectories[i].setFinalPosition(Pf);
     tempPF[i] = Pf;
+    // std::cout << Pf.transpose() << " ";
   }
+  // std::cout << std::endl;
 
   // calc gait
   iterationCounter++;
@@ -334,7 +333,7 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
   int* mpcTable = gait->getMpcTable();
 
   if(data.controlParameters->actuator_mode == 0) 
-  { // save time. 20+ms per 6 period
+  { // derektodo: save time. 20+ms per 6 period
     updateMPCIfNeeded(mpcTable, data, omniMode);
   }
 
@@ -390,10 +389,14 @@ void ConvexMPCLocomotion::run(ControlFSMData<float>& data) {
     else // foot is in stance
     {
       firstSwing[foot] = true;
-
+      Vec3<float> pDesLeg;
       Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
       Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
-      Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) - data._quadruped->getHipLocation(foot);
+      if(fabs(pDesFootWorld[0]) < 0.001 && fabs(pDesFootWorld[1]) < 0.001 && fabs(pDesFootWorld[2]) < 0.001) {
+        pDesLeg = data._legController->datas[foot].p;
+      } else {
+        pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) - data._quadruped->getHipLocation(foot);
+      }
       Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
       //cout << "Foot " << foot << " relative velocity desired: " << vDesLeg.transpose() << "\n";
 

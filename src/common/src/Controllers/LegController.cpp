@@ -158,8 +158,33 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
       // std::cout << "1datas[leg].q = " << datas[leg].q << std::endl;
     } else {
       // commands[leg].pDes[2] += 0.01;
+      commands[leg].pDes[2] += 0.0025;
       computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes, leg);
     }
+
+    // double leg0, leg1, leg2, leg3;
+    // int changeValue = 0;
+
+    // leg0 = commands[0].pDes[2];
+    // leg1 = commands[1].pDes[2];
+    // leg2 = commands[2].pDes[2];
+    // leg3 = commands[3].pDes[2];
+
+    // for (int leg = 0; leg < 4; leg++) {
+    //   if (commands[leg].pDes[0] == 0 && commands[leg].pDes[1] == 0 &&
+    //       commands[leg].pDes[2] == 0) {
+    //     commands[leg].qDes = datas[leg].q;
+    //   } else {
+    //     commands[leg].pDes[2] += 0.003;
+    //     if (leg == 3 && commands[0].pDes[2] == commands[1].pDes[2] ==
+    //     commands[2].pDes[2] == commands[3].pDes[2]) {
+    //       flag = true;
+    //       // commands[leg].pDes[2] = commands[leg + 3].pDes[2];
+    //       // std::cout << "111111111111111" << std::endl;
+    //     }
+    //     computeLegIK(_quadruped, commands[leg].pDes, commands[leg].qDes);
+    //   }
+    // }
 
     // derektodo:
     // for (int i=0; i<3; i++) {
@@ -170,6 +195,37 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
     //     legTorque[i] = -10;
     //   }
     // }
+
+    // if (footForce(0, 0) != 0 && footForce(1, 0) != 0 && footForce(2, 0) != 0)
+    {
+      // std::cout << leg << std::endl;
+      // std::cout << "tauFeedForward = " << commands[leg].tauFeedForward(0, 0)
+      //           << " " << commands[leg].tauFeedForward(1, 0) << " "
+      //           << commands[leg].tauFeedForward(2, 0) << std::endl;
+      // std::cout << "commands[" << leg << "].pDes = " << commands[leg].pDes(0,
+      // 0)
+      //           << " " << commands[leg].pDes(1, 0) << " "
+      //           << commands[leg].pDes(2, 0) << std::endl;
+      // std::cout << "commands[" << leg << "].vDes = " << commands[leg].vDes(0,
+      // 0)
+      //           << " " << commands[leg].vDes(1, 0) << " "
+      //           << commands[leg].vDes(2, 0) << std::endl;
+      // std::cout << "commands[" << leg
+      //           << "].kpCartesian = " << commands[leg].kpCartesian(0, 0) << "
+      //           "
+      //           << commands[leg].kpCartesian(1, 1) << " "
+      //           << commands[leg].kpCartesian(2, 2) << std::endl;
+      // std::cout << "commands[" << leg
+      //           << "].kdCartesian = " << commands[leg].kdCartesian(0, 0) << "
+      //           "
+      //           << commands[leg].kdCartesian(1, 1) << " "
+      //           << commands[leg].kdCartesian(2, 2) << std::endl;
+      // std::cout << " legTorque = " << legTorque(0, 0) << " " <<
+      // legTorque(1,0) << " "
+      //         << legTorque(2,0) << std::endl;
+      // std::cout << "datas[" << leg << "].p = " << datas[leg].q[0] << " " <<
+      // datas[leg].q[1] << " " << datas[leg].q[2] << std::endl;
+    }
 
     // trans to real robot order
     if (leg == 0) {
@@ -194,28 +250,28 @@ void LegController<T>::updateSetRobotData(RobotData* robotData) {
         commands[leg].kpJoint * (commands[leg].qDes - datas[leg].q) +
         commands[leg].kdJoint * (commands[leg].qdDes - datas[leg].qd);
   }
-  // std::cout << "getP = ";
-  // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << datas[leg].p(0) << " " << datas[leg].p(1)
-  //             << " " << datas[leg].p(2) << " ";
-  // }
-  // std::cout << std::endl;
-  // std::cout << "setP = ";
+  // std::cout << "setp = ";
   // for (int leg = 0; leg < 4; leg++) {
   //   std::cout << commands[leg].pDes(0, 0) << " " << commands[leg].pDes(1, 0)
   //             << " " << commands[leg].pDes(2, 0) << " ";
   // }
   // std::cout << std::endl;
-
-  // std::cout << "setq = ";
+  // std::cout << "getp = ";
   // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << commands[leg].qDes(0, 0) << " " << commands[leg].qDes(1, 0)
+  //   std::cout << datas[leg].p(0, 0) << " " << datas[leg].p(1, 0) << " "
+  //             << datas[leg].p(2, 0) << " ";
+  // }
+  // std::cout << std::endl;
+
+  // for (int leg = 0; leg < 4; leg++) {
+  //   std::cout << "setq = " << commands[leg].qDes(0, 0) << " " <<
+  //   commands[leg].qDes(1, 0)
   //             << " " << commands[leg].qDes(2, 0) << " ";
   // }
   // std::cout << std::endl;
-  // std::cout << "getq = ";
   // for (int leg = 0; leg < 4; leg++) {
-  //   std::cout << datas[leg].q(0, 0) << " " << datas[leg].q(1, 0) << " "
+  //   std::cout << "getq = " << datas[leg].q(0, 0) << " " << datas[leg].q(1, 0)
+  //   << " "
   //             << datas[leg].q(2, 0) << " ";
   // }
   // std::cout << std::endl;
@@ -278,16 +334,6 @@ void computeLegJacobianAndPosition(Quadruped<T>& quad, Vec3<T>& q, Mat3<T>* J,
     p->operator()(2) =
         (l1 + l4) * sideSign * s1 - l3 * (c1 * c23) - l2 * c1 * c2;
   }
-  // std::cout << "leg = " << leg << std::endl;
-  // std::cout << "q0 = " << q(0) << " s1 = " << s1 << std::endl;
-  // // std::cout << "c1 = " << c1 << " c2 = " << c2 << " c3 = " << c3 << std::endl;
-  // std::cout << "1 = " << (l1 + l4) * sideSign * s1 << std::endl;
-  // std::cout << "2 = " << l3 * (c1 * c23) << std::endl;
-  // std::cout << "3 = " << l2 * c1 * c2 << std::endl;
-  // std::cout << "q = ";
-  // std::cout << q.transpose() << std::endl;
-  // std::cout << "p = ";
-  // std::cout << p->transpose() << std::endl;
 }
 
 template void computeLegJacobianAndPosition<double>(Quadruped<double>& quad,
@@ -299,23 +345,55 @@ template void computeLegJacobianAndPosition<float>(Quadruped<float>& quad,
                                                    Mat3<float>* J,
                                                    Vec3<float>* p, int leg);
 
+// template <typename T>
+// void computeLegIK(Quadruped<T>& quad, Vec3<T> pDes, Vec3<T>& qDes, int leg) {
+//   T l1 = quad._abadLinkLength + quad._kneeLinkY_offset;
+//   T l2 = quad._hipLinkLength;
+//   T l3 = quad._kneeLinkLength;
+//   T sideSign = quad.getSideSign(leg);
+
+//   T tempL = sqrt(pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2]);
+//   T tempL23 = sqrt(tempL * tempL - l1 * l1);
+//   T angle1 = fabs(
+//       acos((l1 * l1 + tempL * tempL - tempL23 * tempL23) / (2 * l1 *
+//       tempL)));
+//   T tempAngle1 = acos(fabs(pDes[1]) / tempL);
+//   qDes[0] = sideSign * (angle1 - tempAngle1);
+//   T angle2 = fabs(acos((l2 * l2 + tempL * tempL - l3 * l3) / (2 * l2 *
+//   tempL))); T tempAngle2 = asin(pDes[0] / tempL); qDes[1] = -(angle2 -
+//   tempAngle2); T tempAngle3 =
+//       fabs(acos((l2 * l2 + l3 * l3 - tempL * tempL) / (2 * l2 * l3)));
+//   qDes[2] = 3.1415926535898 - tempAngle3;
+// }
+
 template <typename T>
+
 void computeLegIK(Quadruped<T>& quad, Vec3<T> pDes, Vec3<T>& qDes, int leg) {
   T l1 = quad._abadLinkLength + quad._kneeLinkY_offset;
   T l2 = quad._hipLinkLength;
   T l3 = quad._kneeLinkLength;
   T sideSign = quad.getSideSign(leg);
 
-  T tempL = sqrt(pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2]);
-  T tempL23 = sqrt(tempL * tempL - l1 * l1);
-  T angle1 = fabs(
-      acos((l1 * l1 + tempL * tempL - tempL23 * tempL23) / (2 * l1 * tempL)));
-  T tempAngle1 = acos(fabs(pDes[1]) / tempL);
-  qDes[0] = sideSign * (angle1 - tempAngle1);
-  T angle2 = fabs(acos((l2 * l2 + tempL * tempL - l3 * l3) / (2 * l2 * tempL)));
-  T tempAngle2 = asin(pDes[0] / tempL);
-  qDes[1] = -(angle2 - tempAngle2);
-  T tempAngle3 =
-      fabs(acos((l2 * l2 + l3 * l3 - tempL * tempL) / (2 * l2 * l3)));
-  qDes[2] = 3.1415926535898 - tempAngle3;
+  T temp1 = (pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2] -
+             l1 * l1 - l2 * l2 - l3 * l3) /
+            (2 * l2 * l3);
+  qDes[2] = acos(temp1);
+
+  T k1 = temp1;
+  T k2 = sqrt(1 - k1 * k1);
+  T temp2 = (l3 * k1 + l2) * (l3 * k1 + l2) + l3 * l3 * k2 * k2;
+  T temp3 = 2 * pDes[0] * (l3 * k1 + l2);
+  T temp4 = pDes[0] * pDes[0] - l3 * l3 * k2 * k2;
+  T temp5 = (temp3 - sqrt(temp3 * temp3 - 4 * temp2 * temp4)) / (2 * temp2);
+  qDes[1] = asin(temp5);
+
+  T temp6 =
+      sideSign * l1 + sqrt(pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1);
+  T temp7 =
+      sideSign * l1 - sqrt(pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1);
+  T temp8 = temp6 * temp6 + temp7 * temp7;
+  T temp9 = 2 * temp6 * (pDes[1] + pDes[2]);
+  T temp10 = (pDes[1] + pDes[2]) * (pDes[1] + pDes[2]) - temp7 * temp7;
+  T temp11 = (temp9 + sqrt(temp9 * temp9 - 4 * temp8 * temp10)) / (2 * temp8);
+  qDes[0] = asin(temp11);
 }
