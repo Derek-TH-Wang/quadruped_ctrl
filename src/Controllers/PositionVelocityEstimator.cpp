@@ -174,14 +174,14 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     _P.block(0, 0, 2, 2) /= T(10);
   }
 
-  this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
-  // this->_stateEstimatorData.result->position[0] = this->_stateEstimatorData.vectorNavData->com_pos[0];
-  // this->_stateEstimatorData.result->position[1] = this->_stateEstimatorData.vectorNavData->com_pos[1];
-  // this->_stateEstimatorData.result->position[2] = this->_stateEstimatorData.vectorNavData->com_pos[2];
-  this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
-  // this->_stateEstimatorData.result->vWorld[0] = this->_stateEstimatorData.vectorNavData->com_vel[0];
-  // this->_stateEstimatorData.result->vWorld[1] = this->_stateEstimatorData.vectorNavData->com_vel[1];
-  // this->_stateEstimatorData.result->vWorld[2] = this->_stateEstimatorData.vectorNavData->com_vel[2];
+  // this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
+  this->_stateEstimatorData.result->position[0] = this->_stateEstimatorData.vectorNavData->com_pos[0];
+  this->_stateEstimatorData.result->position[1] = this->_stateEstimatorData.vectorNavData->com_pos[1];
+  this->_stateEstimatorData.result->position[2] = this->_stateEstimatorData.vectorNavData->com_pos[2];
+  // this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
+  this->_stateEstimatorData.result->vWorld[0] = this->_stateEstimatorData.vectorNavData->com_vel[0];
+  this->_stateEstimatorData.result->vWorld[1] = this->_stateEstimatorData.vectorNavData->com_vel[1];
+  this->_stateEstimatorData.result->vWorld[2] = this->_stateEstimatorData.vectorNavData->com_vel[2];
   this->_stateEstimatorData.result->vBody =
       this->_stateEstimatorData.result->rBody *
       this->_stateEstimatorData.result->vWorld;
