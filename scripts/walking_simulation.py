@@ -9,8 +9,8 @@ import pybullet_data
 from sensor_msgs.msg import JointState
 from sensor_msgs.msg import Imu
 import matplotlib.pyplot as plt
-from ConvexMPC.srv import QuadrupedCmd, QuadrupedCmdResponse
-from ConvexMPC.msg import commandDes
+from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
+from quadruped_ctrl.msg import commandDes
 
 getMode = 10
 get_position = []
