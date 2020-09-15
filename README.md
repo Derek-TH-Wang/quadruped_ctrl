@@ -15,7 +15,7 @@ git clone https://github.com/Derek-TH-Wang/cheetah.git
 ### Running:
 run the simulator  
 ```
-rosrun ConvexMPC walking_simulation.py
+rosrun quadruped_ctrl walking_simulation.py
 ```
 first set to stand up:  
 ```
@@ -24,5 +24,5 @@ rosservice call /set_jm "cmd: 2"
 ```
 then, run the controller:  
 ```
-rosrun ConvexMPC mainController
+rosrun quadruped_ctrl mainController
 ```
