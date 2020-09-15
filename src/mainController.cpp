@@ -5,8 +5,8 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/Imu.h>
-#include "ConvexMPC/commandDes.h"
-#include "ConvexMPC/QuadrupedCmd.h"
+#include "quadruped_ctrl/commandDes.h"
+#include "quadruped_ctrl/QuadrupedCmd.h"
 
 #include "MPC_Ctrl/ConvexMPCLocomotion.h"
 #include "Controllers/RobotLegState.h"
@@ -126,7 +126,7 @@ void jointStateCmdCallBack(const sensor_msgs::JointState& msg){//反馈的关节
   }  
 }
 
-void RobotComCallBack(const ConvexMPC::commandDes& msg){//反馈的关节角度和速度
+void RobotComCallBack(const quadruped_ctrl::commandDes& msg){//反馈的关节角度和速度
   _vectorNavData.com_pos(0, 0) = msg.com_position[0];
   _vectorNavData.com_pos(1, 0) = msg.com_position[1];
   _vectorNavData.com_pos(2, 0) = msg.com_position[2];
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
 
   ros::Publisher pub_joint = n.advertise<sensor_msgs::JointState>("set_js", 1000);  //下发给simulator或者robot的关节控制数据（关节扭矩）
   // ros::Publisher pub_command = n.advertise<ConvexMPC::commandDes>("set_command", 1000);  //下发给simulator的关节期望位置
-  ros::ServiceClient jointCtrlMode = n.serviceClient<ConvexMPC::QuadrupedCmd>("set_jm");
+  ros::ServiceClient jointCtrlMode = n.serviceClient<quadruped_ctrl::QuadrupedCmd>("set_jm");
   ros::Subscriber sub_vel = n.subscribe("cmd_vel", 1000, velCmdCallBack);           //接收的手柄速度信息
   // ros::Subscriber sub_pos = n.subscribe("cmd_pose", 1000, PoseCmdCallBack);         //接收的手柄位置信息
   ros::Subscriber sub_imu = n.subscribe("imu_body", 1000, ImuCmdCallBack);          // imu反馈的身体位置和姿态
