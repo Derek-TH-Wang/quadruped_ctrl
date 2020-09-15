@@ -13,15 +13,16 @@ git clone https://github.com/Derek-TH-Wang/cheetah.git
 ```
 
 ### Running:
+run the simulator  
 ```
-rosrun cheetah QuadListener.py
-roslaunch quadruped_robot quadruped_robot.launch
+rosrun ConvexMPC walking_simulation.py
 ```
 first set to stand up:  
 ```
-rosservice call /ctrl_mode "cmd: 1"
+rosservice call /set_jm "cmd: 0" 
+rosservice call /set_jm "cmd: 2" 
 ```
-then, set to tort gait:  
+then, run the controller:  
 ```
-rosservice call /ctrl_mode "cmd: 4"
+rosrun ConvexMPC mainController
 ```

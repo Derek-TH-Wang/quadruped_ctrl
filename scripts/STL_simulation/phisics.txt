@@ -1,0 +1,545 @@
+These files are only loaded by the urdf file, used only for simulating
+physics imported from Fusion360 robot design
+
+base_link
+
+Component Instances (1)
+Area	0.162 m^2
+Density	1060.00 kg / m^3
+Mass	1.248 kg
+Volume	0.001 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.26 m
+	Width 	 0.12 m
+	Height 	 0.091 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	0.018 m, 2.287E-04 m, 0.007 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 0.002
+	Ixy = -6.831E-07
+	Ixz = -2.260E-04
+	Iyx = -6.831E-07
+	Iyy = 0.007
+	Iyz = -2.651E-06
+	Izx = -2.260E-04
+	Izy = -2.651E-06
+	Izz = 0.007
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 0.002
+	Ixy = -5.918E-06
+	Ixz = -3.815E-04
+	Iyx = -5.918E-06
+	Iyy = 0.007
+	Iyz = -4.590E-06
+	Izx = -3.815E-04
+	Izy = -4.590E-06
+	Izz = 0.007
+
+
+
+
+####################################################################### coxas
+
+
+
+coxa_fr
+
+Component Instances (1)
+Area	0.015 m^2
+Density	1060.00 kg / m^3
+Mass	0.075 kg
+Volume	7.043E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.063 m
+	Width 	 0.077 m
+	Height 	 0.03 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	0.104 m, -0.057 m, -1.534E-04 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.724E-05
+	Ixy = 9.731E-06
+	Ixz = 0.00
+	Iyx = 9.731E-06
+	Iyy = 2.829E-05
+	Iyz = 0.00
+	Izx = 0.00
+	Izy = 0.00
+	Izz = 5.581E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 2.791E-04
+	Ixy = 4.511E-04
+	Ixz = 1.189E-06
+	Iyx = 4.511E-04
+	Iyy = 8.336E-04
+	Iyz = -6.517E-07
+	Izx = 1.189E-06
+	Izy = -6.517E-07
+	Izz = 0.001
+
+
+
+
+
+
+coxa_fl
+
+Component Instances (1)
+Area	0.015 m^2
+Density	1060.00 kg / m^3
+Mass	0.075 kg
+Volume	7.043E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.063 m
+	Width 	 0.077 m
+	Height 	 0.03 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	0.104 m, 0.057 m, -1.534E-04 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.724E-05
+	Ixy = -9.731E-06
+	Ixz = 0.00
+	Iyx = -9.731E-06
+	Iyy = 2.829E-05
+	Iyz = 0.00
+	Izx = 0.00
+	Izy = 0.00
+	Izz = 5.581E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 2.821E-04
+	Ixy = -4.538E-04
+	Ixz = 1.189E-06
+	Iyx = -4.538E-04
+	Iyy = 8.336E-04
+	Iyz = 6.557E-07
+	Izx = 1.189E-06
+	Izy = 6.557E-07
+	Izz = 0.001
+
+
+
+
+coxa_br
+
+Component Instances (1)
+Area	0.023 m^2
+Density	1957.845 kg / m^3
+Mass	0.205 kg
+Volume	1.045E-04 m^3
+Physical Material	(Various)
+
+Bounding Box
+	Length 	 0.063 m
+	Width 	 0.077 m
+	Height 	 0.03 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	-0.072 m, -0.053 m, -1.534E-04 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 7.161E-05
+	Ixy = 8.240E-06
+	Ixz = 0.00
+	Iyx = 8.240E-06
+	Iyy = 5.092E-05
+	Iyz = 0.00
+	Izx = 0.00
+	Izy = 0.00
+	Izz = 1.025E-04
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 6.533E-04
+	Ixy = -7.759E-04
+	Ixz = -2.256E-06
+	Iyx = -7.759E-04
+	Iyy = 0.001
+	Iyz = -1.673E-06
+	Izx = -2.256E-06
+	Izy = -1.673E-06
+	Izz = 0.002
+
+
+coxa_bl
+
+Component Instances (1)
+Area	0.016 m^2
+Density	1060.00 kg / m^3
+Mass	0.09 kg
+Volume	8.537E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.063 m
+	Width 	 0.077 m
+	Height 	 0.03 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	-0.068 m, 0.061 m, -1.534E-04 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 4.690E-05
+	Ixy = -3.095E-06
+	Ixz = 0.00
+	Iyx = -3.095E-06
+	Iyy = 2.886E-05
+	Iyz = 0.00
+	Izx = 0.00
+	Izy = 0.00
+	Izz = 6.367E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 3.872E-04
+	Ixy = 3.729E-04
+	Ixz = -9.404E-07
+	Iyx = 3.729E-04
+	Iyy = 4.444E-04
+	Iyz = 8.511E-07
+	Izx = -9.404E-07
+	Izy = 8.511E-07
+	Izz = 8.195E-04
+
+
+
+
+####################################################femures
+
+
+femur_fr
+
+Component Instances (1)
+Area	0.018 m^2
+Density	1060.00 kg / m^3
+Mass	0.084 kg
+Volume	7.908E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.025 m
+	Width 	 0.055 m
+	Height 	 0.125 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	0.11 m, -0.086 m, -0.037 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 7.552E-05
+	Ixy = -3.399E-08
+	Ixz = 9.599E-08
+	Iyx = -3.399E-08
+	Iyy = 6.041E-05
+	Iyz = -1.244E-06
+	Izx = 9.599E-08
+	Izy = -1.244E-06
+	Izz = 2.256E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 8.172E-04
+	Ixy = 7.958E-04
+	Ixz = 3.422E-04
+	Iyx = 7.958E-04
+	Iyy = 0.001
+	Iyz = -2.704E-04
+	Izx = 3.422E-04
+	Izy = -2.704E-04
+	Izz = 0.002
+
+
+
+femur_fl
+
+Component Instances (1)
+Area	0.018 m^2
+Density	1060.00 kg / m^3
+Mass	0.084 kg
+Volume	7.908E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.025 m
+	Width 	 0.055 m
+	Height 	 0.125 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	0.11 m, 0.087 m, -0.037 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 7.552E-05
+	Ixy = 3.399E-08
+	Ixz = 9.599E-08
+	Iyx = 3.399E-08
+	Iyy = 6.041E-05
+	Iyz = 1.244E-06
+	Izx = 9.599E-08
+	Izy = 1.244E-06
+	Izz = 2.256E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 8.223E-04
+	Ixy = -7.990E-04
+	Ixz = 3.422E-04
+	Iyx = -7.990E-04
+	Iyy = 0.001
+	Iyz = 2.714E-04
+	Izx = 3.422E-04
+	Izy = 2.714E-04
+	Izz = 0.002
+
+
+
+
+femur_br
+
+Component Instances (1)
+Area	0.018 m^2
+Density	1060.00 kg / m^3
+Mass	0.085 kg
+Volume	7.973E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.025 m
+	Width 	 0.055 m
+	Height 	 0.125 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	-0.08 m, -0.086 m, -0.037 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 7.605E-05
+	Ixy = 0.00
+	Ixz = 0.00
+	Iyx = 0.00
+	Iyy = 6.090E-05
+	Iyz = -1.120E-06
+	Izx = 0.00
+	Izy = -1.120E-06
+	Izz = 2.264E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 8.244E-04
+	Ixy = -5.853E-04
+	Ixz = -2.532E-04
+	Iyx = -5.853E-04
+	Iyy = 7.223E-04
+	Iyz = -2.738E-04
+	Izx = -2.532E-04
+	Izy = -2.738E-04
+	Izz = 0.001
+
+
+
+femur_bl
+
+Component Instances (1)
+Area	0.018 m^2
+Density	1060.00 kg / m^3
+Mass	0.085 kg
+Volume	7.973E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.025 m
+	Width 	 0.055 m
+	Height 	 0.125 m
+World X,Y,Z	0.015 m, 1.743E-04 m, -1.534E-04 m
+Center of Mass	-0.08 m, 0.087 m, -0.037 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 7.605E-05
+	Ixy = 0.00
+	Ixz = 0.00
+	Iyx = 0.00
+	Iyy = 6.090E-05
+	Iyz = 1.120E-06
+	Izx = 0.00
+	Izy = 1.120E-06
+	Izz = 2.264E-05
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 8.295E-04
+	Ixy = 5.876E-04
+	Ixz = -2.532E-04
+	Iyx = 5.876E-04
+	Iyy = 7.223E-04
+	Iyz = 2.749E-04
+	Izx = -2.532E-04
+	Izy = 2.749E-04
+	Izz = 0.001
+
+
+
+
+
+############################################################# tibias
+
+
+tibia_fr
+
+Component Instances (1)
+Area	0.008 m^2
+Density	1060.00 kg / m^3
+Mass	0.034 kg
+Volume	3.226E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.022 m
+	Width 	 0.02 m
+	Height 	 0.111 m
+World X,Y,Z	0.015 m, 1.714E-04 m, -1.532E-04 m
+Center of Mass	0.11 m, -0.08 m, -0.139 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.218E-05
+	Ixy = 0.00
+	Ixz = -4.239E-09
+	Iyx = 0.00
+	Iyy = 3.195E-05
+	Iyz = 0.00
+	Izx = -4.239E-09
+	Izy = 0.00
+	Izz = 1.847E-06
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 9.133E-04
+	Ixy = 2.990E-04
+	Ixz = 5.215E-04
+	Iyx = 2.990E-04
+	Iyy = 0.001
+	Iyz = -3.802E-04
+	Izx = 5.215E-04
+	Izy = -3.802E-04
+	Izz = 6.299E-04
+
+
+
+
+tibia_fl
+
+Component Instances (1)
+Area	0.008 m^2
+Density	1060.00 kg / m^3
+Mass	0.034 kg
+Volume	3.227E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.022 m
+	Width 	 0.02 m
+	Height 	 0.111 m
+World X,Y,Z	0.015 m, 1.714E-04 m, -1.532E-04 m
+Center of Mass	0.11 m, 0.08 m, -0.139 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.218E-05
+	Ixy = 0.00
+	Ixz = -4.791E-09
+	Iyx = 0.00
+	Iyy = 3.195E-05
+	Iyz = 0.00
+	Izx = -4.791E-09
+	Izy = 0.00
+	Izz = 1.847E-06
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 9.153E-04
+	Ixy = -3.003E-04
+	Ixz = 5.216E-04
+	Iyx = -3.003E-04
+	Iyy = 0.001
+	Iyz = 3.819E-04
+	Izx = 5.216E-04
+	Izy = 3.819E-04
+	Izz = 6.319E-04
+
+
+
+
+
+tibia_br
+
+Component Instances (1)
+Area	0.008 m^2
+Density	1060.00 kg / m^3
+Mass	0.034 kg
+Volume	3.226E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.022 m
+	Width 	 0.02 m
+	Height 	 0.111 m
+World X,Y,Z	0.015 m, 1.714E-04 m, -1.534E-04 m
+Center of Mass	-0.081 m, -0.08 m, -0.139 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.218E-05
+	Ixy = 0.00
+	Ixz = -4.239E-09
+	Iyx = 0.00
+	Iyy = 3.195E-05
+	Iyz = 0.00
+	Izx = -4.239E-09
+	Izy = 0.00
+	Izz = 1.847E-06
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 9.133E-04
+	Ixy = -2.203E-04
+	Ixz = -3.843E-04
+	Iyx = -2.203E-04
+	Iyy = 9.178E-04
+	Iyz = -3.802E-04
+	Izx = -3.843E-04
+	Izy = -3.802E-04
+	Izz = 4.425E-04
+
+
+
+
+
+
+
+tibia_bl
+
+Component Instances (1)
+Area	0.008 m^2
+Density	1060.00 kg / m^3
+Mass	0.034 kg
+Volume	3.227E-05 m^3
+Physical Material	ABS Plastic
+
+Bounding Box
+	Length 	 0.022 m
+	Width 	 0.02 m
+	Height 	 0.111 m
+World X,Y,Z	0.015 m, 1.714E-04 m, -1.534E-04 m
+Center of Mass	-0.081 m, 0.08 m, -0.139 m
+
+Moment of Inertia at Center of Mass   (kg m^2)
+	Ixx = 3.218E-05
+	Ixy = 0.00
+	Ixz = -4.791E-09
+	Iyx = 0.00
+	Iyy = 3.195E-05
+	Iyz = 0.00
+	Izx = -4.791E-09
+	Izy = 0.00
+	Izz = 1.847E-06
+
+Moment of Inertia at Origin   (kg m^2)
+	Ixx = 9.153E-04
+	Ixy = 2.213E-04
+	Ixz = -3.843E-04
+	Iyx = 2.213E-04
+	Iyy = 9.179E-04
+	Iyz = 3.819E-04
+	Izx = -3.843E-04
+	Izy = 3.819E-04
+	Izz = 4.444E-04

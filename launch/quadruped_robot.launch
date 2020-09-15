@@ -1,5 +1,0 @@
-<launch>
-
-        <node name="quadruped_ctrl" pkg="quadruped_robot" type="quadruped_ctrl" respawn="false" output="screen"/>
-
-</launch>
