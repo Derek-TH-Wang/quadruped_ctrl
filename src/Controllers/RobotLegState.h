@@ -42,11 +42,4 @@ struct LegCommand {
 
 };
 
-// class RobotLegState {
-//   public:
-//     RobotLegState() {}
-//     LegData* legData = nullptr;
-//     LegCommand* legCommand = nullptr;
-// };
-
 #endif

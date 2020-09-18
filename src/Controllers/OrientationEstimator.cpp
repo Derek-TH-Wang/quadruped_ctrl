@@ -52,7 +52,6 @@ void VectorNavOrientationEstimator<T>::run() {
   this->_stateEstimatorData.result->orientation[3] =
       this->_stateEstimatorData.vectorNavData->quat[2];
   
-  std::cout << "the orientation is: " << this->_stateEstimatorData.result->orientation << std::endl;
 
   if(_b_first_visit){
     Vec3<T> rpy_ini = ori::quatToRPY(this->_stateEstimatorData.result->orientation);
@@ -67,42 +66,36 @@ void VectorNavOrientationEstimator<T>::run() {
   this->_stateEstimatorData.result->rpy =
       ori::quatToRPY(this->_stateEstimatorData.result->orientation);
 
-  // std::cout << "the euler angle is: " << this->_stateEstimatorData.result->rpy << std::endl;
-
 
   this->_stateEstimatorData.result->rBody = ori::quaternionToRotationMatrix(
       this->_stateEstimatorData.result->orientation);
 
-  std::cout << "the euler angle is: " << this->_stateEstimatorData.result->rBody << std::endl;
-
-  // this->_stateEstimatorData.result->omegaBody =
-  //     this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
-
-  // this->_stateEstimatorData.result->omegaWorld =
-  //     this->_stateEstimatorData.result->rBody.transpose() *
-  //     this->_stateEstimatorData.result->omegaBody;
 
   this->_stateEstimatorData.result->omegaBody =
-      this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->omegaWorld;
+      this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
 
   this->_stateEstimatorData.result->omegaWorld =
-      this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
-      
+      this->_stateEstimatorData.result->rBody.transpose() *
+      this->_stateEstimatorData.result->omegaBody;
 
-  // this->_stateEstimatorData.result->aBody =
-  //     this->_stateEstimatorData.vectorNavData->accelerometer.template cast<T>();
-  // this->_stateEstimatorData.result->aWorld =
-  //     this->_stateEstimatorData.result->rBody.transpose() *
-  //     this->_stateEstimatorData.result->aBody;
+  // this->_stateEstimatorData.result->omegaBody =
+  //     this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->omegaWorld;
+
+  // this->_stateEstimatorData.result->omegaWorld =
+  //     this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
+      
 
   this->_stateEstimatorData.result->aBody =
-      this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->aWorld;
-      
-  this->_stateEstimatorData.result->aWorld =
       this->_stateEstimatorData.vectorNavData->accelerometer.template cast<T>();
-  
-  // std::cout << "the body is :" << this->_stateEstimatorData.result->aBody << std::endl;
-  // std::cout << "the world is :" << this->_stateEstimatorData.result->aWorld << std::endl;
+  this->_stateEstimatorData.result->aWorld =
+      this->_stateEstimatorData.result->rBody.transpose() *
+      this->_stateEstimatorData.result->aBody;
+
+  // this->_stateEstimatorData.result->aBody =
+  //     this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->aWorld;
+      
+  // this->_stateEstimatorData.result->aWorld =
+  //     this->_stateEstimatorData.vectorNavData->accelerometer.template cast<T>();
 
 }
 

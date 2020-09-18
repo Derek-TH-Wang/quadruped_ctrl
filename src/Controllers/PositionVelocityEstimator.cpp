@@ -8,6 +8,7 @@
  */
 
 #include "Controllers/PositionVelocityEstimator.h"
+#include <fstream>
 
 /*!
  * Initialize the state estimator
@@ -15,7 +16,7 @@
 template <typename T>
 void LinearKFPositionVelocityEstimator<T>::setup() {
   // T dt = this->_stateEstimatorData.parameters->controller_dt;
-  T dt = 0.002;
+  T dt = 0.0025;
   _xhat.setZero();
   _ps.setZero();
   _vs.setZero();
@@ -89,7 +90,20 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   Mat3<T> Rbod = this->_stateEstimatorData.result->rBody.transpose();
   // in old code, Rbod * se_acc + g
   Vec3<T> a = this->_stateEstimatorData.result->aWorld + g; 
-  // std::cout << "A WORLD\n" << a << "\n";
+  
+  // std::cout << "A WORLD\n" << a << std::endl;
+  // std::ofstream fp;
+  // fp.open("acceleration.txt", std::ofstream::app);
+  // if(!fp){
+  //   std::ofstream fpout("acceleration.txt");
+  //   fpout << a(0) << "," << a(1) << "," << a(2) << ","; 
+  //   fp.close();
+  //   fpout.close();
+  // }else{
+  //   fp << a(0) << "," << a(1) << "," << a(2) << std::endl; 
+  //   fp.close();
+  // }
+
   Vec4<T> pzs = Vec4<T>::Zero();
   Vec4<T> trusts = Vec4<T>::Zero();
   Vec3<T> p0, v0;
@@ -101,13 +115,10 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     Quadruped<T>& quadruped =
         *(this->_stateEstimatorData.legControllerData->quadruped);
     Vec3<T> ph = quadruped.getHipLocation(i);  // hip positions relative to CoM
-
-    // std::cout << "get hip value osi :" << ph << std::endl;
     
     // hw_i->leg_controller->leg_datas[i].p; 
     Vec3<T> p_rel = ph + this->_stateEstimatorData.legControllerData[i].p;  //足端位置在机身坐标系中
 
-    // std::cout << "the p_rel is: " << this->_stateEstimatorData.legControllerData[i].p << std::endl;
     // hw_i->leg_controller->leg_datas[i].v;
     Vec3<T> dp_rel = this->_stateEstimatorData.legControllerData[i].v;  //足端速度在机身坐标系
     Vec3<T> p_f = Rbod * p_rel;   //足端位置在世界坐标系中
@@ -123,6 +134,7 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     T phase = fmin(this->_stateEstimatorData.result->contactEstimate(i), T(1));
     //T trust_window = T(0.25);
     T trust_window = T(0.2);
+
 
     if (phase < trust_window) {
       trust = phase / trust_window;
@@ -174,25 +186,18 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     _P.block(0, 0, 2, 2) /= T(10);
   }
 
-  // this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
-  this->_stateEstimatorData.result->position[0] = this->_stateEstimatorData.vectorNavData->com_pos[0];
-  this->_stateEstimatorData.result->position[1] = this->_stateEstimatorData.vectorNavData->com_pos[1];
-  this->_stateEstimatorData.result->position[2] = this->_stateEstimatorData.vectorNavData->com_pos[2];
-  // this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
-  this->_stateEstimatorData.result->vWorld[0] = this->_stateEstimatorData.vectorNavData->com_vel[0];
-  this->_stateEstimatorData.result->vWorld[1] = this->_stateEstimatorData.vectorNavData->com_vel[1];
-  this->_stateEstimatorData.result->vWorld[2] = this->_stateEstimatorData.vectorNavData->com_vel[2];
+  this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
+  // this->_stateEstimatorData.result->position[0] = this->_stateEstimatorData.vectorNavData->com_pos[0];
+  // this->_stateEstimatorData.result->position[1] = this->_stateEstimatorData.vectorNavData->com_pos[1];
+  // this->_stateEstimatorData.result->position[2] = this->_stateEstimatorData.vectorNavData->com_pos[2];
+  this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
+  // this->_stateEstimatorData.result->vWorld[0] = this->_stateEstimatorData.vectorNavData->com_vel[0];
+  // this->_stateEstimatorData.result->vWorld[1] = this->_stateEstimatorData.vectorNavData->com_vel[1];
+  // this->_stateEstimatorData.result->vWorld[2] = this->_stateEstimatorData.vectorNavData->com_vel[2];
   this->_stateEstimatorData.result->vBody =
       this->_stateEstimatorData.result->rBody *
       this->_stateEstimatorData.result->vWorld;
 
-  
-  // std::cout << "get com position: " << this->_stateEstimatorData.vectorNavData->com_pos << std::endl;
-  
-  
-  // std::cout << "position is : " << this->_stateEstimatorData.result->position << std::endl;
-  // std::cout << "vworld is : " << this->_stateEstimatorData.result->vWorld << std::endl;
-  // std::cout << "vBody is : " << this->_stateEstimatorData.result->vBody << std::endl;
 }
 
 template class LinearKFPositionVelocityEstimator<float>;

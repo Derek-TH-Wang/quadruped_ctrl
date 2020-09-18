@@ -81,10 +81,6 @@ void ConvexMPCLocomotion::_SetupCommand(StateEstimatorContainer<float> &_stateEs
   float x_vel_cmd, y_vel_cmd;
   float filter(0.1);
 
-  // _yaw_turn_rate = data._desiredStateCommand->rightAnalogStick[0];   //手柄数据
-  // x_vel_cmd = data._desiredStateCommand->leftAnalogStick[1];
-  // y_vel_cmd = data._desiredStateCommand->leftAnalogStick[0];
-
   //手柄数据先暂时设置为0，后面再给手柄赋值   旋转角速度和x,y方向上的线速度
   x_vel_cmd = gamepadCommand[0];
   y_vel_cmd = gamepadCommand[1];
@@ -94,8 +90,7 @@ void ConvexMPCLocomotion::_SetupCommand(StateEstimatorContainer<float> &_stateEs
   _y_vel_des = _y_vel_des*(1-filter) + y_vel_cmd*filter;
 
   _yaw_des = _stateEstimator.getResult().rpy[2] + dt * _yaw_turn_rate;   //涉及到了状态估计中的欧拉角
-  // _yaw_des = _stateEstimator.getResult().rpy[2] + 0.01;   //涉及到了状态估计中的欧拉角
-  // std::cout << "angle is :" << _yaw_des << ", " << _stateEstimator.getResult().rpy[2] << ", " << dt << ", " <<  _yaw_turn_rate << std::endl;
+ 
   _roll_des = 0.;
   _pitch_des = 0.;
 
@@ -128,9 +123,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
     stand_traj[5] = seResult.rpy[2];
     world_position_desired[0] = stand_traj[0];
     world_position_desired[1] = stand_traj[1];
-    // for(int i = 0; i < 6; i++){
-    //   std::cout << "stand traj is: " << stand_traj[i] << std::endl;
-    // }
   }
 
   // pick gait
@@ -155,38 +147,12 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   current_gait = gaitNumber;
 
   gait->setIterations(iterationsBetweenMPC, iterationCounter);   //步态周期计算
-  // jumping.setIterations(iterationsBetweenMPC, iterationCounter);  //跳跃周期计算，暂时不需要此步态
-  // jumping.setIterations(27/2, iterationCounter);
-
-  // check jump trigger  此部分均为跳跃步态部分，可先暂时屏蔽
-  // jump_state.trigger_pressed(jump_state.should_jump(jumping.getCurrentGaitPhase()),
-  //     data._desiredStateCommand->trigger_pressed);
-
-
-  // check jump action
-  // if(jump_state.should_jump(jumping.getCurrentGaitPhase())) {
-  //   gait = &jumping;
-  //   recompute_timing(27/2);
-  //   _body_height = _body_height_jumping;
-  //   currently_jumping = true;
-
-  // } else {
-  //   recompute_timing(default_iterations_between_mpc);
-  //   currently_jumping = false;
-  // }
-
 
   // integrate position setpoint
   Vec3<float> v_des_robot(_x_vel_des, _y_vel_des, 0);  //身体坐标系下的期望线速度
   Vec3<float> v_des_world = 
     omniMode ? v_des_robot : seResult.rBody.transpose() * v_des_robot;   //世界坐标系下的期望线速度
   Vec3<float> v_robot = seResult.vWorld;      //世界坐标系下的机器人实际速度
-
-  // std::cout << "v des robot is :" << v_des_robot << std::endl;
-  // std::cout << "v des world is :" << v_des_world << std::endl;
-  // std::cout << "v robot is :" << v_robot << std::endl;
-  // std::cout << "get the matix :" << seResult.rBody.transpose() << std::endl;
-
 
   //Integral-esque pitche and roll compensation  积分达到补偿值******************************* 为了保持在运动过程中身体与地面平行
   if(fabs(v_robot[0]) > .2)   //avoid dividing by zero
@@ -197,17 +163,12 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   {
     rpy_int[0] += dt*(_roll_des - seResult.rpy[0])/v_robot[1];
   }
-
-  // rpy_int[1] += dt*(_pitch_des - seResult.rpy[1])/v_robot[0];
-  // rpy_int[0] += dt*(_roll_des - seResult.rpy[0])/v_robot[1];
   
   //初始角度限幅
   rpy_int[0] = fminf(fmaxf(rpy_int[0], -.25), .25); //-0.25~0.25
   rpy_int[1] = fminf(fmaxf(rpy_int[1], -.25), .25);
   rpy_comp[1] = v_robot[0] * rpy_int[1];     //compensation 补偿值
   rpy_comp[0] = v_robot[1] * rpy_int[0];  //turn off for pronking
-
-  // std::cout << "get the value is : " << rpy_comp[0] << ", " << rpy_comp[1] << std::endl;
 
   //得到世界坐标系下的足端位置 机身坐标+机身旋转矩阵^T*（侧摆关节在机身下坐标+足底在侧摆关节下坐标）
   for(int i = 0; i < 4; i++) {
@@ -217,27 +178,9 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
     // pFoot[i] = _legController.datas[i].p;
   }
 
-  // std::cout << "location under the world1: " << seResult.position << std::endl;
-   std::cout << "location under the world2: " << seResult.rBody.transpose() << std::endl;
-  // std::cout << "location under the world3: " << _quadruped.getHipLocation(2) << std::endl;
-  // if(iterationCounter < 10){
-    // std::cout << "location under the right: " << _legController.datas[0].p << std::endl;
-    // std::cout << "location under the left: " << _legController.datas[1].p << std::endl;
-  // }
-  
-  // std::cout << "location under the world5: " << pFoot[1] << std::endl;
   Vec3<float> error;
   if(gait != &standing) {  //非站立下的期望位置，通过累加期望速度完成
     world_position_desired += dt * Vec3<float>(v_des_world[0], v_des_world[1], 0);
-
-    // error[0] = 0.5 * (world_position_desired[0] - seResult.position[0]);
-    // error[1] = 0.3 * (world_position_desired[1] - seResult.position[1]);
-    // error[2] = 0.0;
-    // v_des_world +=  error;
-  //  std::cout << "get you des_vel: " << v_des_world[0] << " , " << v_des_world[1] << std::endl;
-  //  std::cout << "get you des: " << world_position_desired[0] << " , " << world_position_desired[1] << std::endl;
-  //  std::cout << "get you real: " << seResult.position[0] << " , " << seResult.position[1] << std::endl;
-
   }
 
   // some first time initialization
@@ -261,7 +204,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   // foot placement
   for(int l = 0; l < 4; l++){
     swingTimes[l] = gait->getCurrentSwingTime(dtMPC, l);       //return dtMPC * _stance  0.026 * 5 = 0.13 dtMPC的值变为了0.026，外部给修改的赋值
-    // std::cout << "get current swing time " << swingTimes[l] << std::endl;
   }
     
 
@@ -278,10 +220,8 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
       swingTimeRemaining[i] = swingTimes[i];
     } else {
       swingTimeRemaining[i] -= dt;
-      // std::cout << "get current swing time[" << i << "]: " << swingTimeRemaining[i] << std::endl;
     }
-    //if(firstSwing[i]) {
-    //footSwingTrajectories[i].setHeight(.05);
+  
     footSwingTrajectories[i].setHeight(.06);
     Vec3<float> offset(0, side_sign[i] * .065, 0);
 
@@ -289,10 +229,9 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
 
     pRobotFrame[1] += interleave_y[i] * v_abs * interleave_gain;
     float stance_time = gait->getCurrentStanceTime(dtMPC, i);  //stance_time = 0.13
+
     Vec3<float> pYawCorrected = 
       coordinateRotation(CoordinateAxis::Z, -_yaw_turn_rate* stance_time / 2) * pRobotFrame;  //机身旋转yaw后，得到在机身坐标系下的hip坐标
-    
-    // std::cout << "final position is:[ " << i << " ]: " << pYawCorrected[1] << std::endl;
 
     Vec3<float> des_vel;
     des_vel[0] = _x_vel_des;
@@ -302,12 +241,7 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
     //世界坐标系下hip坐标 以剩余摆动时间内匀速运动来估计
     Vec3<float> Pf = seResult.position + seResult.rBody.transpose() * (pYawCorrected
           + des_vel * swingTimeRemaining[i]);
-
-    // std::cout << "final position is:[ " << i << " ]: " << Pf[1] << std::endl;
-    //+ seResult.vWorld * swingTimeRemaining[i];
-
     
-
     //float p_rel_max = 0.35f;
     float p_rel_max = 0.3f;
 
@@ -320,9 +254,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
     float pfy_rel = seResult.vWorld[1] * .5 * stance_time * dtMPC +
       .03f*(seResult.vWorld[1]-v_des_world[1]) +
       (0.5f*seResult.position[2]/9.81f) * (-seResult.vWorld[0]*_yaw_turn_rate);
-    
-    // std::cout << "get the X value is: " << pfx_rel << std::endl;
-    // std::cout << "get the Y value is: " << pfy_rel << std::endl;
 
     pfx_rel = fminf(fmaxf(pfx_rel, -p_rel_max), p_rel_max);
     pfy_rel = fminf(fmaxf(pfy_rel, -p_rel_max), p_rel_max);
@@ -332,7 +263,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
     Pf[2] = 0.0;
     // Pf = seResult.rBody * (Pf - seResult.position) - _quadruped.getHipLocation(i);
     footSwingTrajectories[i].setFinalPosition(Pf);  //最终得到足底的位置，并作为轨迹终点 世界坐标系下的落足点
-    // std::cout << "final position is:[ " << i << " ]: " << Pf[0] << " , " << Pf[1] << std::endl;
   }
 
   // calc gait
@@ -353,7 +283,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   Vec4<float> contactStates = gait->getContactState();
   Vec4<float> swingStates = gait->getSwingState();
   int* mpcTable = gait->getMpcTable(); 
-  // std::cout << "the table value is: " << mpcTable << std::endl;
   updateMPCIfNeeded(mpcTable, _stateEstimator, omniMode);
 
   //  StateEstimator* se = hw_i->state_estimator;
@@ -420,30 +349,9 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
 #endif
       footSwingTrajectories[foot].computeSwingTrajectoryBezier(swingState, swingTimes[foot]);
 
-
-      //      footSwingTrajectories[foot]->updateFF(hw_i->leg_controller->leg_datas[foot].q,
-      //                                          hw_i->leg_controller->leg_datas[foot].qd, 0); // velocity dependent friction compensation todo removed
-      //hw_i->leg_controller->leg_datas[foot].qd, fsm->main_control_settings.variable[2]);
-
       Vec3<float> pDesFootWorld = footSwingTrajectories[foot].getPosition();
       Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
 
-     
-
-      // std::ofstream fp;
-      // fp.open("position.txt", std::ofstream::app);
-      // if(!fp){
-      //   std::ofstream fpout("position.txt");
-      //   fpout << pDesFootWorld(0) << "," << pDesFootWorld(1) << "," << pDesFootWorld(2) << ","; 
-      //   fp.close();
-      //   fpout.close();
-      // }else{
-      //   fp << pDesFootWorld(0) << "," << pDesFootWorld(1) << "," << pDesFootWorld(2) << std::endl; 
-      //   fp.close();
-      // }
-
-      // std::cout << "the need value is: " << foot << "  " << pDesFootWorld << std::endl;
-      
       Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) //侧摆关节坐标系下的足端坐标   (此处先改为身体坐标系下的足端坐标)
          - _quadruped.getHipLocation(foot);
       Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
@@ -466,9 +374,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
         }   
 
       }
-      //  if(iterationCounter < 2){
-      //   std::cout << "get the best value is " << foot << "  "  << _legController.commands[foot].pDes << std::endl;
-      // }
     }
     else // foot is in stance
     {
@@ -485,8 +390,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
       Vec3<float> vDesFootWorld = footSwingTrajectories[foot].getVelocity();
       Vec3<float> pDesLeg = seResult.rBody * (pDesFootWorld - seResult.position) - _quadruped.getHipLocation(foot);
       Vec3<float> vDesLeg = seResult.rBody * (vDesFootWorld - seResult.vWorld);
-      //cout << "Foot " << foot << " relative velocity desired: " << vDesLeg.transpose() << "\n";
-      // std::cout << "the need value is: " << foot << "  " << pDesFootWorld << std::endl;
 
       if(!use_wbc){
           _legController.commands[foot].pDes = pDesLeg;
@@ -503,10 +406,6 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
           _legController.commands[foot].forceFeedForward = f_ff[foot];
           _legController.commands[foot].kdJoint = Mat3<float>::Identity() * 0.2;
         
-
-        //      footSwingTrajectories[foot]->updateFF(hw_i->leg_controller->leg_datas[foot].q,
-        //                                          hw_i->leg_controller->leg_datas[foot].qd, 0); todo removed
-        // hw_i->leg_controller->leg_commands[foot].tau_ff += 0*footSwingController[foot]->getTauFF();
       }else{ // Stance foot damping
         _legController.commands[foot].pDes = pDesLeg;
         _legController.commands[foot].vDes = vDesLeg;
@@ -610,20 +509,6 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, StateEstimatorContain
         v_des_world[1],                           // 10
         0};                                       // 11
 
-      // float trajInitial[12] = {0,  // 0
-      //   0,    // 1
-      //   _yaw_des,    // 2
-      //   //yawStart,    // 2
-      //   xStart,                                   // 3
-      //   yStart,                                   // 4
-      //   (float)_body_height,      // 5
-      //   0,                                        // 6
-      //   0,                                        // 7
-      //   _yaw_turn_rate,  // 8
-      //   v_des_world[0],                           // 9
-      //   v_des_world[1],                           // 10
-      //   0};                                       // 11
-
       for(int i = 0; i < horizonLength; i++)
       {
         for(int j = 0; j < 12; j++)
@@ -631,8 +516,6 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(int *mpcTable, StateEstimatorContain
 
         if(i == 0) // start at current position  TODO consider not doing this
         {
-          //trajAll[3] = hw_i->state_estimator->se_pBody[0];
-          //trajAll[4] = hw_i->state_estimator->se_pBody[1];
           trajAll[2] = seResult.rpy[2];
         }
         else

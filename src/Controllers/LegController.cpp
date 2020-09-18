@@ -11,6 +11,7 @@
 #include "Controllers/LegController.h"
 #include <fstream> 
 #include <sys/time.h>
+#include <math.h>
 /*!
  * Zero the leg command so the leg will not output torque
  */
@@ -89,11 +90,6 @@ void LegController<T>::updateData(LegData* legData) {
     datas[leg].q(1) = legData->q_hip[leg];
     datas[leg].q(2) = legData->q_knee[leg];
 
-    // if(flags < 20){
-    //   std::cout << "the leg data is : " << leg << "  " << datas[leg].q << std::endl;
-    // }
-    
-
     // qd 关节角速度？
     datas[leg].qd(0) = legData->qd_abad[leg];
     datas[leg].qd(1) = legData->qd_hip[leg];
@@ -102,10 +98,6 @@ void LegController<T>::updateData(LegData* legData) {
     // J and p 雅可比和足端位置
     computeLegJacobianAndPosition<T>(_quadruped, datas[leg].q, &(datas[leg].J),
                                      &(datas[leg].p), leg);
-    
-    // if(flags < 10){
-    // std::cout << "the leg data is : " << leg << "  " << datas[leg].p << std::endl;
-    // }
     
     // v 足端速度
     datas[leg].v = datas[leg].J * datas[leg].qd;
@@ -117,7 +109,9 @@ void LegController<T>::updateData(LegData* legData) {
  */
 template <typename T>
 void LegController<T>::updateCommand(LegCommand* legCommand) {
-if(flags > 0){
+  float joint_kp = 10.0;
+  float joint_kd = 0.2;
+
   for (int leg = 0; leg < 4; leg++) {
     // tauFF 获得从控制器来的力矩
     Vec3<T> legTorque = commands[leg].tauFeedForward;
@@ -135,81 +129,29 @@ if(flags > 0){
     // Torque 足力转换成力矩
     legTorque += datas[leg].J.transpose() * footForce;
 
+    //计算期望关节角度
+    computeLegIK(_quadruped, commands[leg].pDes, &(commands[leg].qDes), leg);
+
     // set command: 命令设置 设置力矩
-    legCommand->tau_abad_ff[leg] = legTorque(0);
-    legCommand->tau_hip_ff[leg] = legTorque(1);
-    legCommand->tau_knee_ff[leg] = legTorque(2);
-
-    if(flags < 12){
-      // std::cout << "the Pcommand is1[" << leg << "]: " << commands[leg].pDes << std::endl;
-      // std::cout << "the Pcommand is2[" << leg << "]: " << datas[leg].p << std::endl;
-      // std::cout << "the KP is [" << leg << "]: " << commands[leg].kpCartesian << std::endl;
-      // std::cout << "the KD is [" << leg << "]: " << commands[leg].kdCartesian << std::endl;
-      // std::cout << "the Pcommand is3[" << leg << "]: " << commands[leg].vDes << std::endl;
-      // std::cout << "the Pcommand is4[" << leg << "]: " << datas[leg].v << std::endl;
-      // std::cout << "tau force is :" << leg << "  " << legTorque(0) << ", " << legTorque(1) << ", " << legTorque(2) << ", " << commands[leg].forceFeedForward << std::endl;
-      // std::cout << "tau force is222: " << leg << "  " << footForce << std::endl;
-    }
-
-    // printf("[%d] %7.3f %7.3f %7.3f\n", leg, legTorque(0), legTorque(1), legTorque(2));
-
-    // if(flags < 30){
-    //   std::cout << "the value is : " << leg << "  " << flags << "  " << commands[leg].forceFeedForward << std::endl;
-    //   // std::cout << "tau force is :" << leg << "  " << legTorque(0) << ", " << legTorque(1) << ", " << legTorque(2) << ", " << commands[leg].forceFeedForward << std::endl;
-    // }
+    legCommand->tau_abad_ff[leg] = joint_kp * (commands[leg].qDes(0) - datas[leg].q(0)) - joint_kd * datas[leg].qd(0) + legTorque(0);
+    legCommand->tau_hip_ff[leg] =  joint_kp * (-commands[leg].qDes(1) - datas[leg].q(1)) - joint_kd * datas[leg].qd(1) + legTorque(1);
+    legCommand->tau_knee_ff[leg] = joint_kp * (-commands[leg].qDes(2) - datas[leg].q(2)) - joint_kd * datas[leg].qd(2) + legTorque(2);
     
 
-    std::ofstream fp;
-    fp.open("position.txt", std::ofstream::app);
-    if(!fp){
-      std::ofstream fpout("position.txt");
-      fpout << commands[0].pDes(0) << "," << commands[0].pDes(1) << "," << commands[0].pDes(2) << "," << commands[1].pDes(0) << "," << commands[1].pDes(1) << "," << commands[1].pDes(2) << ","; 
-      fp.close();
-      fpout.close();
-    }else{
-      fp << commands[0].pDes(0) << "," << commands[0].pDes(1) << "," << commands[0].pDes(2) << "," << commands[1].pDes(0) << "," << commands[1].pDes(1) << "," << commands[1].pDes(2) << std::endl; 
-      fp.close();
-    }
-
-    // joint space pd
-    // joint space PD
-    // Vec3<T> jointAngle;
-    // jointAngle = Vec3<T>::Zero();
-    // computeLegIK(_quadruped, commands[leg].pDes, &jointAngle, leg);
-    // legCommand->kd_abad[leg] = 1;
-    // legCommand->kd_hip[leg] = 1;
-    // legCommand->kd_knee[leg] = 1;
-
-    // legCommand->kp_abad[leg] = 10;
-    // legCommand->kp_hip[leg] = 10;
-    // legCommand->kp_knee[leg] = 10;
-
-    // legCommand->q_des_abad[leg] = jointAngle(0);
-    // legCommand->q_des_hip[leg] = jointAngle(1);
-    // legCommand->q_des_knee[leg] = jointAngle(2);
-
-    // // std::cout << "commands Q value is :" << jointAngle << std::endl;
-
-    // legCommand->qd_des_abad[leg] = 0;
-    // legCommand->qd_des_hip[leg] = 0;
-    // legCommand->qd_des_knee[leg] = 0;
-
-    // legCommand->tau_abad_ff[leg] = legCommand->kp_abad[leg] * (legCommand->q_des_abad[leg] - datas[leg].q(0)) + 
-    //                                legCommand->kd_abad[leg] * (legCommand->qd_des_abad[leg] - datas[leg].qd(0));
-    // legCommand->tau_hip_ff[leg] = legCommand->kp_hip[leg] * (legCommand->q_des_hip[leg] - datas[leg].q(1)) + 
-    //                               legCommand->kd_hip[leg] * (legCommand->qd_des_hip[leg] - datas[leg].qd(1));
-    // legCommand->tau_knee_ff[leg] = legCommand->kp_knee[leg] * (legCommand->q_des_knee[leg] - datas[leg].q(2)) + 
-    //                               legCommand->kd_knee[leg] * (legCommand->qd_des_knee[leg] - datas[leg].qd(2));
-    
-    // if(flags < 10){
-    //   std::cout << "commands Q value is[ : " << leg << "] " << legCommand->tau_abad_ff[leg] << ", " << legCommand->tau_hip_ff[leg] << ", " << legCommand->tau_knee_ff[leg] << std::endl;
-    //   std::cout << "commands P value is :" << jointAngle << std::endl;
-    //   std::cout << "commands A value is :" << datas[leg].q << std::endl;
-    // }
+    // std::ofstream fp;
+    // fp.open("position.txt", std::ofstream::app);
+    // if(!fp){
+    //   std::ofstream fpout("position.txt");
+    //   fpout << commands[0].pDes(0) << "," << commands[0].pDes(1) << "," << commands[0].pDes(2) << "," << commands[1].pDes(0) << "," << commands[1].pDes(1) << "," << commands[1].pDes(2) << ","; 
+    //   fp.close();
+    //   fpout.close();
+    // }else{
+    //   fp << commands[0].pDes(0) << "," << commands[0].pDes(1) << "," << commands[0].pDes(2) << "," << commands[1].pDes(0) << "," << commands[1].pDes(1) << "," << commands[1].pDes(2) << std::endl; 
+    //   fp.close();
+    // }  
     
     legCommand->flags[leg] = _legsEnabled ? 1 : 0;
   }
-}
 
   flags = flags + 1;
 }
@@ -282,26 +224,54 @@ void computeLegIK(Quadruped<T>& quad, Vec3<T>& pDes, Vec3<T>* qDes, int leg) {
   T l2 = quad._hipLinkLength;
   T l3 = quad._kneeLinkLength;
   T sideSign = quad.getSideSign(leg);
+  
+  T D = (pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1 - l2 * l2 - l3 * l3) / (2 * l2 * l3);
 
-  T temp1 = (pDes(0) * pDes(0) + pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1 - l2 * l2 - l3 * l3) / (2 * l2 * l3);
-  qDes->operator()(2) = acos(temp1);
+  if(D > 1.00001 || D < -1.00001){
+    printf("_______OUT OF DOMAIN_______!!!\n");
+    if(D > 1.00001){
+      D = 0.99999;
+    }
+    if(D < -1.00001){
+      D = -0.99999;
+    }
+  }
 
-  T k1 = temp1;
-  T k2 = sqrt(1 - k1 * k1);
-  T temp2 = (l3 * k1 + l2) * (l3 * k1 + l2) + l3 * l3 * k2 * k2;
-  T temp3 = 2 * pDes(0) * (l3 * k1 + l2);
-  T temp4 = pDes(0) * pDes(0) - l3 * l3 * k2 * k2;
-  T temp5 = (temp3 - sqrt(temp3 * temp3 - 4 * temp2 * temp4)) / (2 * temp2);
-  qDes->operator()(1) = asin(temp5);
+  T gamma = atan2(-sqrt(1 - D * D), D);
+  T tetta = -atan2(pDes[2], pDes[1]) - atan2(sqrt(pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1), sideSign * l1);
+  T alpha = atan2(-pDes[0], sqrt(pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1)) - atan2(l3 * sin(gamma), l2 + l3 * cos(gamma));
 
-  T temp6 = sideSign * l1 + sqrt(pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1);
-  T temp7 = sideSign * l1 - sqrt(pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1);
-  T temp8 = temp6 * temp6 + temp7 * temp7;
-  T temp9 = 2 * temp6 * (pDes(1) + pDes(2));
-  T temp10 = (pDes(1) + pDes(2)) * (pDes(1) + pDes(2)) - temp7 * temp7;
-  T temp11 = (temp9 + sqrt(temp9 * temp9 - 4 * temp8 * temp10)) / (2 * temp8);
-  qDes->operator()(0) = asin(temp11);
+  qDes->operator()(0) = -tetta;
+  qDes->operator()(1) = alpha;
+  qDes->operator()(2) = gamma; 
 }
+
+// template <typename T>
+// void computeLegIK(Quadruped<T>& quad, Vec3<T>& pDes, Vec3<T>* qDes, int leg) {
+//   T l1 = quad._abadLinkLength + quad._kneeLinkY_offset;
+//   T l2 = quad._hipLinkLength;
+//   T l3 = quad._kneeLinkLength;
+//   T sideSign = quad.getSideSign(leg);
+
+//   T temp1 = (pDes(0) * pDes(0) + pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1 - l2 * l2 - l3 * l3) / (2 * l2 * l3);
+//   qDes->operator()(2) = acos(temp1);
+
+//   T k1 = temp1;
+//   T k2 = sqrt(1 - k1 * k1);
+//   T temp2 = (l3 * k1 + l2) * (l3 * k1 + l2) + l3 * l3 * k2 * k2;
+//   T temp3 = 2 * pDes(0) * (l3 * k1 + l2);
+//   T temp4 = pDes(0) * pDes(0) - l3 * l3 * k2 * k2;
+//   T temp5 = (temp3 - sqrt(temp3 * temp3 - 4 * temp2 * temp4)) / (2 * temp2);
+//   qDes->operator()(1) = asin(temp5);
+
+//   T temp6 = sideSign * l1 + sqrt(pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1);
+//   T temp7 = sideSign * l1 - sqrt(pDes(1) * pDes(1) + pDes(2) * pDes(2) - l1 * l1);
+//   T temp8 = temp6 * temp6 + temp7 * temp7;
+//   T temp9 = 2 * temp6 * (pDes(1) + pDes(2));
+//   T temp10 = (pDes(1) + pDes(2)) * (pDes(1) + pDes(2)) - temp7 * temp7;
+//   T temp11 = (temp9 + sqrt(temp9 * temp9 - 4 * temp8 * temp10)) / (2 * temp8);
+//   qDes->operator()(0) = asin(temp11);
+// }
 
 // template <typename T>
 // void computeLegIK(Quadruped<T>& quad, Vec3<T> pDes, std::vector<double> &qDes, int leg) {
