@@ -71,5 +71,5 @@
         "/home/derek/ros_workspace/quadruped_ws/devel/lib/python2.7/dist-packages",
         "/opt/ros/melodic/lib/python2.7/dist-packages"
     ],
-    "editor.fontFamily": "Consolas, 'Courier New', monospace",
+    "editor.fontFamily": "monospace",
 }
