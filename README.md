@@ -4,7 +4,7 @@
 MIT mini cheetah use qt simulation env, we extract the algorithm and do the simulation use ros and pybullet env.
 This is easy to deploy the system into different custom robot or plantform, and also easy to learn the algorithm.
 
-<img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/quadruped_balance.gif" alt="show" />
+<img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/blob/master/quadruped_balance.gif" alt="show" />
 
 ### System requirements:
 Ubuntu 18.04, ROS Mellodic  
