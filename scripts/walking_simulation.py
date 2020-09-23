@@ -31,7 +31,7 @@ def init_simulation():
     cubeStartPos = [0, 0, 0.5]
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     planeId = p.loadURDF("plane.urdf")
-    p.changeDynamics(planeId, -1, lateralFriction=0.35)
+    p.changeDynamics(planeId, -1, lateralFriction=1.0)
     # boxId = p.loadURDF("/home/wgx/Workspace_Ros/src/cloudrobot/src/quadruped_robot.urdf", cubeStartPos,
     #                    useFixedBase=FixedBase)
     boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", cubeStartPos,
@@ -46,6 +46,7 @@ def init_simulation():
     init_new_pos = [-0.0, -1.4, 2.7, 0.0, -1.4, 2.7, -0.0, -1.4, 2.7, 0.0, -1.4, 2.7]
     for j in range(12):
         p.setJointMotorControl2(boxId, motor_id_list[j], p.POSITION_CONTROL, init_new_pos[j], force=500.0)
+
 
     # slope terrain
     # colSphereId = p.createCollisionShape(p.GEOM_BOX, halfExtents=[0.5, 0.5, 0.001])
@@ -76,6 +77,7 @@ def init_simulation():
     BoxId = p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
     BoxId = p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
     BoxId = p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
+
 
 
 def thread_job():
@@ -117,6 +119,7 @@ def callback_state(msg):
 def callback_mode(req):
     global getMode
     getMode = req.cmd
+    print(getMode)
     if getMode == 0:
         p.resetBasePositionAndOrientation(boxId, [0, 0, 0.2], [0, 0, 0, 1])
         time.sleep(1)
@@ -163,7 +166,16 @@ def talker():
     com_msg = commandDes()
     freq = 400
     rate = rospy.Rate(freq)  # hz
+
     while not rospy.is_shutdown():
+
+        if myflags == 100:
+            p.resetBasePositionAndOrientation(boxId, [0, 0, 0.2], [0, 0, 0, 1])
+            time.sleep(1)
+            for j in range(16):
+                force = 0
+                p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)
+
         get_orientation = []
         pose_orn = p.getBasePositionAndOrientation(boxId)
         for i in range(4):
@@ -210,48 +222,13 @@ def talker():
         get_last_vel.clear()
         get_last_vel = com_msg.com_velocity
 
-        # get init pos
-        if getMode == 0:
-            init_pos = setJSMsg.position
-
         # stand up control
-        if getMode == 2 and len(get_position) == 0:
-        # if getMode == 2:
-            if iter >= freq:
-                iter = freq
-            jointTorques.clear()
-            middle_target.clear()
-            for j in range(12):
-                middle_target.append((stand_target[j] - init_pos[j]) * iter / freq + init_pos[j])
-                jointTorques.append(100.0 * (middle_target[j] - joint_state[j][0]) - 1.0 * joint_state[j][1])
-
-            # print(jointTorques)
+        if len(get_effort):
+            print(get_effort)
             p.setJointMotorControlArray(bodyUniqueId=boxId,
                                         jointIndices=motor_id_list,
                                         controlMode=p.TORQUE_CONTROL,
-                                        forces=jointTorques)
-            # p.setJointMotorControlArray(bodyUniqueId=boxId,
-            #                             jointIndices=motor_id_list,
-            #                             controlMode=p.POSITION_CONTROL,
-            #                             targetPositions=middle_target)
-            iter = iter + 1
-
-        if getMode == 2 and len(get_position):
-            # jointTorques1.clear()
-            # for j in range(12):
-            #     jointTorques1.append(joint_Kp[j] * (get_position[j] - joint_state[j][0]) - joint_Kd[j] * joint_state[j][1] + get_effort[j])
-
-            p.setJointMotorControlArray(boxId,
-                                        jointIndices=motor_id_list,
-                                        controlMode=p.TORQUE_CONTROL,
                                         forces=get_effort)
-
-            # p.setJointMotorControlArray(bodyUniqueId=boxId,
-            #                             jointIndices=motor_id_list,
-            #                             controlMode=p.POSITION_CONTROL,
-            #                             targetPositions=get_position)
-
-            iter1 = iter1 + 1
 
         setJSMsg.header.stamp = rospy.Time.now()
         setJSMsg.name = ["abduct_fr", "thigh_fr", "knee_fr", "abduct_fl", "thigh_fl", "knee_fl",
@@ -271,7 +248,7 @@ if __name__ == '__main__':
     init_simulation()
     rospy.init_node('listener', anonymous=True)
     rospy.Subscriber("set_js", JointState, callback_state, buff_size=10000)
-    s = rospy.Service('set_jm', QuadrupedCmd, callback_mode)
+    s = rospy.Service('robot_mode', QuadrupedCmd, callback_mode)
     add_thread = threading.Thread(target=thread_job)
     add_thread.start()
     talker()

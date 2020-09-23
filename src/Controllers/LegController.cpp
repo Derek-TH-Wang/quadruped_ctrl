@@ -12,6 +12,7 @@
 #include <fstream> 
 #include <sys/time.h>
 #include <math.h>
+#include <vector>
 /*!
  * Zero the leg command so the leg will not output torque
  */
@@ -108,9 +109,9 @@ void LegController<T>::updateData(LegData* legData) {
  * Update the "leg command" for the SPIne board message
  */
 template <typename T>
-void LegController<T>::updateCommand(LegCommand* legCommand) {
-  float joint_kp = 10.0;
-  float joint_kd = 0.2;
+void LegController<T>::updateCommand(LegCommand* legCommand, Vec4<T>& crtlParam, int robotmode) {
+  
+
 
   for (int leg = 0; leg < 4; leg++) {
     // tauFF 获得从控制器来的力矩
@@ -133,10 +134,32 @@ void LegController<T>::updateCommand(LegCommand* legCommand) {
     computeLegIK(_quadruped, commands[leg].pDes, &(commands[leg].qDes), leg);
 
     // set command: 命令设置 设置力矩
-    legCommand->tau_abad_ff[leg] = joint_kp * (commands[leg].qDes(0) - datas[leg].q(0)) - joint_kd * datas[leg].qd(0) + legTorque(0);
-    legCommand->tau_hip_ff[leg] =  joint_kp * (-commands[leg].qDes(1) - datas[leg].q(1)) - joint_kd * datas[leg].qd(1) + legTorque(1);
-    legCommand->tau_knee_ff[leg] = joint_kp * (-commands[leg].qDes(2) - datas[leg].q(2)) - joint_kd * datas[leg].qd(2) + legTorque(2);
-    
+    if(robotmode == 1){
+      if(myflags < 4){
+        init_pos[leg * 3 + 0] =  datas[leg].q(0);
+        init_pos[leg * 3 + 1] =  datas[leg].q(1);
+        init_pos[leg * 3 + 2] =  datas[leg].q(2);
+      }
+
+      if(myflags >= 1600){
+        myflags = 1600;
+      }
+      
+      if(myflags > 3){
+        legCommand->tau_abad_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 0] - init_pos[leg * 3 + 0]) * myflags / 1600.0 + init_pos[leg * 3 + 0]
+                                       - datas[leg].q(0)) - crtlParam(1) * datas[leg].qd(0);
+        legCommand->tau_hip_ff[leg] =  crtlParam(0) * ((stand_target[leg * 3 + 1] - init_pos[leg * 3 + 1]) * myflags / 1600.0 + init_pos[leg * 3 + 1]
+                                       - datas[leg].q(1)) - crtlParam(1) * datas[leg].qd(1);
+        legCommand->tau_knee_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 2] - init_pos[leg * 3 + 2]) * myflags / 1600.0 + init_pos[leg * 3 + 2]
+                                       - datas[leg].q(2)) - crtlParam(1) * datas[leg].qd(2);
+      }
+      
+      myflags = myflags + 1;
+    }else if(robotmode == 4){
+      legCommand->tau_abad_ff[leg] = crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) - crtlParam(3) * datas[leg].qd(0) + legTorque(0);
+      legCommand->tau_hip_ff[leg] =  crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) - crtlParam(3) * datas[leg].qd(1) + legTorque(1);
+      legCommand->tau_knee_ff[leg] = crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) - crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+    }
 
     // std::ofstream fp;
     // fp.open("position.txt", std::ofstream::app);
@@ -150,7 +173,7 @@ void LegController<T>::updateCommand(LegCommand* legCommand) {
     //   fp.close();
     // }  
     
-    legCommand->flags[leg] = _legsEnabled ? 1 : 0;
+    // legCommand->flags[leg] = _legsEnabled ? 1 : 0;
   }
 
   flags = flags + 1;
@@ -228,7 +251,7 @@ void computeLegIK(Quadruped<T>& quad, Vec3<T>& pDes, Vec3<T>* qDes, int leg) {
   T D = (pDes[0] * pDes[0] + pDes[1] * pDes[1] + pDes[2] * pDes[2] - l1 * l1 - l2 * l2 - l3 * l3) / (2 * l2 * l3);
 
   if(D > 1.00001 || D < -1.00001){
-    printf("_______OUT OF DOMAIN_______!!!\n");
+    // printf("_______OUT OF DOMAIN_______!!!\n");
     if(D > 1.00001){
       D = 0.99999;
     }

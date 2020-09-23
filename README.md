@@ -20,12 +20,32 @@ run the simulator
 ```
 rosrun quadruped_ctrl walking_simulation.py
 ```
-first set to stand up:  
+first run the controller:  
 ```
-rosservice call /set_jm "cmd: 0" 
-rosservice call /set_jm "cmd: 2" 
+roslaunch quadruped_ctrl quadruped_ctrl.launch
 ```
-then, run the controller:  
+then, stand up the robot:  
 ```
-rosrun quadruped_ctrl mainController
+rosservice call /robot_mode "cmd: 1"
+rosservice call /robot_mode "cmd: 4"
 ```
+
+you can switch the gait type:
+```
+rosservice call /gait_type "cmd: 1"
+
+gait type:
+0:trot
+1:bunding
+2:pronking
+3:random
+4:standing
+5:trotRunning
+6:random2
+7:galloping
+8:pacing
+9:trot (same as 0)
+10:walking
+11:walking2
+```
+

@@ -63,7 +63,7 @@ class LegController {
   void edampCommand(RobotType robot, T gain);
   void updateData(LegData* legData);
   // void updateData(const TiBoardData* tiBoardData);
-  void updateCommand(LegCommand* legCommand);
+  void updateCommand(LegCommand* legCommand, Vec4<T>& crtlParam, int robotmode);
   // void updateCommand(TiBoardCommand* tiBoardCommand);
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
   // void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt* command);
@@ -81,6 +81,11 @@ class LegController {
   bool _zeroEncoders = false;
   u32 _calibrateEncoders = 0;
   int flags = 0;
+
+  float stand_target[12] = {0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6};
+  float init_pos[12] = {0.0};
+
+  int myflags = 0;
 };
 
 template <typename T>

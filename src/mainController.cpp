@@ -25,9 +25,10 @@
 #define freq 400.0
 
 int iter = 0;
-int set_robot_mode;
+int set_robot_mode, set_gait_type;
 std::vector<double> _gamepadCommand;
 std::vector< Vec3<float> > _ini_foot_pos;
+Vec4<float> ctrlParam_sim, ctrlParam_robot;
 float init_joint_pos[12] = {-0.7, -1.0, 2.7, 0.7, -1.0, 2.7, -0.7, -1.0, 2.7, 0.7, -1.0, 2.7};
 
 std::string joint_name[12] = {"abduct_fl", "thigh_fl", "knee_fl", "abduct_hl", "thigh_hl", "knee_hl",
@@ -78,26 +79,6 @@ void velCmdCallBack(const geometry_msgs::Twist& msg){
 }
 
 void PoseCmdCallBack(const geometry_msgs::Twist& msg){
-  // robotRoll += 0.1 * msg.angular.x;
-  // if(robotRoll > PI/4){
-  //   robotRoll = PI/4;
-  // }else if(robotRoll < -PI/4){
-  //   robotRoll = -PI/4;
-  // }
-
-  // robotPitch += 0.1 * msg.angular.y;
-  // if(robotPitch > PI/4){
-  //   robotPitch = PI/4;
-  // }else if(robotPitch < -PI/4){
-  //   robotPitch = -PI/4;
-  // }
-
-  // robotYaw += 0.1 * msg.angular.z;
-  // if(robotYaw > PI/4){
-  //   robotYaw = PI/4;
-  // }else if(robotYaw < -PI/4){
-  //   robotYaw = -PI/4;
-  // }
   
 }
 
@@ -141,6 +122,16 @@ bool setRobotMode(quadruped_ctrl::QuadrupedCmd::Request  &req,
                   quadruped_ctrl::QuadrupedCmd::Response &res)
 {
   set_robot_mode = req.cmd;
+
+  return true;
+}
+
+bool setGaitType(quadruped_ctrl::QuadrupedCmd::Request  &req,
+                  quadruped_ctrl::QuadrupedCmd::Response &res)
+{
+  set_gait_type = req.cmd;
+
+  return true;
 }
 
 
@@ -156,8 +147,6 @@ int main(int argc, char **argv) {
   Quadruped<float> _quadruped;
   FloatingBaseModel<float> _model;
   convexMPC = new ConvexMPCLocomotion(1/freq, 13);
-
-  std::cout << "ssssssssssss " << 1/freq << std::endl; 
   
   _quadruped = buildMiniCheetah<float>();
   _model = _quadruped.buildModel();
@@ -182,19 +171,33 @@ int main(int argc, char **argv) {
   _desiredStateCommand =
     new DesiredStateCommand<float>(1/freq);
 
-  ros::init(argc, argv, "quadruped_robot");
+  ros::init(argc, argv, "quadruped");
   ros::NodeHandle n;
 
   ros::Rate loop_rate(freq);
   sensor_msgs::JointState joint_state;
 
   ros::Publisher pub_joint = n.advertise<sensor_msgs::JointState>("set_js", 1000);  //下发给simulator或者robot的关节控制数据（关节扭矩）
-  ros::ServiceClient jointCtrlMode = n.serviceClient<quadruped_ctrl::QuadrupedCmd>("set_jm");
-  ros::ServiceServer robotMode = n.advertiseService("robot_mode", setRobotMode);
+  // ros::ServiceClient jointCtrlMode = n.serviceClient<quadruped_ctrl::QuadrupedCmd>("set_jm");
+  ros::ServiceServer robotMode = n.advertiseService("robot_mode", setRobotMode);     //接收机器人状态设置
+  ros::ServiceServer gaitType = n.advertiseService("gait_type", setGaitType);        //接收机器人步态选择切换
   ros::Subscriber sub_vel = n.subscribe("cmd_vel", 1000, velCmdCallBack);           //接收的手柄速度信息
   ros::Subscriber sub_imu = n.subscribe("imu_body", 1000, ImuCmdCallBack);          // imu反馈的身体位置和姿态
   ros::Subscriber sub_jointstate = n.subscribe("get_js", 1000, jointStateCmdCallBack);   //simulator或者robot反馈的关节信息（位置、速度等）
   ros::Subscriber sub_com_state = n.subscribe("get_com", 1000, RobotComCallBack);
+
+  //control parameters in simulation
+  n.getParam("/simulation/stand_kp", ctrlParam_sim(0));
+  n.getParam("/simulation/stand_kd", ctrlParam_sim(1));
+  n.getParam("/simulation/joint_kp", ctrlParam_sim(2));
+  n.getParam("/simulation/joint_kd", ctrlParam_sim(3));
+
+  //control parameters in simulation
+  n.getParam("/robot/stand_kp", ctrlParam_robot(0));
+  n.getParam("/robot/stand_kd", ctrlParam_robot(1));
+  n.getParam("/robot/joint_kp", ctrlParam_robot(2));
+  n.getParam("/robot/joint_kd", ctrlParam_robot(3));
+
 
   usleep(1000 * 1000);
 
@@ -224,7 +227,7 @@ int main(int argc, char **argv) {
     // Find the desired state trajectory
     _desiredStateCommand->convertToStateCommands(_gamepadCommand);
    
-    convexMPC->run(_quadruped, *_legController, *_stateEstimator, *_desiredStateCommand, _gamepadCommand, set_robot_mode);
+    convexMPC->run(_quadruped, *_legController, *_stateEstimator, *_desiredStateCommand, _gamepadCommand, set_gait_type);
     
     // start = clock();
     // finish = clock();
@@ -235,7 +238,7 @@ int main(int argc, char **argv) {
     //   std::cout << "get com position" << legdata.robot_com_position[i] << std::endl;
     // }
 
-    _legController->updateCommand(&legcommand);
+    _legController->updateCommand(&legcommand, ctrlParam_sim, set_robot_mode);
 
     for(int i = 0; i < 12; i++){
       joint_state.name[i] = joint_name[i];
