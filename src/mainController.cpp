@@ -25,6 +25,7 @@
 #define freq 400.0
 
 int iter = 0;
+int set_robot_mode;
 std::vector<double> _gamepadCommand;
 std::vector< Vec3<float> > _ini_foot_pos;
 float init_joint_pos[12] = {-0.7, -1.0, 2.7, 0.7, -1.0, 2.7, -0.7, -1.0, 2.7, 0.7, -1.0, 2.7};
@@ -136,6 +137,12 @@ void RobotComCallBack(const quadruped_ctrl::commandDes& msg){//反馈的关节�
   _vectorNavData.com_vel(2, 0) = msg.com_velocity[2];
 }
 
+bool setRobotMode(quadruped_ctrl::QuadrupedCmd::Request  &req,
+                  quadruped_ctrl::QuadrupedCmd::Response &res)
+{
+  set_robot_mode = req.cmd;
+}
+
 
 int main(int argc, char **argv) {
   float hMax = 0.25;
@@ -183,6 +190,7 @@ int main(int argc, char **argv) {
 
   ros::Publisher pub_joint = n.advertise<sensor_msgs::JointState>("set_js", 1000);  //下发给simulator或者robot的关节控制数据（关节扭矩）
   ros::ServiceClient jointCtrlMode = n.serviceClient<quadruped_ctrl::QuadrupedCmd>("set_jm");
+  ros::ServiceServer robotMode = n.advertiseService("robot_mode", setRobotMode);
   ros::Subscriber sub_vel = n.subscribe("cmd_vel", 1000, velCmdCallBack);           //接收的手柄速度信息
   ros::Subscriber sub_imu = n.subscribe("imu_body", 1000, ImuCmdCallBack);          // imu反馈的身体位置和姿态
   ros::Subscriber sub_jointstate = n.subscribe("get_js", 1000, jointStateCmdCallBack);   //simulator或者robot反馈的关节信息（位置、速度等）
@@ -216,7 +224,7 @@ int main(int argc, char **argv) {
     // Find the desired state trajectory
     _desiredStateCommand->convertToStateCommands(_gamepadCommand);
    
-    convexMPC->run(_quadruped, *_legController, *_stateEstimator, *_desiredStateCommand, _gamepadCommand);
+    convexMPC->run(_quadruped, *_legController, *_stateEstimator, *_desiredStateCommand, _gamepadCommand, set_robot_mode);
     
     // start = clock();
     // finish = clock();

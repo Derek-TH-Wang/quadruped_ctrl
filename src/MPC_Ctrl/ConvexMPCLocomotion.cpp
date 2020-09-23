@@ -98,15 +98,15 @@ void ConvexMPCLocomotion::_SetupCommand(StateEstimatorContainer<float> &_stateEs
 
 template<>
 void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float> &_legController, StateEstimatorContainer<float> &_stateEstimator,
-                          DesiredStateCommand<float> &_desiredStateCommand, std::vector<double> gamepadCommand) {
+                          DesiredStateCommand<float> &_desiredStateCommand, std::vector<double> gamepadCommand, int gaitType) {
   bool omniMode = false;
   // Command Setup
   _SetupCommand(_stateEstimator, gamepadCommand);
 
-  gaitNumber = 9;   //data.userParameters->cmpc_gait; 步态默认为trot
+  gaitNumber = gaitType;   //data.userParameters->cmpc_gait; 步态默认为trot
 
-  if(gaitNumber >= 10) {
-    gaitNumber -= 10;
+  if(gaitNumber >= 20) {
+    gaitNumber -= 20;
     omniMode = true;
   }
 
@@ -140,9 +140,13 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   else if(gaitNumber == 6)
     gait = &random2;
   else if(gaitNumber == 7)
-    gait = &random2;
+    gait = &galloping;
   else if(gaitNumber == 8)
     gait = &pacing;
+  else if(gaitNumber == 10)
+    gait = &walking;
+  else if(gaitNumber == 11)
+    gait = &walking2;
 
   current_gait = gaitNumber;
 
