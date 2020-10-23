@@ -32,19 +32,22 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
   //galloping(horizonLength, Vec4<int>(0,2,7,9),Vec4<int>(6,6,6,6),"Galloping"),
   //galloping(horizonLength, Vec4<int>(0,2,7,9),Vec4<int>(3,3,3,3),"Galloping"),
   galloping(horizonLength, Vec4<int>(0,2,7,9),Vec4<int>(4,4,4,4),"Galloping"),
-  standing(horizonLength, Vec4<int>(0,0,0,0),Vec4<int>(10,10,10,10),"Standing"),
+  standing(horizonLength, Vec4<int>(0,0,0,0),Vec4<int>(horizonLength,horizonLength,horizonLength,horizonLength),"Standing"),
   //trotRunning(horizonLength, Vec4<int>(0,5,5,0),Vec4<int>(3,3,3,3),"Trot Running"),
   trotRunning(horizonLength, Vec4<int>(0,5,5,0),Vec4<int>(4,4,4,4),"Trot Running"),
-  walking(horizonLength, Vec4<int>(0,3,5,8), Vec4<int>(5,5,5,5), "Walking"),
+  walking(horizonLength, Vec4<int>(0,1*horizonLength/2,1*horizonLength/4,3*horizonLength/4), Vec4<int>(3*horizonLength/4,3*horizonLength/4,3*horizonLength/4,3*horizonLength/4), "Walking"),
   walking2(horizonLength, Vec4<int>(0,5,5,0), Vec4<int>(7,7,7,7), "Walking2"),
   pacing(horizonLength, Vec4<int>(5,0,5,0),Vec4<int>(5,5,5,5),"Pacing"),
-  random(horizonLength, Vec4<int>(9,13,13,9), 0.4, "Flying nine thirteenths trot"),
-  random2(horizonLength, Vec4<int>(8,16,16,8), 0.5, "Double Trot")
+  // random(horizonLength, Vec4<int>(9,13,13,9), 0.4, "Flying nine thirteenths trot"),
+  // random2(horizonLength, Vec4<int>(8,16,16,8), 0.5, "Double Trot"),
+  // aio(horizonLength, Vec4<int>(6,0,3,9), Vec4<int>(9,9,9,9), "aio")
+  aio(horizonLength, Vec4<int>(0,horizonLength*2/4,horizonLength*1/4,horizonLength*3/4), 
+                     Vec4<int>(horizonLength*14/16,horizonLength*14/16,horizonLength*14/16,horizonLength*14/16), "aio")
 {
   dtMPC = dt * iterationsBetweenMPC;   //0.03
   default_iterations_between_mpc = iterationsBetweenMPC;
   printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n", dt, iterationsBetweenMPC, dtMPC); //0.002, 15, 0.03
-  setup_problem(dtMPC, horizonLength, 0.4, 120);
+  // setup_problem(dtMPC, horizonLength, 0.4, 120);
   //setup_problem(dtMPC, horizonLength, 0.4, 650); // DH
   rpy_comp[0] = 0;
   rpy_comp[1] = 0;
@@ -79,7 +82,7 @@ void ConvexMPCLocomotion::_SetupCommand(StateEstimatorContainer<float> &_stateEs
   _body_height = 0.25;
   
   float x_vel_cmd, y_vel_cmd;
-  float filter(0.1);
+  float filter(0.005);
 
   //手柄数据先暂时设置为0，后面再给手柄赋值   旋转角速度和x,y方向上的线速度
   x_vel_cmd = gamepadCommand[0];
@@ -126,30 +129,31 @@ void ConvexMPCLocomotion::run(Quadruped<float> &_quadruped, LegController<float>
   }
 
   // pick gait
-  Gait* gait = &trotting;
+  Gait* gait = &standing;
   if(gaitNumber == 1)
     gait = &bounding;
   else if(gaitNumber == 2)
     gait = &pronking;
-  else if(gaitNumber == 3)
-    gait = &random;
+  // else if(gaitNumber == 3)
+  //   gait = &random;
   else if(gaitNumber == 4)
     gait = &standing;
   else if(gaitNumber == 5)
     gait = &trotRunning;
-  else if(gaitNumber == 6)
-    gait = &random2;
+  // else if(gaitNumber == 6)
+  //   gait = &random2;
   else if(gaitNumber == 7)
     gait = &galloping;
   else if(gaitNumber == 8)
     gait = &pacing;
+  else if(gaitNumber == 9)
+    gait = &trotting;
   else if(gaitNumber == 10)
     gait = &walking;
   else if(gaitNumber == 11)
     gait = &walking2;
 
   current_gait = gaitNumber;
-
   gait->setIterations(iterationsBetweenMPC, iterationCounter);   //步态周期计算
 
   // integrate position setpoint

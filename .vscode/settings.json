@@ -65,7 +65,8 @@
         "string": "cpp",
         "string_view": "cpp",
         "*.cuh": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "*.ipp": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/derek/ros_workspace/quadruped_ws/devel/lib/python2.7/dist-packages",

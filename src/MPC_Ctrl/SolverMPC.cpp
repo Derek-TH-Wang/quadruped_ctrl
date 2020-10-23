@@ -97,10 +97,10 @@ void c2qp(Matrix<fpt,13,13> Ac, Matrix<fpt,13,12> Bc,fpt dt,s16 horizon)
   cout<<"Adt: \n"<<Adt<<"\nBdt:\n"<<Bdt<<endl;
 #endif
   if(horizon > 19) {
-    throw std::runtime_error("horizon is too long!");
+    // throw std::runtime_error("horizon is too long!");
   }
 
-  Matrix<fpt,13,13> powerMats[20];
+  Matrix<fpt,13,13> powerMats[100];
   powerMats[0].setIdentity();
   for(int i = 1; i < horizon+1; i++) {
     powerMats[i] = Adt * powerMats[i-1];

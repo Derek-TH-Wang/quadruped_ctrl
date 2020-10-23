@@ -134,32 +134,32 @@ void LegController<T>::updateCommand(LegCommand* legCommand, Vec4<T>& crtlParam,
     computeLegIK(_quadruped, commands[leg].pDes, &(commands[leg].qDes), leg);
 
     // set command: 命令设置 设置力矩
-    if(robotmode == 1){
-      if(myflags < 4){
-        init_pos[leg * 3 + 0] =  datas[leg].q(0);
-        init_pos[leg * 3 + 1] =  datas[leg].q(1);
-        init_pos[leg * 3 + 2] =  datas[leg].q(2);
-      }
+    // if(robotmode == 1){
+    //   if(myflags < 4){
+    //     init_pos[leg * 3 + 0] =  datas[leg].q(0);
+    //     init_pos[leg * 3 + 1] =  datas[leg].q(1);
+    //     init_pos[leg * 3 + 2] =  datas[leg].q(2);
+    //   }
 
-      if(myflags >= 1600){
-        myflags = 1600;
-      }
+    //   if(myflags >= 1600){
+    //     myflags = 1600;
+    //   }
       
-      if(myflags > 3){
-        legCommand->tau_abad_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 0] - init_pos[leg * 3 + 0]) * myflags / 1600.0 + init_pos[leg * 3 + 0]
-                                       - datas[leg].q(0)) - crtlParam(1) * datas[leg].qd(0);
-        legCommand->tau_hip_ff[leg] =  crtlParam(0) * ((stand_target[leg * 3 + 1] - init_pos[leg * 3 + 1]) * myflags / 1600.0 + init_pos[leg * 3 + 1]
-                                       - datas[leg].q(1)) - crtlParam(1) * datas[leg].qd(1);
-        legCommand->tau_knee_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 2] - init_pos[leg * 3 + 2]) * myflags / 1600.0 + init_pos[leg * 3 + 2]
-                                       - datas[leg].q(2)) - crtlParam(1) * datas[leg].qd(2);
-      }
+    //   if(myflags > 3){
+    //     legCommand->tau_abad_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 0] - init_pos[leg * 3 + 0]) * myflags / 1600.0 + init_pos[leg * 3 + 0]
+    //                                    - datas[leg].q(0)) - crtlParam(1) * datas[leg].qd(0);
+    //     legCommand->tau_hip_ff[leg] =  crtlParam(0) * ((stand_target[leg * 3 + 1] - init_pos[leg * 3 + 1]) * myflags / 1600.0 + init_pos[leg * 3 + 1]
+    //                                    - datas[leg].q(1)) - crtlParam(1) * datas[leg].qd(1);
+    //     legCommand->tau_knee_ff[leg] = crtlParam(0) * ((stand_target[leg * 3 + 2] - init_pos[leg * 3 + 2]) * myflags / 1600.0 + init_pos[leg * 3 + 2]
+    //                                    - datas[leg].q(2)) - crtlParam(1) * datas[leg].qd(2);
+    //   }
       
-      myflags = myflags + 1;
-    }else if(robotmode == 4){
-      legCommand->tau_abad_ff[leg] = crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) - crtlParam(3) * datas[leg].qd(0) + legTorque(0);
-      legCommand->tau_hip_ff[leg] =  crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) - crtlParam(3) * datas[leg].qd(1) + legTorque(1);
-      legCommand->tau_knee_ff[leg] = crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) - crtlParam(3) * datas[leg].qd(2) + legTorque(2);
-    }
+    //   myflags = myflags + 1;
+    // }else if(robotmode == 4){
+    legCommand->tau_abad_ff[leg] = crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) - crtlParam(3) * datas[leg].qd(0) + legTorque(0);
+    legCommand->tau_hip_ff[leg] =  crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) - crtlParam(3) * datas[leg].qd(1) + legTorque(1);
+    legCommand->tau_knee_ff[leg] = crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) - crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+    // }
 
     // std::ofstream fp;
     // fp.open("position.txt", std::ofstream::app);

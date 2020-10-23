@@ -35,6 +35,7 @@ public:
    */
   void setInitialPosition(Vec3<T> p0) {
     _p0 = p0;
+    _p = p0;    // solve init stand pDesFootWorld=0 problem
   }
 
   /*!

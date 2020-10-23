@@ -1,11 +1,29 @@
 #include "Gait.h"
 
 // Offset - Duration Gait
-OffsetDurationGait::OffsetDurationGait(int nSegment, Vec4<int> offsets, Vec4<int> durations, const std::string &name) :
+OffsetDurationGait::OffsetDurationGait(int nSegment, Vec4<int> offsets, Vec4<int> durations, const std::string &name = "walk") :
   _offsets(offsets.array()),
   _durations(durations.array()),
   _nIterations(nSegment)  //10
 {
+
+  // _name = name;
+  // // allocate memory for MPC gait table
+  // _mpc_table = new int[nSegment * 4];
+
+  // _offsetsFloat = offsets.cast<float>() / (float) nSegment;
+  // _durationsFloat = durations.cast<float>() / (float) nSegment;
+
+  // _stance = durations[0];
+  // _swing = nSegment - durations[0];
+  setGaitParam(nSegment, offsets, durations, name);
+}
+
+void OffsetDurationGait::setGaitParam(int nSegment, Vec4<int> offsets, Vec4<int> durations, const std::string& name = "walk") {
+
+  _offsets = offsets.array();
+  _durations = durations.array();
+  _nIterations = nSegment;
 
   _name = name;
   // allocate memory for MPC gait table
@@ -136,14 +154,13 @@ int* OffsetDurationGait::getMpcTable()
     }
     // printf("\n");
   }
-
-
+  // printf("\n");
 
   return _mpc_table;
 }
 
 int* MixedFrequncyGait::getMpcTable() {
-  //printf("MPC table (%d):\n", _iteration);
+  // printf("MPC table (%d):\n", _iteration);
   for(int i = 0; i < _nIterations; i++) {
     for(int j = 0; j < 4; j++) {
       int progress = (i + _iteration + 1) % _periods[j];  // progress

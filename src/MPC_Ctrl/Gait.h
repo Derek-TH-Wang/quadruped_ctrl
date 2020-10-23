@@ -11,6 +11,7 @@ class Gait {
 public:
   virtual ~Gait() = default;
 
+  virtual void setGaitParam(int nSegment, Vec4<int> offsets, Vec4<int> durations, const std::string& name = "walk") = 0;
   virtual Vec4<float> getContactState() = 0;
   virtual Vec4<float> getSwingState() = 0;
   virtual int* getMpcTable() = 0;
@@ -31,6 +32,7 @@ class OffsetDurationGait : public Gait {
 public:
   OffsetDurationGait(int nSegment, Vec4<int> offset, Vec4<int> durations, const std::string& name);
   ~OffsetDurationGait();
+  void setGaitParam(int nSegment, Vec4<int> offset, Vec4<int> durations, const std::string& name);
   Vec4<float> getContactState();
   Vec4<float> getSwingState();
   int* getMpcTable();

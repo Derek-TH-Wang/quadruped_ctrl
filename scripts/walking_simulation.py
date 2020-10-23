@@ -11,6 +11,7 @@ from sensor_msgs.msg import Imu
 import matplotlib.pyplot as plt
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
 from quadruped_ctrl.msg import commandDes
+import random
 
 getMode = 10
 get_position = []
@@ -18,6 +19,7 @@ get_effort = []
 get_velocity = []
 get_last_vel = [0.0, 0.0, 0.0]
 myflags = 0
+firstflags = 0
 
 def init_simulation():
     global boxId, motor_id_list, compensateReal, get_last_euler
@@ -28,12 +30,39 @@ def init_simulation():
     # motor_id_list = [4, 5, 6, 12, 13, 14, 0, 1, 2, 8, 9, 10]
     compensateReal = [-1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1]
     p.setGravity(0, 0, -9.8)
-    cubeStartPos = [0, 0, 0.5]
+    cubeStartPos = [0, 0, 0.41]
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
-    planeId = p.loadURDF("plane.urdf")
-    p.changeDynamics(planeId, -1, lateralFriction=1.0)
+    # p.setPhysicsEngineParameter(numSolverIterations=30)
+    # p.setPhysicsEngineParameter(enableConeFriction=0)
+    # planeId = p.loadURDF("plane.urdf")
+    # p.changeDynamics(planeId, -1, lateralFriction=1.0)
     # boxId = p.loadURDF("/home/wgx/Workspace_Ros/src/cloudrobot/src/quadruped_robot.urdf", cubeStartPos,
     #                    useFixedBase=FixedBase)
+
+    heightPerturbationRange = 0.06
+    plane = True
+    if plane:
+      planeShape = p.createCollisionShape(shapeType = p.GEOM_PLANE)
+      ground_id  = p.createMultiBody(0, planeShape)
+    else:
+      numHeightfieldRows = 256
+      numHeightfieldColumns = 256
+      heightfieldData = [0]*numHeightfieldRows*numHeightfieldColumns 
+      for j in range (int(numHeightfieldColumns/2)):
+        for i in range (int(numHeightfieldRows/2) ):
+          height = random.uniform(0,heightPerturbationRange)
+          heightfieldData[2*i+2*j*numHeightfieldRows]=height
+          heightfieldData[2*i+1+2*j*numHeightfieldRows]=height
+          heightfieldData[2*i+(2*j+1)*numHeightfieldRows]=height
+          heightfieldData[2*i+1+(2*j+1)*numHeightfieldRows]=height
+    
+      terrainShape = p.createCollisionShape(shapeType = p.GEOM_HEIGHTFIELD, meshScale=[.05,.05,1], heightfieldTextureScaling=(numHeightfieldRows-1)/2, heightfieldData=heightfieldData, numHeightfieldRows=numHeightfieldRows, numHeightfieldColumns=numHeightfieldColumns)
+      ground_id  = p.createMultiBody(0, terrainShape)
+
+    p.resetBasePositionAndOrientation(ground_id,[0,0,0], [0,0,0,1])
+    p.changeDynamics(ground_id, -1, lateralFriction=1.0)
+
+
     boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", cubeStartPos,
                        useFixedBase=False)
 
@@ -43,9 +72,10 @@ def init_simulation():
         jointIds.append(j)
 
     jointConfig = numpy.array([-0.7, -1.0, 2.7, 0.7, -1.0, 2.7, -0.7, -1.0, 2.7, 0.7, -1.0, 2.7])
-    init_new_pos = [-0.0, -1.4, 2.7, 0.0, -1.4, 2.7, -0.0, -1.4, 2.7, 0.0, -1.4, 2.7]
+    # init_new_pos = [-0.0, -1.4, 2.7, 0.0, -1.4, 2.7, -0.0, -1.4, 2.7, 0.0, -1.4, 2.7]
+    init_new_pos = [0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6]
     for j in range(12):
-        p.setJointMotorControl2(boxId, motor_id_list[j], p.POSITION_CONTROL, init_new_pos[j], force=500.0)
+        p.setJointMotorControl2(boxId, motor_id_list[j], p.POSITION_CONTROL, init_new_pos[j], force=5.0)
 
 
     # slope terrain
@@ -90,17 +120,17 @@ def callback_state(msg):
     get_effort.clear()
 
     get_position.append(msg.position[0])
-    get_position.append(-msg.position[1])
-    get_position.append(-msg.position[2])
+    get_position.append(msg.position[1])
+    get_position.append(msg.position[2])
     get_position.append(msg.position[3])
-    get_position.append(-msg.position[4])
-    get_position.append(-msg.position[5])
+    get_position.append(msg.position[4])
+    get_position.append(msg.position[5])
     get_position.append(msg.position[6])
-    get_position.append(-msg.position[7])
-    get_position.append(-msg.position[8])
+    get_position.append(msg.position[7])
+    get_position.append(msg.position[8])
     get_position.append(msg.position[9])
-    get_position.append(-msg.position[10])
-    get_position.append(-msg.position[11])
+    get_position.append(msg.position[10])
+    get_position.append(msg.position[11])
 
     get_effort.append(msg.effort[0])
     get_effort.append(msg.effort[1])
@@ -117,17 +147,18 @@ def callback_state(msg):
 
 
 def callback_mode(req):
-    global getMode
-    getMode = req.cmd
-    print(getMode)
-    if getMode == 0:
-        p.resetBasePositionAndOrientation(boxId, [0, 0, 0.2], [0, 0, 0, 1])
-        time.sleep(1)
-        for j in range(16):
-            force = 0
-            p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)  # , positionGain=10, velocityGain=10)
-            # p.changeDynamics(quadruped, j, spinningFriction=0.01, rollingFriction=0.01, jointDamping=1.0)
-            # p.changeDynamics(quadruped, j, jointDamping=0.5)
+    # global getMode
+    # getMode = req.cmd
+    # print(getMode)
+    # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    # if getMode == 0:
+    #     p.resetBasePositionAndOrientation(boxId, [0, 0, 0.2], [0, 0, 0, 1])
+    #     time.sleep(1)
+    #     for j in range(16):
+    #         force = 0
+    #         p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)  # , positionGain=10, velocityGain=10)
+    #         # p.changeDynamics(quadruped, j, spinningFriction=0.01, rollingFriction=0.01, jointDamping=1.0)
+    #         # p.changeDynamics(quadruped, j, jointDamping=0.5)
 
     return QuadrupedCmdResponse(0, "get the mode")
 
@@ -143,7 +174,7 @@ def acc_filter(value, last_accValue):
 
 
 def talker():
-    global getMode, get_last_vel, myflags
+    global getMode, get_last_vel, myflags, firstflags
     iter = 0
     iter1 = 0
     get_orientation = []
@@ -167,14 +198,17 @@ def talker():
     freq = 400
     rate = rospy.Rate(freq)  # hz
 
+    
+
+
     while not rospy.is_shutdown():
 
-        if myflags == 100:
-            p.resetBasePositionAndOrientation(boxId, [0, 0, 0.2], [0, 0, 0, 1])
-            time.sleep(1)
-            for j in range(16):
-                force = 0
-                p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)
+        # if myflags == 100:
+        #     p.resetBasePositionAndOrientation(boxId, [0, 0, 0.3], [0, 0, 0, 1])
+        #     time.sleep(1)
+        #     for j in range(16):
+        #         force = 0
+        #         p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)
 
         get_orientation = []
         pose_orn = p.getBasePositionAndOrientation(boxId)
@@ -222,13 +256,26 @@ def talker():
         get_last_vel.clear()
         get_last_vel = com_msg.com_velocity
 
+        # if myflags < 1000:
+        #   for j in range(12):
+        #     force = 0
+        #     p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)
+          
+        #   for m in range(12):
+        #     p.resetJointState(boxId, motor_id_list[m], stand_target[m], targetVelocity=0)
+
         # stand up control
         if len(get_effort):
-            print(get_effort)
+            # print(get_effort)
+            if firstflags < 1:
+              for j in range(16):
+                force = 0
+                p.setJointMotorControl2(boxId, j, p.VELOCITY_CONTROL, force=force)
             p.setJointMotorControlArray(bodyUniqueId=boxId,
                                         jointIndices=motor_id_list,
                                         controlMode=p.TORQUE_CONTROL,
                                         forces=get_effort)
+            firstflags = firstflags + 1
 
         setJSMsg.header.stamp = rospy.Time.now()
         setJSMsg.name = ["abduct_fr", "thigh_fr", "knee_fr", "abduct_fl", "thigh_fl", "knee_fl",
@@ -236,7 +283,7 @@ def talker():
         if myflags % 2 == 0:
             pub2.publish(imu_msg)
 
-        pub1.publish(setJSMsg)
+        pub1.publish(setJSMsg)# p.changeDynamics(planeId, -1, lateralFriction=1.0)
         pub3.publish(com_msg)
         myflags = myflags + 1
         p.setTimeStep(0.0015)
