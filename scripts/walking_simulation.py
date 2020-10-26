@@ -13,16 +13,9 @@ import pybullet_data
 from geometry_msgs.msg import Twist
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
 
-getMode = 10
-get_position = []
-get_effort = []
-get_velocity = []
-get_last_vel = [0.0, 0.0, 0.0]
-myflags = 0
-firstflags = 0
-jointConfig = numpy.array(
-    [-0.7, -1.0, 2.7, 0.7, -1.0, 2.7, -0.7, -1.0, 2.7, 0.7, -1.0, 2.7])
-# init_new_pos = [-0.0, -1.4, 2.7, 0.0, -1.4, 2.7, -0.0, -1.4, 2.7, 0.0, -1.4, 2.7]
+plane_or_terrain = True
+robot_height = 0.285
+motor_id_list = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
 init_new_pos = [0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6,
                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
@@ -71,32 +64,37 @@ def callback_body_vel(msg):
 
 
 def acc_filter(value, last_accValue):
-    a = 1.0
+    a = 0.1
     filter_value = a * value + (1 - a) * last_accValue
     return filter_value
 
 
+def reset_robot():
+    p.resetBasePositionAndOrientation(
+        boxId, [0, 0, robot_height], [0, 0, 0, 1])
+    for j in range(12):
+        p.resetJointState(boxId, motor_id_list[j], init_new_pos[j])
+    cpp_gait_ctrller.init_controller(convert_type(
+        freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
+
+
 def init_simulator():
-    global boxId, motor_id_list, compensateReal, get_last_euler
-    get_last_euler = [0.0, 0.0, 0.0]
+    global boxId, reset
+    robot_start_pos = [0, 0, robot_height]
     p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
-    motor_id_list = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
-    # motor_id_list = [4, 5, 6, 12, 13, 14, 0, 1, 2, 8, 9, 10]
-    compensateReal = [-1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1]
+    reset = p.addUserDebugParameter("reset", 1, 0, 0)
     p.setGravity(0, 0, -9.8)
-    cubeStartPos = [0, 0, 0.41]
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     # p.setPhysicsEngineParameter(numSolverIterations=30)
     # p.setPhysicsEngineParameter(enableConeFriction=0)
     # planeId = p.loadURDF("plane.urdf")
     # p.changeDynamics(planeId, -1, lateralFriction=1.0)
-    # boxId = p.loadURDF("/home/wgx/Workspace_Ros/src/cloudrobot/src/quadruped_robot.urdf", cubeStartPos,
+    # boxId = p.loadURDF("/home/wgx/Workspace_Ros/src/cloudrobot/src/quadruped_robot.urdf", robot_start_pos,
     #                    useFixedBase=FixedBase)
 
     heightPerturbationRange = 0.06
-    plane = True
-    if plane:
+    if plane_or_terrain:
         planeShape = p.createCollisionShape(shapeType=p.GEOM_PLANE)
         ground_id = p.createMultiBody(0, planeShape)
     else:
@@ -118,7 +116,7 @@ def init_simulator():
     p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0, 0, 1])
     p.changeDynamics(ground_id, -1, lateralFriction=1.0)
 
-    boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", cubeStartPos,
+    boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos,
                        useFixedBase=False)
 
     jointIds = []
@@ -126,9 +124,7 @@ def init_simulator():
         p.getJointInfo(boxId, j)
         jointIds.append(j)
 
-    for j in range(12):
-        p.setJointMotorControl2(
-            boxId, motor_id_list[j], p.POSITION_CONTROL, init_new_pos[j], force=5.0)
+    reset_robot()
 
     # slope terrain
     # colSphereId = p.createCollisionShape(p.GEOM_BOX, halfExtents=[0.5, 0.5, 0.001])
@@ -165,36 +161,37 @@ def init_simulator():
     p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
     p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
-    for i in range(1000):
+    for _ in range(1000):
         p.stepSimulation()
-        # time.sleep(0.001)
 
 
 def main():
-    global getMode, get_last_vel, myflags, firstflags
+    myflags = 0
+    firstflags = 0
     get_orientation = []
     get_matrix = []
     get_velocity = []
     get_invert = []
-    freq = 400
-    rate = rospy.Rate(freq)  # hz
+    get_last_vel = [0.0, 0.0, 0.0]
 
     imu_data = [0] * 10
     leg_data = [0] * 24
 
-    freq = rospy.get_param('/simulation/freq')
-    stand_kp = rospy.get_param('/simulation/stand_kp')
-    stand_kd = rospy.get_param('/simulation/stand_kd')
-    joint_kp = rospy.get_param('/simulation/joint_kp')
-    joint_kd = rospy.get_param('/simulation/joint_kd')
-    rospy.loginfo("freq = " + str(freq) + " PID = " +
-                  str([stand_kp, stand_kd, joint_kp, joint_kd]))
+    rate = rospy.Rate(freq)  # hz
     cpp_gait_ctrller.init_controller(convert_type(
         freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
+    reset_flag = p.readUserDebugParameter(reset)
     while not rospy.is_shutdown():
+        if(reset_flag < p.readUserDebugParameter(reset)):
+            reset_flag = p.readUserDebugParameter(reset)
+            rospy.logwarn("reset the robot")
+            myflags = 0
+            reset_robot()
+        
+        pose_orn = p.getBasePositionAndOrientation(boxId)
+        p.resetDebugVisualizerCamera(3, 45, -30, pose_orn[0])
 
         get_orientation = []
-        pose_orn = p.getBasePositionAndOrientation(boxId)
         for i in range(4):
             get_orientation.append(pose_orn[1][i])
         # get_euler = p.getEulerFromQuaternion(get_orientation)
@@ -248,8 +245,8 @@ def main():
         else:
             tau = cpp_gait_ctrller.toque_calculator(convert_type(
                 imu_data), convert_type(leg_data))
-
             get_effort = [tau.contents.eff[i] for i in range(12)]
+
             if len(get_effort):
                 if firstflags < 1:
                     for j in range(16):
@@ -270,7 +267,15 @@ def main():
 
 if __name__ == '__main__':
     rospy.init_node('quadruped_simulator', anonymous=True)
-    init_simulator()
+
+    freq = rospy.get_param('/simulation/freq')
+    stand_kp = rospy.get_param('/simulation/stand_kp')
+    stand_kd = rospy.get_param('/simulation/stand_kd')
+    joint_kp = rospy.get_param('/simulation/joint_kp')
+    joint_kd = rospy.get_param('/simulation/joint_kd')
+    rospy.loginfo("freq = " + str(freq) + " PID = " +
+                  str([stand_kp, stand_kd, joint_kp, joint_kd]))
+
     rospack = rospkg.RosPack()
     path = rospack.get_path('quadruped_ctrl')
     so_file = path.replace('src/quadruped_ctrl',
@@ -283,8 +288,13 @@ if __name__ == '__main__':
     cpp_gait_ctrller = ctypes.cdll.LoadLibrary(so_file)
     cpp_gait_ctrller.toque_calculator.restype = ctypes.POINTER(StructPointer)
     rospy.loginfo("find so file = " + so_file)
+
     s = rospy.Service('gait_type', QuadrupedCmd, callback_gait)
     rospy.Subscriber("cmd_vel", Twist, callback_body_vel, buff_size=10000)
+
+    init_simulator()
+
     add_thread = threading.Thread(target=thread_job)
     add_thread.start()
+
     main()

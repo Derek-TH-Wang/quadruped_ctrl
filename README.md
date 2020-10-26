@@ -16,21 +16,11 @@ git clone https://github.com/Derek-TH-Wang/gamepad_ctrl.git
 ```
 
 ### Running:
-run the simulator  
-```
-rosrun quadruped_ctrl walking_simulation.py
-```
-first run the controller:  
+run the controller in simulator:  
 ```
 roslaunch quadruped_ctrl quadruped_ctrl.launch
-```
-then, stand up the robot:  
-```
-rosservice call /robot_mode "cmd: 1"
-rosservice call /robot_mode "cmd: 4"
-```
 
-you can switch the gait type:
+you can switch the gait type:  
 ```
 rosservice call /gait_type "cmd: 1"
 
