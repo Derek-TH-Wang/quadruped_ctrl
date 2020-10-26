@@ -19,7 +19,7 @@ git clone https://github.com/Derek-TH-Wang/gamepad_ctrl.git
 run the controller in simulator:  
 ```
 roslaunch quadruped_ctrl quadruped_ctrl.launch
-
+```
 you can switch the gait type:  
 ```
 rosservice call /gait_type "cmd: 1"
