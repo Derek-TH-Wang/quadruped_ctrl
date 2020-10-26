@@ -1,13 +1,9 @@
 #include "GaitCtrller.h"
 
 GaitCtrller::GaitCtrller(double freq, double* PIDParam) {
-  std::cout << "freq = " << freq << std::endl;
-  std::cout << "PIDParam = " << std::endl;
   for (int i = 0; i < 4; i++) {
     ctrlParam(i) = PIDParam[i];
-    std::cout << ctrlParam(i) << " ";
   }
-  std::cout << std::endl;
   _gamepadCommand.resize(4);
   FloatingBaseModel<float> _model;
   convexMPC = new ConvexMPCLocomotion(1.0 / freq, 13);

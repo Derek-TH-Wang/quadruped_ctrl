@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
-import pybullet as p
+import os
 import numpy
 import rospy
+import rospkg
 import time
 import threading
-import pybullet_data
-from sensor_msgs.msg import JointState
-from sensor_msgs.msg import Imu
-import matplotlib.pyplot as plt
 import random
 import ctypes
+import pybullet as p
+import pybullet_data
 from geometry_msgs.msg import Twist
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
 
@@ -41,8 +40,8 @@ def convert_type(input):
     if input_type is list:
         length = len(input)
         if length == 0:
-            print("convert type failed...input is "+input)
-            return null
+            rospy.logerr("convert type failed...input is "+input)
+            return 0
         else:
             arr = (ctypes_map[type(input[0])] * length)()
             for i in range(length):
@@ -53,8 +52,8 @@ def convert_type(input):
         if input_type in ctypes_map:
             return ctypes_map[input_type](bytes(input, encoding="utf-8") if type(input) is str else input)
         else:
-            print("convert type failed...input is "+input)
-            return null
+            rospy.logerr("convert type failed...input is "+input)
+            return 0
 
 
 def thread_job():
@@ -77,10 +76,10 @@ def acc_filter(value, last_accValue):
     return filter_value
 
 
-def init_simulation():
+def init_simulator():
     global boxId, motor_id_list, compensateReal, get_last_euler
     get_last_euler = [0.0, 0.0, 0.0]
-    physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
+    p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
     motor_id_list = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
     # motor_id_list = [4, 5, 6, 12, 13, 14, 0, 1, 2, 8, 9, 10]
@@ -124,7 +123,7 @@ def init_simulation():
 
     jointIds = []
     for j in range(p.getNumJoints(boxId)):
-        info = p.getJointInfo(boxId, j)
+        p.getJointInfo(boxId, j)
         jointIds.append(j)
 
     for j in range(12):
@@ -160,11 +159,11 @@ def init_simulation():
         p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
     colSphereId4 = p.createCollisionShape(
         p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
-    BoxId = p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
-    BoxId = p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
-    BoxId = p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
-    BoxId = p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
-    BoxId = p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
+    p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
+    p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
+    p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
+    p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
+    p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
     for i in range(1000):
         p.stepSimulation()
@@ -173,21 +172,10 @@ def init_simulation():
 
 def main():
     global getMode, get_last_vel, myflags, firstflags
-    iter = 0
-    iter1 = 0
     get_orientation = []
-    get_euler = []
     get_matrix = []
     get_velocity = []
     get_invert = []
-    jointTorques = []
-    jointTorques1 = []
-    init_pos = []
-    middle_target = []
-    joint_Kp = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-    joint_Kd = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
-    stand_target = [0.0, -0.8, 1.6, 0.0, -0.8,
-                    1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6]
     freq = 400
     rate = rospy.Rate(freq)  # hz
 
@@ -199,16 +187,17 @@ def main():
     stand_kd = rospy.get_param('/simulation/stand_kd')
     joint_kp = rospy.get_param('/simulation/joint_kp')
     joint_kd = rospy.get_param('/simulation/joint_kd')
+    rospy.loginfo("freq = " + str(freq) + " PID = " +
+                  str([stand_kp, stand_kd, joint_kp, joint_kd]))
     cpp_gait_ctrller.init_controller(convert_type(
         freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
-
     while not rospy.is_shutdown():
 
         get_orientation = []
         pose_orn = p.getBasePositionAndOrientation(boxId)
         for i in range(4):
             get_orientation.append(pose_orn[1][i])
-        get_euler = p.getEulerFromQuaternion(get_orientation)
+        # get_euler = p.getEulerFromQuaternion(get_orientation)
         get_velocity = p.getBaseVelocity(boxId)
         get_invert = p.invertTransform(pose_orn[0], pose_orn[1])
         get_matrix = p.getMatrixFromQuaternion(get_invert[1])
@@ -281,10 +270,19 @@ def main():
 
 if __name__ == '__main__':
     rospy.init_node('quadruped_simulator', anonymous=True)
-    cpp_gait_ctrller = ctypes.cdll.LoadLibrary(
-        '/home/derek/ros_workspace/quadruped_ws/devel/lib/libquadruped_ctrl.so')
+    init_simulator()
+    rospack = rospkg.RosPack()
+    path = rospack.get_path('quadruped_ctrl')
+    so_file = path.replace('src/quadruped_ctrl',
+                           'devel/lib/libquadruped_ctrl.so')
+    if(not os.path.exists(so_file)):
+        so_file = path.replace('src/quadruped_ctrl',
+                               'build/lib/libquadruped_ctrl.so')
+    if(not os.path.exists(so_file)):
+        rospy.logerr("cannot find cpp.so file")
+    cpp_gait_ctrller = ctypes.cdll.LoadLibrary(so_file)
     cpp_gait_ctrller.toque_calculator.restype = ctypes.POINTER(StructPointer)
-    init_simulation()
+    rospy.loginfo("find so file = " + so_file)
     s = rospy.Service('gait_type', QuadrupedCmd, callback_gait)
     rospy.Subscriber("cmd_vel", Twist, callback_body_vel, buff_size=10000)
     add_thread = threading.Thread(target=thread_job)
