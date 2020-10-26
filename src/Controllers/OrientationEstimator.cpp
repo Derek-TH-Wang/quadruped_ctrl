@@ -11,6 +11,7 @@
  */
 
 #include "Controllers/OrientationEstimator.h"
+
 #include <iostream>
 
 /*!
@@ -51,25 +52,23 @@ void VectorNavOrientationEstimator<T>::run() {
       this->_stateEstimatorData.vectorNavData->quat[1];
   this->_stateEstimatorData.result->orientation[3] =
       this->_stateEstimatorData.vectorNavData->quat[2];
-  
 
-  if(_b_first_visit){
-    Vec3<T> rpy_ini = ori::quatToRPY(this->_stateEstimatorData.result->orientation);
+  if (_b_first_visit) {
+    Vec3<T> rpy_ini =
+        ori::quatToRPY(this->_stateEstimatorData.result->orientation);
     rpy_ini[0] = 0;
     rpy_ini[1] = 0;
     _ori_ini_inv = rpyToQuat(-rpy_ini);
     _b_first_visit = false;
   }
-  this->_stateEstimatorData.result->orientation = 
-    ori::quatProduct(_ori_ini_inv, this->_stateEstimatorData.result->orientation);
+  this->_stateEstimatorData.result->orientation = ori::quatProduct(
+      _ori_ini_inv, this->_stateEstimatorData.result->orientation);
 
   this->_stateEstimatorData.result->rpy =
       ori::quatToRPY(this->_stateEstimatorData.result->orientation);
 
-
   this->_stateEstimatorData.result->rBody = ori::quaternionToRotationMatrix(
       this->_stateEstimatorData.result->orientation);
-
 
   this->_stateEstimatorData.result->omegaBody =
       this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
@@ -79,11 +78,11 @@ void VectorNavOrientationEstimator<T>::run() {
       this->_stateEstimatorData.result->omegaBody;
 
   // this->_stateEstimatorData.result->omegaBody =
-  //     this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->omegaWorld;
+  //     this->_stateEstimatorData.result->rBody *
+  //     this->_stateEstimatorData.result->omegaWorld;
 
   // this->_stateEstimatorData.result->omegaWorld =
   //     this->_stateEstimatorData.vectorNavData->gyro.template cast<T>();
-      
 
   this->_stateEstimatorData.result->aBody =
       this->_stateEstimatorData.vectorNavData->accelerometer.template cast<T>();
@@ -92,13 +91,20 @@ void VectorNavOrientationEstimator<T>::run() {
       this->_stateEstimatorData.result->aBody;
 
   // this->_stateEstimatorData.result->aBody =
-  //     this->_stateEstimatorData.result->rBody * this->_stateEstimatorData.result->aWorld;
-      
+  //     this->_stateEstimatorData.result->rBody *
+  //     this->_stateEstimatorData.result->aWorld;
+
   // this->_stateEstimatorData.result->aWorld =
-  //     this->_stateEstimatorData.vectorNavData->accelerometer.template cast<T>();
+  //     this->_stateEstimatorData.vectorNavData->accelerometer.template
+  //     cast<T>();
 
+  //   std::cout << "ori = " <<
+  //   this->_stateEstimatorData.result->orientation.transpose() << std::endl;
+  //   std::cout << "omegaBody = " <<
+  //   this->_stateEstimatorData.result->omegaBody.transpose() << std::endl;
+  //     std::cout << "abody = " <<
+  //     this->_stateEstimatorData.result->aBody.transpose() << std::endl;
 }
-
 
 template class CheaterOrientationEstimator<float>;
 template class CheaterOrientationEstimator<double>;

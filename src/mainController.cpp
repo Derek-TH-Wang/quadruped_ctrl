@@ -207,12 +207,12 @@ int main(int argc, char** argv) {
   ros::spinOnce();
   ros::spinOnce();
 
-  for (int i = 0; i < 100; i++) {
-    _legController->updateData(&legdata);
-    _stateEstimator->run();  // Run the state estimator step
-    usleep(2500);
-    ros::spinOnce();
-  }
+//   for (int i = 0; i < 100; i++) {
+//     _legController->updateData(&legdata);
+//     _stateEstimator->run();  // Run the state estimator step
+//     usleep(2500);
+//     ros::spinOnce();
+//   }
 
   while (ros::ok()) {
     _stateEstimator->run();  // Run the state estimator step
@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
       //   std::endl;
       // }
 
-      _legController->updateCommand(&legcommand, ctrlParam_sim, set_robot_mode);
+      _legController->updateCommand(&legcommand, ctrlParam_sim);
 
       joint_state.header.stamp = ros::Time::now();
       joint_state.name.resize(12);

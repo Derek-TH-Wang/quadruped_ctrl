@@ -1,5 +1,6 @@
 <launch>
         <rosparam command="load" file="$(find quadruped_ctrl)/config/quadruped_ctrl_config.yaml"/>
 
-	      <node name="quadruped" pkg="quadruped_ctrl" type="mainController" respawn="false" output="screen"/>
+	<!-- <node name="quadruped" pkg="quadruped_ctrl" type="mainController" respawn="false" output="screen"/> -->
+        <node name="quadruped_simulator" pkg="quadruped_ctrl" type="walking_simulation.py" respawn="false" output="screen"/>
 </launch>

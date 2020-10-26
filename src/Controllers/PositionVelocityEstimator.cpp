@@ -8,6 +8,7 @@
  */
 
 #include "Controllers/PositionVelocityEstimator.h"
+
 #include <fstream>
 
 /*!
@@ -89,18 +90,19 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   Vec3<T> g(0, 0, T(-9.81));
   Mat3<T> Rbod = this->_stateEstimatorData.result->rBody.transpose();
   // in old code, Rbod * se_acc + g
-  Vec3<T> a = this->_stateEstimatorData.result->aWorld + g; 
-  
-  // std::cout << "A WORLD\n" << a << std::endl;
+  Vec3<T> a = this->_stateEstimatorData.result->aWorld + g;
+
+  // std::cout << "A WORLD" <<
+  // this->_stateEstimatorData.result->aWorld.transpose() << std::endl;
   // std::ofstream fp;
   // fp.open("acceleration.txt", std::ofstream::app);
   // if(!fp){
   //   std::ofstream fpout("acceleration.txt");
-  //   fpout << a(0) << "," << a(1) << "," << a(2) << ","; 
+  //   fpout << a(0) << "," << a(1) << "," << a(2) << ",";
   //   fp.close();
   //   fpout.close();
   // }else{
-  //   fp << a(0) << "," << a(1) << "," << a(2) << std::endl; 
+  //   fp << a(0) << "," << a(1) << "," << a(2) << std::endl;
   //   fp.close();
   // }
 
@@ -115,15 +117,20 @@ void LinearKFPositionVelocityEstimator<T>::run() {
     Quadruped<T>& quadruped =
         *(this->_stateEstimatorData.legControllerData->quadruped);
     Vec3<T> ph = quadruped.getHipLocation(i);  // hip positions relative to CoM
-    
-    // hw_i->leg_controller->leg_datas[i].p; 
-    Vec3<T> p_rel = ph + this->_stateEstimatorData.legControllerData[i].p;  //足端位置在机身坐标系中
+
+    // hw_i->leg_controller->leg_datas[i].p;
+    Vec3<T> p_rel = ph + this->_stateEstimatorData.legControllerData[i]
+                             .p;  //足端位置在机身坐标系中
 
     // hw_i->leg_controller->leg_datas[i].v;
-    Vec3<T> dp_rel = this->_stateEstimatorData.legControllerData[i].v;  //足端速度在机身坐标系
-    Vec3<T> p_f = Rbod * p_rel;   //足端位置在世界坐标系中
+    Vec3<T> dp_rel = this->_stateEstimatorData.legControllerData[i]
+                         .v;  //足端速度在机身坐标系
+    // std::cout << "leg v =" << dp_rel[0] << " " << dp_rel[1] << " " <<
+    // dp_rel[2] << std::endl;
+    Vec3<T> p_f = Rbod * p_rel;  //足端位置在世界坐标系中
     Vec3<T> dp_f =
-        Rbod * (this->_stateEstimatorData.result->omegaBody.cross(p_rel) + dp_rel);  //足端速度在世界坐标系中
+        Rbod * (this->_stateEstimatorData.result->omegaBody.cross(p_rel) +
+                dp_rel);  //足端速度在世界坐标系中
 
     qindex = 6 + i1;
     rindex1 = i1;
@@ -132,24 +139,25 @@ void LinearKFPositionVelocityEstimator<T>::run() {
 
     T trust = T(1);
     T phase = fmin(this->_stateEstimatorData.result->contactEstimate(i), T(1));
-    //T trust_window = T(0.25);
+    // T trust_window = T(0.25);
     T trust_window = T(0.2);
-
 
     if (phase < trust_window) {
       trust = phase / trust_window;
     } else if (phase > (T(1) - trust_window)) {
       trust = (T(1) - phase) / trust_window;
     }
-    //T high_suspect_number(1000);
+    // T high_suspect_number(1000);
     T high_suspect_number(100);
 
     // printf("Trust %d: %.3f\n", i, trust);
     Q.block(qindex, qindex, 3, 3) =
-        (T(1) + (T(1) - trust) * high_suspect_number) * Q.block(qindex, qindex, 3, 3);
+        (T(1) + (T(1) - trust) * high_suspect_number) *
+        Q.block(qindex, qindex, 3, 3);
     R.block(rindex1, rindex1, 3, 3) = 1 * R.block(rindex1, rindex1, 3, 3);
     R.block(rindex2, rindex2, 3, 3) =
-        (T(1) + (T(1) - trust) * high_suspect_number) * R.block(rindex2, rindex2, 3, 3);
+        (T(1) + (T(1) - trust) * high_suspect_number) *
+        R.block(rindex2, rindex2, 3, 3);
     R(rindex3, rindex3) =
         (T(1) + (T(1) - trust) * high_suspect_number) * R(rindex3, rindex3);
 
@@ -187,32 +195,46 @@ void LinearKFPositionVelocityEstimator<T>::run() {
   }
 
   this->_stateEstimatorData.result->position = _xhat.block(0, 0, 3, 1);
-  // this->_stateEstimatorData.result->position[0] = this->_stateEstimatorData.vectorNavData->com_pos[0];
-  // this->_stateEstimatorData.result->position[1] = this->_stateEstimatorData.vectorNavData->com_pos[1];
-  // this->_stateEstimatorData.result->position[2] = this->_stateEstimatorData.vectorNavData->com_pos[2];
+  // this->_stateEstimatorData.result->position[0] =
+  // this->_stateEstimatorData.vectorNavData->com_pos[0];
+  // this->_stateEstimatorData.result->position[1] =
+  // this->_stateEstimatorData.vectorNavData->com_pos[1];
+  // this->_stateEstimatorData.result->position[2] =
+  // this->_stateEstimatorData.vectorNavData->com_pos[2];
   this->_stateEstimatorData.result->vWorld = _xhat.block(3, 0, 3, 1);
-  // this->_stateEstimatorData.result->vWorld[0] = this->_stateEstimatorData.vectorNavData->com_vel[0];
-  // this->_stateEstimatorData.result->vWorld[1] = this->_stateEstimatorData.vectorNavData->com_vel[1];
-  // this->_stateEstimatorData.result->vWorld[2] = this->_stateEstimatorData.vectorNavData->com_vel[2];
+  // this->_stateEstimatorData.result->vWorld[0] =
+  // this->_stateEstimatorData.vectorNavData->com_vel[0];
+  // this->_stateEstimatorData.result->vWorld[1] =
+  // this->_stateEstimatorData.vectorNavData->com_vel[1];
+  // this->_stateEstimatorData.result->vWorld[2] =
+  // this->_stateEstimatorData.vectorNavData->com_vel[2];
   this->_stateEstimatorData.result->vBody =
       this->_stateEstimatorData.result->rBody *
       this->_stateEstimatorData.result->vWorld;
 
+  // std::cout << "pos = " <<
+  // this->_stateEstimatorData.result->position.transpose() << std::endl;
+  // std::cout << "vWorld = " <<
+  // this->_stateEstimatorData.result->vWorld.transpose() << std::endl;
+  // std::cout << "vBody = " <<
+  // this->_stateEstimatorData.result->vBody.transpose() << std::endl;
 }
 
 template class LinearKFPositionVelocityEstimator<float>;
 template class LinearKFPositionVelocityEstimator<double>;
-
 
 /*!
  * Run cheater estimator to copy cheater state into state estimate
  */
 template <typename T>
 void CheaterPositionVelocityEstimator<T>::run() {
-  this->_stateEstimatorData.result->position = this->_stateEstimatorData.cheaterState->position.template cast<T>();
+  this->_stateEstimatorData.result->position =
+      this->_stateEstimatorData.cheaterState->position.template cast<T>();
   this->_stateEstimatorData.result->vWorld =
-      this->_stateEstimatorData.result->rBody.transpose().template cast<T>() * this->_stateEstimatorData.cheaterState->vBody.template cast<T>();
-  this->_stateEstimatorData.result->vBody = this->_stateEstimatorData.cheaterState->vBody.template cast<T>();
+      this->_stateEstimatorData.result->rBody.transpose().template cast<T>() *
+      this->_stateEstimatorData.cheaterState->vBody.template cast<T>();
+  this->_stateEstimatorData.result->vBody =
+      this->_stateEstimatorData.cheaterState->vBody.template cast<T>();
 }
 
 template class CheaterPositionVelocityEstimator<float>;

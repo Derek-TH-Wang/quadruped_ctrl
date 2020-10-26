@@ -124,6 +124,10 @@ include_directories(${catkin_INCLUDE_DIRS}
   src
 )
 
+add_subdirectory(src/qpOASES)
+add_subdirectory(src/JCQP)
+add_subdirectory(src/osqp)
+
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/MPC_Ctrl/ConvexMPCLocomotion.cpp
@@ -141,19 +145,18 @@ add_library(${PROJECT_NAME}
   src/Controllers/PositionVelocityEstimator.cpp
   src/Dynamics/Quadruped.cpp
   src/Dynamics/FloatingBaseModel.cpp
+  src/GaitCtrller.cpp
 )
-
-add_subdirectory(src/qpOASES)
-add_subdirectory(src/JCQP)
-add_subdirectory(src/osqp)
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  JCQP
+  qpOASES
+  osqp
 )
 
 add_executable(mainController src/mainController.cpp)
 target_link_libraries(mainController ${catkin_LIBRARIES} ${PROJECT_NAME})
-target_link_libraries(mainController JCQP qpOASES osqp)
 add_dependencies(mainController ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library

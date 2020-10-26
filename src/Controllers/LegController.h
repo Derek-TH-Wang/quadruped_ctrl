@@ -1,24 +1,33 @@
+/*
+ * @Author: your name
+ * @Date: 2020-09-25 15:34:19
+ * @LastEditTime: 2020-10-24 14:43:33
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /quadruped_ctrl/src/Controllers/LegController.h
+ */
 /*! @file LegController.h
  *  @brief Common Leg Control Interface and Leg Control Algorithms
  *
  *  Implements low-level leg control for Mini Cheetah and Cheetah 3 Robots
- *  Abstracts away the difference between the SPIne and the TI Boards (the low level leg control boards)
- *  All quantities are in the "leg frame" which has the same orientation as the
- * body frame, but is shifted so that 0,0,0 is at the ab/ad pivot (the "hip
- * frame").
+ *  Abstracts away the difference between the SPIne and the TI Boards (the low
+ * level leg control boards) All quantities are in the "leg frame" which has the
+ * same orientation as the body frame, but is shifted so that 0,0,0 is at the
+ * ab/ad pivot (the "hip frame").
  */
 
 #ifndef PROJECT_LEGCONTROLLER_H
 #define PROJECT_LEGCONTROLLER_H
 
-#include "Utilities/cppTypes.h"
-#include "RobotLegState.h"
 #include "Dynamics/Quadruped.h"
+#include "RobotLegState.h"
+#include "Utilities/cppTypes.h"
 // #include "SimUtilities/SpineBoard.h"
 // #include "SimUtilities/ti_boardcontrol.h"
 
 /*!
- * Data sent from the control algorithm to the legs.  控制算法计算出来的足底位置、速度、力矩值发送给腿部
+ * Data sent from the control algorithm to the legs.
+ * 控制算法计算出来的足底位置、速度、力矩值发送给腿部
  */
 template <typename T>
 struct LegControllerCommand {
@@ -32,7 +41,8 @@ struct LegControllerCommand {
 };
 
 /*!
- * Data returned from the legs to the control code.    腿部反馈给控制代码的关节实时数据
+ * Data returned from the legs to the control code.
+ * 腿部反馈给控制代码的关节实时数据
  */
 template <typename T>
 struct LegControllerData {
@@ -50,7 +60,8 @@ struct LegControllerData {
 };
 
 /*!
- * Controller for 4 legs of a quadruped.  Works for both Mini Cheetah and Cheetah 3
+ * Controller for 4 legs of a quadruped.  Works for both Mini Cheetah and
+ * Cheetah 3
  */
 template <typename T>
 class LegController {
@@ -63,10 +74,11 @@ class LegController {
   void edampCommand(RobotType robot, T gain);
   void updateData(LegData* legData);
   // void updateData(const TiBoardData* tiBoardData);
-  void updateCommand(LegCommand* legCommand, Vec4<T>& crtlParam, int robotmode);
+  void updateCommand(LegCommand* legCommand, Vec4<T>& crtlParam);
   // void updateCommand(TiBoardCommand* tiBoardCommand);
   void setEnabled(bool enabled) { _legsEnabled = enabled; };
-  // void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt* command);
+  // void setLcm(leg_control_data_lcmt* data, leg_control_command_lcmt*
+  // command);
 
   /*!
    * Set the maximum torque.  This only works on cheetah 3!
@@ -82,7 +94,8 @@ class LegController {
   u32 _calibrateEncoders = 0;
   int flags = 0;
 
-  float stand_target[12] = {0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6};
+  float stand_target[12] = {0.0, -0.8, 1.6, 0.0, -0.8, 1.6,
+                            0.0, -0.8, 1.6, 0.0, -0.8, 1.6};
   float init_pos[12] = {0.0};
 
   int myflags = 0;
