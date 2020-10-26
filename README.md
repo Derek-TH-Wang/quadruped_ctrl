@@ -23,8 +23,10 @@ roslaunch quadruped_ctrl quadruped_ctrl.launch
 you can switch the gait type:  
 ```
 rosservice call /gait_type "cmd: 1"
+```
 
 gait type:
+```
 0:trot
 1:bunding
 2:pronking
