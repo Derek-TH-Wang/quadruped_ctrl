@@ -1,3 +1,6 @@
+#ifndef GAIT_CTRLLER_H
+#define GAIT_CTRLLER_H
+
 #include <math.h>
 #include <time.h>
 
@@ -81,3 +84,5 @@ StructPointer toque_calculator(double imuData[], double motorData[]) {
   return p;
 }
 }
+
+#endif

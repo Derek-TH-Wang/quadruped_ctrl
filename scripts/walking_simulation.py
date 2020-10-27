@@ -14,7 +14,8 @@ from geometry_msgs.msg import Twist
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
 
 plane_or_terrain = True
-robot_height = 0.285
+get_last_vel = [0] * 3
+robot_height = 0.30
 motor_id_list = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
 init_new_pos = [0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6, 0.0, -0.8, 1.6,
                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -64,9 +65,70 @@ def callback_body_vel(msg):
 
 
 def acc_filter(value, last_accValue):
-    a = 0.1
+    a = 1
     filter_value = a * value + (1 - a) * last_accValue
     return filter_value
+
+
+def get_data_from_sim():
+    global get_last_vel
+    get_orientation = []
+    get_matrix = []
+    get_velocity = []
+    get_invert = []
+    imu_data = [0] * 10
+    leg_data = [0] * 24
+
+    pose_orn = p.getBasePositionAndOrientation(boxId)
+
+    for i in range(4):
+        get_orientation.append(pose_orn[1][i])
+    # get_euler = p.getEulerFromQuaternion(get_orientation)
+    get_velocity = p.getBaseVelocity(boxId)
+    get_invert = p.invertTransform(pose_orn[0], pose_orn[1])
+    get_matrix = p.getMatrixFromQuaternion(get_invert[1])
+
+    # IMU data
+    imu_data[3] = pose_orn[1][0]
+    imu_data[4] = pose_orn[1][1]
+    imu_data[5] = pose_orn[1][2]
+    imu_data[6] = pose_orn[1][3]
+
+    imu_data[7] = get_matrix[0] * get_velocity[1][0] + get_matrix[1] * \
+        get_velocity[1][1] + get_matrix[2] * get_velocity[1][2]
+    imu_data[8] = get_matrix[3] * get_velocity[1][0] + get_matrix[4] * \
+        get_velocity[1][1] + get_matrix[5] * get_velocity[1][2]
+    imu_data[9] = get_matrix[6] * get_velocity[1][0] + get_matrix[7] * \
+        get_velocity[1][1] + get_matrix[8] * get_velocity[1][2]
+
+    # calculate the acceleration of the robot
+    linear_X = (get_velocity[0][0] - get_last_vel[0]) * freq
+    linear_Y = (get_velocity[0][1] - get_last_vel[1]) * freq
+    linear_Z = 9.8 + (get_velocity[0][2] - get_last_vel[2]) * freq
+    imu_data[0] = get_matrix[0] * linear_X + \
+        get_matrix[1] * linear_Y + get_matrix[2] * linear_Z
+    imu_data[1] = get_matrix[3] * linear_X + \
+        get_matrix[4] * linear_Y + get_matrix[5] * linear_Z
+    imu_data[2] = get_matrix[6] * linear_X + \
+        get_matrix[7] * linear_Y + get_matrix[8] * linear_Z
+
+    # joint data
+    joint_state = p.getJointStates(boxId, motor_id_list)
+    leg_data[0:12] = [joint_state[0][0], joint_state[1][0], joint_state[2][0],
+                      joint_state[3][0], joint_state[4][0], joint_state[5][0],
+                      joint_state[6][0], joint_state[7][0], joint_state[8][0],
+                      joint_state[9][0], joint_state[10][0], joint_state[11][0]]
+
+    leg_data[12:24] = [joint_state[0][1], joint_state[1][1], joint_state[2][1],
+                       joint_state[3][1], joint_state[4][1], joint_state[5][1],
+                       joint_state[6][1], joint_state[7][1], joint_state[8][1],
+                       joint_state[9][1], joint_state[10][1], joint_state[11][1]]
+    com_velocity = [get_velocity[0][0],
+                    get_velocity[0][1], get_velocity[0][2]]
+    get_last_vel.clear()
+    get_last_vel = com_velocity
+
+    return imu_data, leg_data, pose_orn[0]
 
 
 def reset_robot():
@@ -77,14 +139,27 @@ def reset_robot():
     cpp_gait_ctrller.init_controller(convert_type(
         freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
 
+    for _ in range(40):
+        # p.setTimeStep(0.0015)
+        p.stepSimulation()
+        imu_data, leg_data, _ = get_data_from_sim()
+        cpp_gait_ctrller.pre_work(convert_type(
+            imu_data), convert_type(leg_data))
+
+    for j in range(16):
+        force = 0
+        p.setJointMotorControl2(
+            boxId, j, p.VELOCITY_CONTROL, force=force)
+
 
 def init_simulator():
     global boxId, reset
-    robot_start_pos = [0, 0, robot_height]
+    robot_start_pos = [0, 0, 0.42]
     p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
     reset = p.addUserDebugParameter("reset", 1, 0, 0)
     p.setGravity(0, 0, -9.8)
+    p.setTimeStep(0.0015)
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     # p.setPhysicsEngineParameter(numSolverIterations=30)
     # p.setPhysicsEngineParameter(enableConeFriction=0)
@@ -124,8 +199,6 @@ def init_simulator():
         p.getJointInfo(boxId, j)
         jointIds.append(j)
 
-    reset_robot()
-
     # slope terrain
     # colSphereId = p.createCollisionShape(p.GEOM_BOX, halfExtents=[0.5, 0.5, 0.001])
     # colSphereId1 = p.createCollisionShape(p.GEOM_BOX, halfExtents=[0.2, 0.5, 0.06])
@@ -161,106 +234,40 @@ def init_simulator():
     p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
     p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
-    for _ in range(1000):
-        p.stepSimulation()
+    reset_robot()
 
 
 def main():
-    myflags = 0
-    firstflags = 0
-    get_orientation = []
-    get_matrix = []
-    get_velocity = []
-    get_invert = []
-    get_last_vel = [0.0, 0.0, 0.0]
-
-    imu_data = [0] * 10
-    leg_data = [0] * 24
-
+    cnt = 0
     rate = rospy.Rate(freq)  # hz
-    cpp_gait_ctrller.init_controller(convert_type(
-        freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
     reset_flag = p.readUserDebugParameter(reset)
     while not rospy.is_shutdown():
+        # check reset button state
         if(reset_flag < p.readUserDebugParameter(reset)):
             reset_flag = p.readUserDebugParameter(reset)
             rospy.logwarn("reset the robot")
-            myflags = 0
+            cnt = 0
             reset_robot()
-        
-        pose_orn = p.getBasePositionAndOrientation(boxId)
-        p.resetDebugVisualizerCamera(3, 45, -30, pose_orn[0])
 
-        get_orientation = []
-        for i in range(4):
-            get_orientation.append(pose_orn[1][i])
-        # get_euler = p.getEulerFromQuaternion(get_orientation)
-        get_velocity = p.getBaseVelocity(boxId)
-        get_invert = p.invertTransform(pose_orn[0], pose_orn[1])
-        get_matrix = p.getMatrixFromQuaternion(get_invert[1])
+        # get data from simulator
+        imu_data, leg_data, base_pos = get_data_from_sim()
 
-        # IMU data
-        imu_data[3] = pose_orn[1][0]
-        imu_data[4] = pose_orn[1][1]
-        imu_data[5] = pose_orn[1][2]
-        imu_data[6] = pose_orn[1][3]
+        # call cpp function to calculate mpc tau
+        tau = cpp_gait_ctrller.toque_calculator(convert_type(
+            imu_data), convert_type(leg_data))
 
-        imu_data[7] = get_matrix[0] * get_velocity[1][0] + get_matrix[1] * \
-            get_velocity[1][1] + get_matrix[2] * get_velocity[1][2]
-        imu_data[8] = get_matrix[3] * get_velocity[1][0] + get_matrix[4] * \
-            get_velocity[1][1] + get_matrix[5] * get_velocity[1][2]
-        imu_data[9] = get_matrix[6] * get_velocity[1][0] + get_matrix[7] * \
-            get_velocity[1][1] + get_matrix[8] * get_velocity[1][2]
+        # set tau to simulator
+        p.setJointMotorControlArray(bodyUniqueId=boxId,
+                                    jointIndices=motor_id_list,
+                                    controlMode=p.TORQUE_CONTROL,
+                                    forces=tau.contents.eff)
 
-        # calculate the acceleration of the robot
-        linear_X = (get_velocity[0][0] - get_last_vel[0]) * freq
-        linear_Y = (get_velocity[0][1] - get_last_vel[1]) * freq
-        linear_Z = 9.8 + (get_velocity[0][2] - get_last_vel[2]) * freq
-        imu_data[0] = get_matrix[0] * linear_X + \
-            get_matrix[1] * linear_Y + get_matrix[2] * linear_Z
-        imu_data[1] = get_matrix[3] * linear_X + \
-            get_matrix[4] * linear_Y + get_matrix[5] * linear_Z
-        imu_data[2] = get_matrix[6] * linear_X + \
-            get_matrix[7] * linear_Y + get_matrix[8] * linear_Z
+        # reset visual cam
+        p.resetDebugVisualizerCamera(2.5, 45, -30, base_pos)
 
-        # joint data
-        joint_state = p.getJointStates(boxId, motor_id_list)
-        leg_data[0:12] = [joint_state[0][0], joint_state[1][0], joint_state[2][0],
-                          joint_state[3][0], joint_state[4][0], joint_state[5][0],
-                          joint_state[6][0], joint_state[7][0], joint_state[8][0],
-                          joint_state[9][0], joint_state[10][0], joint_state[11][0]]
-
-        leg_data[12:24] = [joint_state[0][1], joint_state[1][1], joint_state[2][1],
-                           joint_state[3][1], joint_state[4][1], joint_state[5][1],
-                           joint_state[6][1], joint_state[7][1], joint_state[8][1],
-                           joint_state[9][1], joint_state[10][1], joint_state[11][1]]
-        com_velocity = [get_velocity[0][0],
-                        get_velocity[0][1], get_velocity[0][2]]
-        get_last_vel.clear()
-        get_last_vel = com_velocity
-
-        if myflags < 40:
-            cpp_gait_ctrller.pre_work(convert_type(
-                imu_data), convert_type(leg_data))
-        else:
-            tau = cpp_gait_ctrller.toque_calculator(convert_type(
-                imu_data), convert_type(leg_data))
-            get_effort = [tau.contents.eff[i] for i in range(12)]
-
-            if len(get_effort):
-                if firstflags < 1:
-                    for j in range(16):
-                        force = 0
-                        p.setJointMotorControl2(
-                            boxId, j, p.VELOCITY_CONTROL, force=force)
-                p.setJointMotorControlArray(bodyUniqueId=boxId,
-                                            jointIndices=motor_id_list,
-                                            controlMode=p.TORQUE_CONTROL,
-                                            forces=get_effort)
-                firstflags = firstflags + 1
-
-        myflags = myflags + 1
-        p.setTimeStep(0.0015)
+        cnt += 1
+        if cnt > 99999999:
+            cnt = 99999999
         p.stepSimulation()
         rate.sleep()
 
