@@ -142,16 +142,27 @@ void LegController<T>::updateCommand(LegCommand* legCommand,
 
     //计算期望关节角度
     computeLegIK(_quadruped, commands[leg].pDes, &(commands[leg].qDes), leg);
-
-    legCommand->tau_abad_ff[leg] =
-        crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -
-        crtlParam(3) * datas[leg].qd(0) + legTorque(0);
-    legCommand->tau_hip_ff[leg] =
-        crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) -
-        crtlParam(3) * datas[leg].qd(1) + legTorque(1);
-    legCommand->tau_knee_ff[leg] =
-        crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) -
-        crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+    if (leg == 1 || leg == 3) {
+      legCommand->tau_abad_ff[leg] =
+          3*crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -
+          3*crtlParam(3) * datas[leg].qd(0) + legTorque(0);
+      legCommand->tau_hip_ff[leg] =
+          3*crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) -
+          3*crtlParam(3) * datas[leg].qd(1) + legTorque(1);
+      legCommand->tau_knee_ff[leg] =
+          3*crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) -
+          3*crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+    } else {
+      legCommand->tau_abad_ff[leg] =
+          crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -
+          crtlParam(3) * datas[leg].qd(0) + legTorque(0);
+      legCommand->tau_hip_ff[leg] =
+          crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) -
+          crtlParam(3) * datas[leg].qd(1) + legTorque(1);
+      legCommand->tau_knee_ff[leg] =
+          crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) -
+          crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+    }
 
     // std::ofstream fp;
     // fp.open("position.txt", std::ofstream::app);

@@ -34,18 +34,12 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
                "Pronking"),
       jumping(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(2, 2, 2, 2),
               "Jumping"),
-      // galloping(horizonLength,
-      // Vec4<int>(0,2,7,9),Vec4<int>(6,6,6,6),"Galloping"),
-      // galloping(horizonLength,
-      // Vec4<int>(0,2,7,9),Vec4<int>(3,3,3,3),"Galloping"),
       galloping(horizonLength, Vec4<int>(0, 2, 7, 9), Vec4<int>(4, 4, 4, 4),
                 "Galloping"),
       standing(
           horizonLength, Vec4<int>(0, 0, 0, 0),
           Vec4<int>(horizonLength, horizonLength, horizonLength, horizonLength),
           "Standing"),
-      // trotRunning(horizonLength, Vec4<int>(0,5,5,0),Vec4<int>(3,3,3,3),"Trot
-      // Running"),
       trotRunning(horizonLength, Vec4<int>(0, 5, 5, 0), Vec4<int>(4, 4, 4, 4),
                   "Trot Running"),
       walking(horizonLength,
@@ -58,15 +52,11 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
                "Walking2"),
       pacing(horizonLength, Vec4<int>(5, 0, 5, 0), Vec4<int>(5, 5, 5, 5),
              "Pacing"),
-      // random(horizonLength, Vec4<int>(9,13,13,9), 0.4, "Flying nine
-      // thirteenths trot"), random2(horizonLength, Vec4<int>(8,16,16,8), 0.5,
-      // "Double Trot"), aio(horizonLength, Vec4<int>(6,0,3,9),
-      // Vec4<int>(9,9,9,9), "aio")
       aio(horizonLength,
           Vec4<int>(0, horizonLength * 2 / 4, horizonLength * 1 / 4,
                     horizonLength * 3 / 4),
-          Vec4<int>(horizonLength * 14 / 16, horizonLength * 14 / 16,
-                    horizonLength * 14 / 16, horizonLength * 14 / 16),
+          Vec4<int>(horizonLength * 3 / 4, horizonLength * 3 / 4,
+                    horizonLength * 3 / 4, horizonLength * 3 / 4),
           "aio") {
   dtMPC = dt * iterationsBetweenMPC;  // 0.03
   default_iterations_between_mpc = iterationsBetweenMPC;
@@ -159,7 +149,19 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
   }
 
   // pick gait
-  Gait* gait = &trotting;
+  Gait* gait = &standing;
+  // auto vBody = sqrt(seResult.vBody[0]*seResult.vBody[0])+(seResult.vBody[1]*seResult.vBody[1]);
+  // if(vBody < 0.05) {
+  //   gait = &standing;
+  // } else if(vBody >= 0.05 && vBody < 0.5) {
+  //   gait = &walking;
+  // } else if(vBody >= 0.5 && vBody < 1.0) {
+  //   gait = &trotting;
+  // } else {
+  //   gait = &galloping;
+  // }
+
+
   if (gaitNumber == 1)
     gait = &bounding;
   else if (gaitNumber == 2)
@@ -298,7 +300,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
                     (0.5f * seResult.position[2] / 9.81f) *
                         (seResult.vWorld[1] * _yaw_turn_rate);
 
-    float pfy_rel = seResult.vWorld[1] * .5 * stance_time * dtMPC +
+    float pfy_rel = seResult.vWorld[1] * .5 * stance_time *3.5+//* dtMPC +
                     .03f * (seResult.vWorld[1] - v_des_world[1]) +
                     (0.5f * seResult.position[2] / 9.81f) *
                         (-seResult.vWorld[0] * _yaw_turn_rate);
@@ -319,7 +321,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
   iterationCounter++;
 
   // load LCM leg swing gains
-  Kp << 150, 0, 0, 0, 150, 0, 0, 0, 100;
+  Kp << 200, 0, 0, 0, 200, 0, 0, 0, 100;
   Kp_stance = 0.0 * Kp;
 
   Kd << 2, 0, 0, 0, 2, 0, 0, 0, 2;
@@ -369,12 +371,12 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
         // Update leg control command regardless of the usage of WBIC
         _legController.commands[foot].pDes = pDesLeg;
         _legController.commands[foot].vDes = vDesLeg;
-        if (foot == 2 || foot == 3) {
+        if (foot == 1 || foot == 3) {
           _legController.commands[foot].kpCartesian = Kp;
           _legController.commands[foot].kdCartesian = Kd;
         } else {
-          _legController.commands[foot].kpCartesian = Kp;
-          _legController.commands[foot].kdCartesian = Kd;
+          _legController.commands[foot].kpCartesian = 0.5*Kp;
+          _legController.commands[foot].kdCartesian = 0.5*Kd;
         }
       }
     } else  // foot is in stance
@@ -393,10 +395,10 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
         _legController.commands[foot].vDes = vDesLeg;
         _legController.commands[foot].kpCartesian = Kp_stance;
 
-        if (foot == 2 || foot == 3) {
+        if (foot == 1 || foot == 3) {
           _legController.commands[foot].kdCartesian = Kd_stance;
         } else {
-          _legController.commands[foot].kdCartesian = Kd_stance;
+          _legController.commands[foot].kdCartesian = 0.5*Kd_stance;
         }
 
         _legController.commands[foot].forceFeedForward = f_ff[foot];
@@ -543,7 +545,7 @@ void ConvexMPCLocomotion::solveDenseMPC(
 
   // float Q[12] = {0.25, 0.25, 10, 2, 2, 20, 0, 0, 0.3, 0.2, 0.2, 0.2};
 
-  float Q[12] = {2.5, 2.5, 10, 50, 50, 100, 0, 0, 0.3, 0.2, 0.2, 0.1};
+  float Q[12] = {2.5, 2.5, 10, 50, 50, 100, 0, 0, 0.5, 0.2, 0.2, 0.1};
   // float Q[12] = {0, 0, 0, 10, 10, 10, 0, 0, 0, 0, 0, 0};
 
   // float Q[12] = {0.25, 0.25, 10, 2, 2, 40, 0, 0, 0.3, 0.2, 0.2, 0.2};
