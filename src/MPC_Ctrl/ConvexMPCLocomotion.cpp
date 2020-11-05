@@ -300,7 +300,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
                     (0.5f * seResult.position[2] / 9.81f) *
                         (seResult.vWorld[1] * _yaw_turn_rate);
 
-    float pfy_rel = seResult.vWorld[1] * .5 * stance_time *3.5+//* dtMPC +
+    float pfy_rel = seResult.vWorld[1] * .5 * stance_time * 1.0 + //dtMPC +
                     .03f * (seResult.vWorld[1] - v_des_world[1]) +
                     (0.5f * seResult.position[2] / 9.81f) *
                         (-seResult.vWorld[0] * _yaw_turn_rate);
@@ -321,10 +321,10 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
   iterationCounter++;
 
   // load LCM leg swing gains
-  Kp << 200, 0, 0, 0, 200, 0, 0, 0, 100;
+  Kp << 700, 0, 0, 0, 700, 0, 0, 0, 150;
   Kp_stance = 0.0 * Kp;
 
-  Kd << 2, 0, 0, 0, 2, 0, 0, 0, 2;
+  Kd << 7, 0, 0, 0, 7, 0, 0, 0, 7;
   Kd_stance = 1.0 * Kd;
   // gait
   Vec4<float> contactStates = gait->getContactState();
@@ -375,8 +375,8 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
           _legController.commands[foot].kpCartesian = Kp;
           _legController.commands[foot].kdCartesian = Kd;
         } else {
-          _legController.commands[foot].kpCartesian = 0.5*Kp;
-          _legController.commands[foot].kdCartesian = 0.5*Kd;
+          _legController.commands[foot].kpCartesian = 1*Kp;
+          _legController.commands[foot].kdCartesian = 1*Kd;
         }
       }
     } else  // foot is in stance
@@ -393,12 +393,11 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
       if (!use_wbc) {
         _legController.commands[foot].pDes = pDesLeg;
         _legController.commands[foot].vDes = vDesLeg;
-        _legController.commands[foot].kpCartesian = Kp_stance;
 
         if (foot == 1 || foot == 3) {
           _legController.commands[foot].kdCartesian = Kd_stance;
         } else {
-          _legController.commands[foot].kdCartesian = 0.5*Kd_stance;
+          _legController.commands[foot].kdCartesian = 1*Kd_stance;
         }
 
         _legController.commands[foot].forceFeedForward = f_ff[foot];
@@ -418,7 +417,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
       // Fr_des[foot] = -f_ff[foot];
     }
   }
-
+  std::cout << _legController.commands[0].pDes.transpose() << " " << _legController.datas[0].p.transpose() << std::endl;
   // se->set_contact_state(se_contactState); todo removed
   _stateEstimator.setContactPhase(se_contactState);
 

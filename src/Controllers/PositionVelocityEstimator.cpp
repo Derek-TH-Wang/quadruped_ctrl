@@ -17,7 +17,7 @@
 template <typename T>
 void LinearKFPositionVelocityEstimator<T>::setup() {
   // T dt = this->_stateEstimatorData.parameters->controller_dt;
-  T dt = 0.0025;
+  T dt = 0.002;
   _xhat.setZero();
   _ps.setZero();
   _vs.setZero();

@@ -159,7 +159,7 @@ def init_simulator():
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
     reset = p.addUserDebugParameter("reset", 1, 0, 0)
     p.setGravity(0, 0, -9.8)
-    p.setTimeStep(0.0015)
+    p.setTimeStep(1.0/freq)
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     # p.setPhysicsEngineParameter(numSolverIterations=30)
     # p.setPhysicsEngineParameter(enableConeFriction=0)

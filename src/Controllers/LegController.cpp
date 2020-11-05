@@ -144,14 +144,14 @@ void LegController<T>::updateCommand(LegCommand* legCommand,
     computeLegIK(_quadruped, commands[leg].pDes, &(commands[leg].qDes), leg);
     if (leg == 1 || leg == 3) {
       legCommand->tau_abad_ff[leg] =
-          3*crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -
-          3*crtlParam(3) * datas[leg].qd(0) + legTorque(0);
+          1*crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -
+          1*crtlParam(3) * datas[leg].qd(0) + legTorque(0);
       legCommand->tau_hip_ff[leg] =
-          3*crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) -
-          3*crtlParam(3) * datas[leg].qd(1) + legTorque(1);
+          1*crtlParam(2) * (-commands[leg].qDes(1) - datas[leg].q(1)) -
+          1*crtlParam(3) * datas[leg].qd(1) + legTorque(1);
       legCommand->tau_knee_ff[leg] =
-          3*crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) -
-          3*crtlParam(3) * datas[leg].qd(2) + legTorque(2);
+          1*crtlParam(2) * (-commands[leg].qDes(2) - datas[leg].q(2)) -
+          1*crtlParam(3) * datas[leg].qd(2) + legTorque(2);
     } else {
       legCommand->tau_abad_ff[leg] =
           crtlParam(2) * (commands[leg].qDes(0) - datas[leg].q(0)) -

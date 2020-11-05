@@ -281,13 +281,13 @@ def talker():
         setJSMsg.header.stamp = rospy.Time.now()
         setJSMsg.name = ["abduct_fr", "thigh_fr", "knee_fr", "abduct_fl", "thigh_fl", "knee_fl",
                          "abduct_hr", "thigh_hr", "knee_hr", "abduct_hl", "thigh_hl", "knee_hl"]
-        if myflags % 2 == 0:
+        if myflags % 1 == 0:
             pub2.publish(imu_msg)
 
         pub1.publish(setJSMsg)# p.changeDynamics(planeId, -1, lateralFriction=1.0)
         pub3.publish(com_msg)
         myflags = myflags + 1
-        p.setTimeStep(0.0015)
+        p.setTimeStep(0.002)
         p.stepSimulation()
         rate.sleep()
 

@@ -22,7 +22,7 @@
 #include "quadruped_ctrl/QuadrupedCmd.h"
 #include "quadruped_ctrl/commandDes.h"
 
-#define freq 400.0
+#define freq 500.0
 
 int iter = 0;
 int set_robot_mode, set_gait_type;

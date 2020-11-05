@@ -1,11 +1,11 @@
 simulation:
-  freq: 400.0
+  freq: 500.0
   stand_kp: 100.0
   stand_kd: 1.0
   joint_kp: 10.0
   joint_kd: 0.2
 robot:
-  freq: 400.0
+  freq: 500.0
   stand_kp: 100.0
   stand_kd: 1.0
   joint_kp: 10.0
