@@ -100,8 +100,11 @@ void VectorNavOrientationEstimator<T>::run() {
 
   //   std::cout << "ori = " <<
   //   this->_stateEstimatorData.result->orientation.transpose() << std::endl;
-  //   std::cout << "omegaBody = " <<
-  //   this->_stateEstimatorData.result->omegaBody.transpose() << std::endl;
+//   std::cout << this->_stateEstimatorData.result->rpy.transpose() << std::endl;
+    // std::cout << "omegaBody = " <<
+    // this->_stateEstimatorData.result->omegaBody.transpose() << std::endl;
+    // std::cout << "omegaWorld = " <<
+    // this->_stateEstimatorData.result->omegaWorld.transpose() << std::endl;
   //     std::cout << "abody = " <<
   //     this->_stateEstimatorData.result->aBody.transpose() << std::endl;
 }

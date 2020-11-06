@@ -13,7 +13,6 @@ import pybullet_data
 from geometry_msgs.msg import Twist
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
 
-plane_or_terrain = True
 get_last_vel = [0] * 3
 robot_height = 0.30
 motor_id_list = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
@@ -153,7 +152,7 @@ def reset_robot():
 
 
 def init_simulator():
-    global boxId, reset
+    global boxId, reset, terrain
     robot_start_pos = [0, 0, 0.42]
     p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
@@ -169,12 +168,13 @@ def init_simulator():
     #                    useFixedBase=FixedBase)
 
     heightPerturbationRange = 0.06
-    if plane_or_terrain:
+    numHeightfieldRows = 256
+    numHeightfieldColumns = 256
+    if terrain == "plane":
         planeShape = p.createCollisionShape(shapeType=p.GEOM_PLANE)
         ground_id = p.createMultiBody(0, planeShape)
-    else:
-        numHeightfieldRows = 256
-        numHeightfieldColumns = 256
+        p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0, 0, 1])
+    elif terrain == "random1":
         heightfieldData = [0]*numHeightfieldRows*numHeightfieldColumns
         for j in range(int(numHeightfieldColumns/2)):
             for i in range(int(numHeightfieldRows/2)):
@@ -183,14 +183,23 @@ def init_simulator():
                 heightfieldData[2*i+1+2*j*numHeightfieldRows] = height
                 heightfieldData[2*i+(2*j+1)*numHeightfieldRows] = height
                 heightfieldData[2*i+1+(2*j+1)*numHeightfieldRows] = height
-
         terrainShape = p.createCollisionShape(shapeType=p.GEOM_HEIGHTFIELD, meshScale=[.05, .05, 1], heightfieldTextureScaling=(
             numHeightfieldRows-1)/2, heightfieldData=heightfieldData, numHeightfieldRows=numHeightfieldRows, numHeightfieldColumns=numHeightfieldColumns)
         ground_id = p.createMultiBody(0, terrainShape)
+        p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0, 0, 1])
+    elif terrain == "random2":
+        terrain_shape = p.createCollisionShape(
+            shapeType=p.GEOM_HEIGHTFIELD,
+            meshScale=[.5, .5, .5],
+            fileName="heightmaps/ground0.txt",
+            heightfieldTextureScaling=128)
+        ground_id = p.createMultiBody(0, terrain_shape)
+        path = rospack.get_path('quadruped_ctrl')
+        textureId = p.loadTexture(path+"/model/grass.png")
+        p.changeVisualShape(ground_id, -1, textureUniqueId=textureId)
+        p.resetBasePositionAndOrientation(ground_id, [1, 0, 0.2], [0, 0, 0, 1])
 
-    p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0, 0, 1])
-    p.changeDynamics(ground_id, -1, lateralFriction=1.0)
-
+    p.changeDynamics(ground_id, -1)#, lateralFriction=1.0)
     boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos,
                        useFixedBase=False)
 
@@ -218,21 +227,21 @@ def init_simulator():
     # BoxId = p.createMultiBody(100, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
     # many box
-    colSphereId = p.createCollisionShape(
-        p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    colSphereId1 = p.createCollisionShape(
-        p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    colSphereId2 = p.createCollisionShape(
-        p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    colSphereId3 = p.createCollisionShape(
-        p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    colSphereId4 = p.createCollisionShape(
-        p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
-    p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
-    p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
-    p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
-    p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
-    p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
+    # colSphereId = p.createCollisionShape(
+    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
+    # colSphereId1 = p.createCollisionShape(
+    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
+    # colSphereId2 = p.createCollisionShape(
+    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
+    # colSphereId3 = p.createCollisionShape(
+    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
+    # colSphereId4 = p.createCollisionShape(
+    #     p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
+    # p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
+    # p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
+    # p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
+    # p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
+    # p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
     reset_robot()
 
@@ -275,6 +284,7 @@ def main():
 if __name__ == '__main__':
     rospy.init_node('quadruped_simulator', anonymous=True)
 
+    terrain = rospy.get_param('/simulation/terrain')
     freq = rospy.get_param('/simulation/freq')
     stand_kp = rospy.get_param('/simulation/stand_kp')
     stand_kd = rospy.get_param('/simulation/stand_kd')
