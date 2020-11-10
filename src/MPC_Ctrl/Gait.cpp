@@ -1,4 +1,5 @@
 #include "Gait.h"
+#include <iostream>
 
 // Offset - Duration Gait
 OffsetDurationGait::OffsetDurationGait(int nSegment, Vec4<int> offsets, Vec4<int> durations, const std::string &name = "walk") :
@@ -182,6 +183,7 @@ void OffsetDurationGait::setIterations(int iterationsPerMPC, int currentIteratio
 {
   _iteration = (currentIteration / iterationsPerMPC) % _nIterations;
   _phase = (float)(currentIteration % (iterationsPerMPC * _nIterations)) / (float) (iterationsPerMPC * _nIterations);
+  // std::cout << "_iteration = " << _iteration << " _phase = " << _phase << std::endl;
 }
 
 void MixedFrequncyGait::setIterations(int iterationsBetweenMPC, int currentIteration) {
@@ -196,11 +198,11 @@ void MixedFrequncyGait::setIterations(int iterationsBetweenMPC, int currentItera
 
 }
 
-int OffsetDurationGait::getCurrentGaitPhase() {
-  return _iteration;
+float OffsetDurationGait::getCurrentGaitPhase() {
+  return _phase;
 }
 
-int MixedFrequncyGait::getCurrentGaitPhase() {
+float MixedFrequncyGait::getCurrentGaitPhase() {
   return 0;
 }
 

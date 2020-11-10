@@ -55,6 +55,11 @@ def thread_job():
 
 def callback_gait(req):
     cpp_gait_ctrller.set_gait_type(convert_type(req.cmd))
+    return QuadrupedCmdResponse(0, "get the gait")
+
+
+def callback_mode(req):
+    cpp_gait_ctrller.set_robot_mode(convert_type(req.cmd))
     return QuadrupedCmdResponse(0, "get the mode")
 
 
@@ -152,11 +157,13 @@ def reset_robot():
 
 
 def init_simulator():
-    global boxId, reset, terrain
+    global boxId, reset, low_energy_mode, high_performance_mode, terrain
     robot_start_pos = [0, 0, 0.42]
     p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
     reset = p.addUserDebugParameter("reset", 1, 0, 0)
+    low_energy_mode = p.addUserDebugParameter("low_energy_mode", 1, 0, 0)
+    high_performance_mode = p.addUserDebugParameter("high_performance_mode", 1, 0, 0)
     p.setGravity(0, 0, -9.8)
     p.setTimeStep(1.0/freq)
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
@@ -198,8 +205,34 @@ def init_simulator():
         textureId = p.loadTexture(path+"/model/grass.png")
         p.changeVisualShape(ground_id, -1, textureUniqueId=textureId)
         p.resetBasePositionAndOrientation(ground_id, [1, 0, 0.2], [0, 0, 0, 1])
+    elif terrain == "stairs":
+        planeShape = p.createCollisionShape(shapeType=p.GEOM_PLANE)
+        ground_id = p.createMultiBody(0, planeShape)
+        # p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0.0872, 0, 0.9962])
+        p.resetBasePositionAndOrientation(ground_id, [0, 0, 0], [0, 0, 0, 1])
+        # many box
+        colSphereId = p.createCollisionShape(
+            p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
+        colSphereId1 = p.createCollisionShape(
+            p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.02])
+        colSphereId2 = p.createCollisionShape(
+            p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.03])
+        colSphereId3 = p.createCollisionShape(
+            p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.04])
+        # colSphereId4 = p.createCollisionShape(
+        #     p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
+        p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
+        p.changeDynamics(colSphereId, -1, lateralFriction=friction)
+        p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
+        p.changeDynamics(colSphereId1, -1, lateralFriction=friction)
+        p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
+        p.changeDynamics(colSphereId2, -1, lateralFriction=friction)
+        p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
+        p.changeDynamics(colSphereId3, -1, lateralFriction=friction)
+        # p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
+        # p.changeDynamics(colSphereId4, -1, lateralFriction=0.5)
 
-    p.changeDynamics(ground_id, -1)#, lateralFriction=1.0)
+    p.changeDynamics(ground_id, -1, lateralFriction=friction)
     boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos,
                        useFixedBase=False)
 
@@ -226,23 +259,6 @@ def init_simulator():
     # BoxId = p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
     # BoxId = p.createMultiBody(100, colSphereId4, basePosition=[2.7, 1.0, 0.0])
 
-    # many box
-    # colSphereId = p.createCollisionShape(
-    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    # colSphereId1 = p.createCollisionShape(
-    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    # colSphereId2 = p.createCollisionShape(
-    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    # colSphereId3 = p.createCollisionShape(
-    #     p.GEOM_BOX, halfExtents=[0.1, 0.4, 0.01])
-    # colSphereId4 = p.createCollisionShape(
-    #     p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
-    # p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
-    # p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
-    # p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
-    # p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
-    # p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
-
     reset_robot()
 
 
@@ -250,6 +266,8 @@ def main():
     cnt = 0
     rate = rospy.Rate(freq)  # hz
     reset_flag = p.readUserDebugParameter(reset)
+    low_energy_flag = p.readUserDebugParameter(low_energy_mode)
+    high_performance_flag = p.readUserDebugParameter(high_performance_mode)
     while not rospy.is_shutdown():
         # check reset button state
         if(reset_flag < p.readUserDebugParameter(reset)):
@@ -257,7 +275,14 @@ def main():
             rospy.logwarn("reset the robot")
             cnt = 0
             reset_robot()
-
+        if(low_energy_flag < p.readUserDebugParameter(low_energy_mode)):
+            low_energy_flag = p.readUserDebugParameter(low_energy_mode)
+            rospy.logwarn("set robot to low energy mode, vx_max = 1.5m/s")
+            cpp_gait_ctrller.set_robot_mode(convert_type(1))
+        if(high_performance_flag < p.readUserDebugParameter(high_performance_mode)):
+            high_performance_flag = p.readUserDebugParameter(high_performance_mode)
+            rospy.logwarn("set robot to high performance mode")
+            cpp_gait_ctrller.set_robot_mode(convert_type(0))
         # get data from simulator
         imu_data, leg_data, base_pos = get_data_from_sim()
 
@@ -285,12 +310,13 @@ if __name__ == '__main__':
     rospy.init_node('quadruped_simulator', anonymous=True)
 
     terrain = rospy.get_param('/simulation/terrain')
+    friction = rospy.get_param('/simulation/friction')
     freq = rospy.get_param('/simulation/freq')
     stand_kp = rospy.get_param('/simulation/stand_kp')
     stand_kd = rospy.get_param('/simulation/stand_kd')
     joint_kp = rospy.get_param('/simulation/joint_kp')
     joint_kd = rospy.get_param('/simulation/joint_kd')
-    rospy.loginfo("freq = " + str(freq) + " PID = " +
+    rospy.loginfo("friction = " + str(friction) + " freq = " + str(freq) + " PID = " +
                   str([stand_kp, stand_kd, joint_kp, joint_kd]))
 
     rospack = rospkg.RosPack()
@@ -307,6 +333,7 @@ if __name__ == '__main__':
     rospy.loginfo("find so file = " + so_file)
 
     s = rospy.Service('gait_type', QuadrupedCmd, callback_gait)
+    s1 = rospy.Service('robot_mode', QuadrupedCmd, callback_mode)
     rospy.Subscriber("cmd_vel", Twist, callback_body_vel, buff_size=10000)
 
     init_simulator()

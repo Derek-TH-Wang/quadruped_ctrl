@@ -31,11 +31,13 @@ class GaitCtrller {
   void SetLegData(double* motorData);
   void PreWork(double* imuData, double* motorData);
   void SetGaitType(int gaitType);
+  void SetRobotMode(int mode);
   void SetRobotVel(double* vel);
   void ToqueCalculator(double* imuData, double* motorData, double* effort);
 
  private:
   int _gaitType = 0;
+  int _robotMode = 0;
   std::vector<double> _gamepadCommand;
   Vec4<float> ctrlParam;
 
@@ -69,6 +71,9 @@ void pre_work(double imuData[], double legData[]) {
 
 // gait type can be set in any time
 void set_gait_type(int gaitType) { gCtrller->SetGaitType(gaitType); }
+
+// set robot mode, 0: High performance model, 1: Low power mode
+void set_robot_mode(int mode) { gCtrller->SetRobotMode(mode); }
 
 // robot vel can be set in any time
 void set_robot_vel(double vel[]) { gCtrller->SetRobotVel(vel); }

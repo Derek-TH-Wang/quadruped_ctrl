@@ -78,11 +78,16 @@ void GaitCtrller::SetGaitType(int gaitType) {
   std::cout << "set gait type to: " << _gaitType << std::endl;
 }
 
+void GaitCtrller::SetRobotMode(int mode) {
+  _robotMode = mode;
+  std::cout << "set robot mode to: " << _robotMode << std::endl;
+}
+
 void GaitCtrller::SetRobotVel(double* vel) {
   if (abs(vel[0]) < 0.1) {
     _gamepadCommand[0] = 0.0;
   } else {
-    _gamepadCommand[0] = vel[0] * 1.0;
+    _gamepadCommand[0] = vel[0] * 2.0;
   }
 
   if (abs(vel[1]) < 0.1) {
@@ -96,8 +101,8 @@ void GaitCtrller::SetRobotVel(double* vel) {
   } else {
   _gamepadCommand[2] = vel[2] * 3.0;
   }
-  std::cout << "set vel to: " << _gamepadCommand[0] << " " << _gamepadCommand[1]
-            << " " << _gamepadCommand[2] << std::endl;
+  // std::cout << "set vel to: " << _gamepadCommand[0] << " " << _gamepadCommand[1]
+  //           << " " << _gamepadCommand[2] << std::endl;
 }
 
 void GaitCtrller::ToqueCalculator(double* imuData, double* motorData,
@@ -145,7 +150,7 @@ void GaitCtrller::ToqueCalculator(double* imuData, double* motorData,
   _desiredStateCommand->convertToStateCommands(_gamepadCommand);
 
   convexMPC->run(_quadruped, *_legController, *_stateEstimator,
-                 *_desiredStateCommand, _gamepadCommand, _gaitType);
+                 *_desiredStateCommand, _gamepadCommand, _gaitType, _robotMode);
 
   _legController->updateCommand(&legcommand, ctrlParam);
 

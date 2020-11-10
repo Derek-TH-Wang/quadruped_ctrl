@@ -18,7 +18,7 @@ public:
   virtual void setIterations(int iterationsBetweenMPC, int currentIteration) = 0;
   virtual float getCurrentStanceTime(float dtMPC, int leg) = 0;
   virtual float getCurrentSwingTime(float dtMPC, int leg) = 0;
-  virtual int getCurrentGaitPhase() = 0;
+  virtual float getCurrentGaitPhase() = 0;
   virtual void debugPrint() { }
 
 protected:
@@ -39,7 +39,7 @@ public:
   void setIterations(int iterationsBetweenMPC, int currentIteration);
   float getCurrentStanceTime(float dtMPC, int leg);
   float getCurrentSwingTime(float dtMPC, int leg);
-  int getCurrentGaitPhase();
+  float getCurrentGaitPhase();
   void debugPrint();
 
 private:
@@ -67,7 +67,7 @@ public:
   void setIterations(int iterationsBetweenMPC, int currentIteration);
   float getCurrentStanceTime(float dtMPC, int leg);
   float getCurrentSwingTime(float dtMPC, int leg);
-  int getCurrentGaitPhase();
+  float getCurrentGaitPhase();
   void debugPrint();
 
 private:
