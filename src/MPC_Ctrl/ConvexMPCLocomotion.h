@@ -91,7 +91,7 @@ public:
 
   template<typename T>
   void run(Quadruped<T> &_quadruped, LegController<T> &_legController, StateEstimatorContainer<float> &_stateEstimator,
-          DesiredStateCommand<T> &_desiredStateCommand, std::vector<double> gamepadCommand, int gaitType = 9, int robotMode = 0);
+          DesiredStateCommand<T> &_desiredStateCommand, std::vector<double> gamepadCommand, int gaitType, int robotMode = 0);
   // void _SetupCommand(StateEstimatorContainer<float> &_stateEstimator, std::vector<double> gamepadCommand);
   bool currently_jumping = false;
 
@@ -159,7 +159,7 @@ private:
   float x_comp_integral = 0;
   Vec3<float> pFoot[4];
   CMPC_Result<float> result;
-  float trajAll[12*36];
+  float trajAll[20*36];
   float myflags = 0;
 
   CMPC_Jump jump_state;

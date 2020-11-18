@@ -277,7 +277,7 @@ def main():
             reset_robot()
         if(low_energy_flag < p.readUserDebugParameter(low_energy_mode)):
             low_energy_flag = p.readUserDebugParameter(low_energy_mode)
-            rospy.logwarn("set robot to low energy mode, vx_max = 1.5m/s")
+            rospy.logwarn("set robot to low energy mode")
             cpp_gait_ctrller.set_robot_mode(convert_type(1))
         if(high_performance_flag < p.readUserDebugParameter(high_performance_mode)):
             high_performance_flag = p.readUserDebugParameter(high_performance_mode)

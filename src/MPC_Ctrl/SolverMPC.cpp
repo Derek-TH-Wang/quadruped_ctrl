@@ -382,8 +382,8 @@ void solve_mpc(update_data_t* update, problem_setup* setup)
 
   // start = clock();
 
-  qH = B_qp.transpose()*S;
-  qH = qH*B_qp;
+  // qH = B_qp.transpose()*S;
+  // qH = qH*B_qp;
 
   // std::cout << "111111111111111111 : " << B_qp.rows() << "  2222222222222222 :" << B_qp.cols() << std::endl;
   // std::cout << "222222222222222222 : " << S << std::endl;

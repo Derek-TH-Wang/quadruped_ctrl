@@ -19,6 +19,7 @@ public:
   virtual float getCurrentStanceTime(float dtMPC, int leg) = 0;
   virtual float getCurrentSwingTime(float dtMPC, int leg) = 0;
   virtual float getCurrentGaitPhase() = 0;
+  virtual int getGaitHorizon() = 0;
   virtual void debugPrint() { }
 
 protected:
@@ -40,6 +41,7 @@ public:
   float getCurrentStanceTime(float dtMPC, int leg);
   float getCurrentSwingTime(float dtMPC, int leg);
   float getCurrentGaitPhase();
+  int getGaitHorizon();
   void debugPrint();
 
 private:
@@ -68,6 +70,7 @@ public:
   float getCurrentStanceTime(float dtMPC, int leg);
   float getCurrentSwingTime(float dtMPC, int leg);
   float getCurrentGaitPhase();
+  int getGaitHorizon();
   void debugPrint();
 
 private:

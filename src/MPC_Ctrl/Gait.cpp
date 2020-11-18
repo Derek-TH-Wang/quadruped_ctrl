@@ -183,7 +183,8 @@ void OffsetDurationGait::setIterations(int iterationsPerMPC, int currentIteratio
 {
   _iteration = (currentIteration / iterationsPerMPC) % _nIterations;
   _phase = (float)(currentIteration % (iterationsPerMPC * _nIterations)) / (float) (iterationsPerMPC * _nIterations);
-  // std::cout << "_iteration = " << _iteration << " _phase = " << _phase << std::endl;
+  // std::cout << "currentIteration = " << currentIteration  << " iterationsPerMPC = " << iterationsPerMPC << std::endl;
+  // std::cout << "_nIterations = " << _nIterations << " _iteration = " << _iteration << " _phase = " << _phase << std::endl;
 }
 
 void MixedFrequncyGait::setIterations(int iterationsBetweenMPC, int currentIteration) {
@@ -222,6 +223,14 @@ float OffsetDurationGait::getCurrentStanceTime(float dtMPC, int leg) {
 
 float MixedFrequncyGait::getCurrentStanceTime(float dtMPC, int leg) {
   return dtMPC * _duty_cycle * _periods[leg];
+}
+
+int OffsetDurationGait::getGaitHorizon() {
+  return _nIterations;
+}
+
+int MixedFrequncyGait::getGaitHorizon() {
+  return _nIterations;
 }
 
 void OffsetDurationGait::debugPrint() {
