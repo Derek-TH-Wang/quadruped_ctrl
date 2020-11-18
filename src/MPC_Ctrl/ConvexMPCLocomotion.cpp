@@ -141,6 +141,9 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
   // pick gait
   Gait* gait = &trotting;
   if(robotMode == 0) {
+    if(gait->getGaitHorizon() != 10) {
+      iterationCounter = 0;
+    }
     if (gaitNumber == 1)
       gait = &bounding;
     else if (gaitNumber == 2)
