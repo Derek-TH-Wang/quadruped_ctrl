@@ -1,7 +1,7 @@
 simulation:
-  terrain: "plane"
+  terrain: "stairs"
   lateralFriction: 1.0
-  spinningFriction: 0.0
+  spinningFriction: 0.0065
   freq: 500.0
   stand_kp: 100.0
   stand_kd: 1.0
