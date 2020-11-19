@@ -622,7 +622,7 @@ void ConvexMPCLocomotion::solveDenseMPC(
 
   Timer t1;
   dtMPC = dt * iterationsBetweenMPC;
-  setup_problem(dtMPC, horizonLength, 1.2, 120);
+  setup_problem(dtMPC, horizonLength, 0.4, 120);
   // setup_problem(dtMPC,horizonLength,0.4,650); //DH
   update_x_drag(x_comp_integral);
 

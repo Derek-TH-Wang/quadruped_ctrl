@@ -222,20 +222,23 @@ def init_simulator():
         # colSphereId4 = p.createCollisionShape(
         #     p.GEOM_BOX, halfExtents=[0.03, 0.03, 0.03])
         p.createMultiBody(100, colSphereId, basePosition=[1.0, 1.0, 0.0])
-        p.changeDynamics(colSphereId, -1, lateralFriction=friction)
+        p.changeDynamics(colSphereId, -1, lateralFriction=lateralFriction)
         p.createMultiBody(100, colSphereId1, basePosition=[1.2, 1.0, 0.0])
-        p.changeDynamics(colSphereId1, -1, lateralFriction=friction)
+        p.changeDynamics(colSphereId1, -1, lateralFriction=lateralFriction)
         p.createMultiBody(100, colSphereId2, basePosition=[1.4, 1.0, 0.0])
-        p.changeDynamics(colSphereId2, -1, lateralFriction=friction)
+        p.changeDynamics(colSphereId2, -1, lateralFriction=lateralFriction)
         p.createMultiBody(100, colSphereId3, basePosition=[1.6, 1.0, 0.0])
-        p.changeDynamics(colSphereId3, -1, lateralFriction=friction)
+        p.changeDynamics(colSphereId3, -1, lateralFriction=lateralFriction)
         # p.createMultiBody(10, colSphereId4, basePosition=[2.7, 1.0, 0.0])
         # p.changeDynamics(colSphereId4, -1, lateralFriction=0.5)
 
-    p.changeDynamics(ground_id, -1, lateralFriction=friction)
+    p.changeDynamics(ground_id, -1, lateralFriction=lateralFriction)
     boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos,
                        useFixedBase=False)
-
+    p.changeDynamics(boxId, 3, spinningFriction=spinningFriction)
+    p.changeDynamics(boxId, 7, spinningFriction=spinningFriction)
+    p.changeDynamics(boxId, 11, spinningFriction=spinningFriction)
+    p.changeDynamics(boxId, 15, spinningFriction=spinningFriction)
     jointIds = []
     for j in range(p.getNumJoints(boxId)):
         p.getJointInfo(boxId, j)
@@ -310,14 +313,15 @@ if __name__ == '__main__':
     rospy.init_node('quadruped_simulator', anonymous=True)
 
     terrain = rospy.get_param('/simulation/terrain')
-    friction = rospy.get_param('/simulation/friction')
+    lateralFriction = rospy.get_param('/simulation/lateralFriction')
+    spinningFriction = rospy.get_param('/simulation/spinningFriction')
     freq = rospy.get_param('/simulation/freq')
     stand_kp = rospy.get_param('/simulation/stand_kp')
     stand_kd = rospy.get_param('/simulation/stand_kd')
     joint_kp = rospy.get_param('/simulation/joint_kp')
     joint_kd = rospy.get_param('/simulation/joint_kd')
-    rospy.loginfo("friction = " + str(friction) + " freq = " + str(freq) + " PID = " +
-                  str([stand_kp, stand_kd, joint_kp, joint_kd]))
+    rospy.loginfo("lateralFriction = " + str(lateralFriction) + " spinningFriction = " + str(spinningFriction))
+    rospy.loginfo(" freq = " + str(freq) + " PID = " + str([stand_kp, stand_kd, joint_kp, joint_kd]))
 
     rospack = rospkg.RosPack()
     path = rospack.get_path('quadruped_ctrl')
