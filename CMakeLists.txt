@@ -155,9 +155,9 @@ target_link_libraries(${PROJECT_NAME}
   osqp
 )
 
-add_executable(mainController src/mainController.cpp)
-target_link_libraries(mainController ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(mainController ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_executable(mainController src/mainController.cpp)
+# target_link_libraries(mainController ${catkin_LIBRARIES} ${PROJECT_NAME})
+# add_dependencies(mainController ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -195,7 +195,6 @@ add_dependencies(mainController ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXP
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
    scripts/walking_simulation.py 
-   scripts/plotData.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
