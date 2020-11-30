@@ -14,6 +14,7 @@
 #include "Controllers/PositionVelocityEstimator.h"
 #include "Controllers/RobotLegState.h"
 #include "Controllers/StateEstimatorContainer.h"
+#include "Controllers/SafetyChecker.h"
 #include "Dynamics/MiniCheetah.h"
 #include "MPC_Ctrl/ConvexMPCLocomotion.h"
 #include "Utilities/IMUTypes.h"
@@ -38,6 +39,7 @@ class GaitCtrller {
  private:
   int _gaitType = 0;
   int _robotMode = 0;
+  bool _safetyCheck = true;
   std::vector<double> _gamepadCommand;
   Vec4<float> ctrlParam;
 
@@ -53,6 +55,7 @@ class GaitCtrller {
   StateEstimate<float> _stateEstimate;
   RobotControlParameters* controlParameters;
   DesiredStateCommand<float>* _desiredStateCommand;
+  SafetyChecker<float>* safetyChecker;
 };
 
 extern "C" {

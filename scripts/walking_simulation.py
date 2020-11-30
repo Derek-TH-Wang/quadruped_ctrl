@@ -138,13 +138,13 @@ def get_data_from_sim():
 def reset_robot():
     p.resetBasePositionAndOrientation(
         boxId, [0, 0, robot_height], [0, 0, 0, 1])
+    p.resetBaseVelocity(boxId, [0, 0, 0], [0, 0, 0])
     for j in range(12):
-        p.resetJointState(boxId, motor_id_list[j], init_new_pos[j])
+        p.resetJointState(boxId, motor_id_list[j], init_new_pos[j], init_new_pos[j+12])
     cpp_gait_ctrller.init_controller(convert_type(
         freq), convert_type([stand_kp, stand_kd, joint_kp, joint_kd]))
 
-    for _ in range(40):
-        # p.setTimeStep(0.0015)
+    for _ in range(10):
         p.stepSimulation()
         imu_data, leg_data, _ = get_data_from_sim()
         cpp_gait_ctrller.pre_work(convert_type(
@@ -154,18 +154,25 @@ def reset_robot():
         force = 0
         p.setJointMotorControl2(
             boxId, j, p.VELOCITY_CONTROL, force=force)
+    
+    cpp_gait_ctrller.set_robot_mode(convert_type(1))
+    for _ in range(200):
+        run()
+        p.stepSimulation
+    cpp_gait_ctrller.set_robot_mode(convert_type(0))
 
 
 def init_simulator():
-    global boxId, reset, low_energy_mode, high_performance_mode, terrain
+    global boxId, reset, low_energy_mode, high_performance_mode, terrain, p
     robot_start_pos = [0, 0, 0.42]
     p.connect(p.GUI)  # or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath())  # optionally
+    p.resetSimulation()
+    p.setTimeStep(1.0/freq)
+    p.setGravity(0, 0, -9.8)
     reset = p.addUserDebugParameter("reset", 1, 0, 0)
     low_energy_mode = p.addUserDebugParameter("low_energy_mode", 1, 0, 0)
     high_performance_mode = p.addUserDebugParameter("high_performance_mode", 1, 0, 0)
-    p.setGravity(0, 0, -9.8)
-    p.setTimeStep(1.0/freq)
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     # p.setPhysicsEngineParameter(numSolverIterations=30)
     # p.setPhysicsEngineParameter(enableConeFriction=0)
@@ -265,6 +272,28 @@ def init_simulator():
     reset_robot()
 
 
+def run():
+    # get data from simulator
+    imu_data, leg_data, base_pos = get_data_from_sim()
+
+    # call cpp function to calculate mpc tau
+    tau = cpp_gait_ctrller.toque_calculator(convert_type(
+        imu_data), convert_type(leg_data))
+
+    # set tau to simulator
+    p.setJointMotorControlArray(bodyUniqueId=boxId,
+                                jointIndices=motor_id_list,
+                                controlMode=p.TORQUE_CONTROL,
+                                forces=tau.contents.eff)
+
+    # reset visual cam
+    p.resetDebugVisualizerCamera(2.5, 45, -30, base_pos)
+
+    p.stepSimulation()
+
+    return
+
+
 def main():
     cnt = 0
     rate = rospy.Rate(freq)  # hz
@@ -286,26 +315,12 @@ def main():
             high_performance_flag = p.readUserDebugParameter(high_performance_mode)
             rospy.logwarn("set robot to high performance mode")
             cpp_gait_ctrller.set_robot_mode(convert_type(0))
-        # get data from simulator
-        imu_data, leg_data, base_pos = get_data_from_sim()
-
-        # call cpp function to calculate mpc tau
-        tau = cpp_gait_ctrller.toque_calculator(convert_type(
-            imu_data), convert_type(leg_data))
-
-        # set tau to simulator
-        p.setJointMotorControlArray(bodyUniqueId=boxId,
-                                    jointIndices=motor_id_list,
-                                    controlMode=p.TORQUE_CONTROL,
-                                    forces=tau.contents.eff)
-
-        # reset visual cam
-        p.resetDebugVisualizerCamera(2.5, 45, -30, base_pos)
+        
+        run()
 
         cnt += 1
         if cnt > 99999999:
             cnt = 99999999
-        p.stepSimulation()
         rate.sleep()
 
 

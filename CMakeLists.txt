@@ -143,6 +143,7 @@ add_library(${PROJECT_NAME}
   src/Controllers/DesiredStateCommand.cpp
   src/Controllers/OrientationEstimator.cpp
   src/Controllers/PositionVelocityEstimator.cpp
+  src/Controllers/SafetyChecker.cpp
   src/Dynamics/Quadruped.cpp
   src/Dynamics/FloatingBaseModel.cpp
   src/GaitCtrller.cpp
