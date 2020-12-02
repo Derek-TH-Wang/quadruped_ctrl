@@ -20,9 +20,9 @@
 #include "Utilities/IMUTypes.h"
 #include "calculateTool.h"
 
-typedef struct StructPointerTest {
+struct JointEff {
   double eff[12];
-} StructPointerTest, *StructPointer;
+};
 
 class GaitCtrller {
  public:
@@ -60,10 +60,14 @@ class GaitCtrller {
 
 extern "C" {
 
-GaitCtrller* gCtrller;
+GaitCtrller* gCtrller = NULL;
+JointEff jointEff;
 
 // first step, init the controller
 void init_controller(double freq, double PIDParam[]) {
+  if (NULL != gCtrller) {
+    delete gCtrller;
+  }
   gCtrller = new GaitCtrller(freq, PIDParam);
 }
 
@@ -82,14 +86,13 @@ void set_robot_mode(int mode) { gCtrller->SetRobotMode(mode); }
 void set_robot_vel(double vel[]) { gCtrller->SetRobotVel(vel); }
 
 // after init controller and pre work, the mpc calculator can work
-StructPointer toque_calculator(double imuData[], double motorData[]) {
-  StructPointer p = (StructPointer)malloc(sizeof(StructPointerTest));
-  double eff[12];
+JointEff* toque_calculator(double imuData[], double motorData[]) {
+  double eff[12] = {0.0};
   gCtrller->ToqueCalculator(imuData, motorData, eff);
   for (int i = 0; i < 12; i++) {
-    p->eff[i] = eff[i];
+    jointEff.eff[i] = eff[i];
   }
-  return p;
+  return &jointEff;
 }
 }
 

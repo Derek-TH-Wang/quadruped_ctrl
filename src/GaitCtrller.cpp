@@ -42,7 +42,13 @@ GaitCtrller::GaitCtrller(double freq, double* PIDParam) {
   std::cout << "finish init controller" << std::endl;
 }
 
-GaitCtrller::~GaitCtrller() {}
+GaitCtrller::~GaitCtrller() {
+  delete convexMPC;
+  delete _legController;
+  delete _stateEstimator;
+  delete _desiredStateCommand;
+  delete safetyChecker;
+}
 
 void GaitCtrller::SetIMUData(double* imuData) {
   _vectorNavData.accelerometer(0, 0) = imuData[0];

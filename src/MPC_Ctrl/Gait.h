@@ -45,13 +45,13 @@ public:
   void debugPrint();
 
 private:
-  int* _mpc_table;
+  int* _mpc_table = NULL;
   Array4i _offsets; // offset in mpc segments
   Array4i _durations; // duration of step in mpc segments
   Array4f _offsetsFloat; // offsets in phase (0 to 1)
   Array4f _durationsFloat; // durations in phase (0 to 1)
-  int _stance;
-  int _swing;
+  // int _stance;
+  // int _swing;
   int _iteration;
   int _nIterations;
   float _phase;

@@ -28,13 +28,16 @@ void OffsetDurationGait::setGaitParam(int nSegment, Vec4<int> offsets, Vec4<int>
 
   _name = name;
   // allocate memory for MPC gait table
+  if(NULL != _mpc_table) {
+    delete[] _mpc_table;
+  }
   _mpc_table = new int[nSegment * 4];
 
   _offsetsFloat = offsets.cast<float>() / (float) nSegment;
   _durationsFloat = durations.cast<float>() / (float) nSegment;
 
-  _stance = durations[0];
-  _swing = nSegment - durations[0];
+  // _stance = durations[0];
+  // _swing = nSegment - durations[0];
 }
 
 MixedFrequncyGait::MixedFrequncyGait(int nSegment, Vec4<int> periods, float duty_cycle, const std::string &name) {
@@ -109,11 +112,13 @@ Vec4<float> OffsetDurationGait::getSwingState()
     }
     else
     {
-      progress[i] = progress[i] / swing_duration[i];
+      if(swing_duration[i] < 0.0000000001) {
+        progress[i] = 0.0;
+      } else {
+        progress[i] = progress[i] / swing_duration[i];
+      }
     }
   }
-
-  //printf("swing state: %.3f %.3f %.3f %.3f\n", progress[0], progress[1], progress[2], progress[3]);
   return progress.matrix();
 }
 
@@ -209,7 +214,8 @@ float MixedFrequncyGait::getCurrentGaitPhase() {
 
 float OffsetDurationGait::getCurrentSwingTime(float dtMPC, int leg) {
   (void)leg;
-  return dtMPC * _swing;
+  // return dtMPC * _swing;
+  return dtMPC * (_nIterations - _durations[leg]);
 }
 
 float MixedFrequncyGait::getCurrentSwingTime(float dtMPC, int leg) {
@@ -218,7 +224,8 @@ float MixedFrequncyGait::getCurrentSwingTime(float dtMPC, int leg) {
 
 float OffsetDurationGait::getCurrentStanceTime(float dtMPC, int leg) {
   (void) leg;
-  return dtMPC * _stance;
+  // return dtMPC * _stance;
+  return dtMPC * _durations[leg];
 }
 
 float MixedFrequncyGait::getCurrentStanceTime(float dtMPC, int leg) {
