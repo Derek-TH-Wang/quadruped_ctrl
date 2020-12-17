@@ -115,6 +115,7 @@ private:
 
   float _yaw_turn_rate = 0.;
   float _yaw_des;
+  float _yaw_des_true = 0.0;
 
   float _roll_des;
   float _pitch_des;

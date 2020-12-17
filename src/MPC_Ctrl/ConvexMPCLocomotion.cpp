@@ -102,6 +102,13 @@ void ConvexMPCLocomotion::_SetupCommand(
   _yaw_des = _stateEstimator.getResult().rpy[2] +
              dt * _yaw_turn_rate;  //涉及到了状态估计中的欧拉角
 
+  //确保机器人不会因为摩擦力的原因在yaw方向产生旋转误差
+  if((abs(_stateEstimator.getResult().rpy[2] - _yaw_des_true) > 5.0)){
+    // _yaw_des_true = 3.14 * _stateEstimator.getResult().rpy[2] / abs(_stateEstimator.getResult().rpy[2]);
+    _yaw_des_true = _stateEstimator.getResult().rpy[2];
+  }
+  _yaw_des_true =_yaw_des_true + dt * _yaw_turn_rate;
+
   _roll_des = 0.;
   _pitch_des = 0.;
 }
@@ -542,7 +549,7 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(
 
       float trajInitial[12] = {(float)rpy_comp[0],  // 0
                                (float)rpy_comp[1],  // 1
-                               _yaw_des,            // 2
+                               _yaw_des_true,            // 2
                                // yawStart,    // 2
                                xStart,               // 3
                                yStart,               // 4
@@ -559,7 +566,8 @@ void ConvexMPCLocomotion::updateMPCIfNeeded(
 
         if (i == 0)  // start at current position  TODO consider not doing this
         {
-          trajAll[2] = seResult.rpy[2];
+          // trajAll[2] = seResult.rpy[2];
+          trajAll[2] = _yaw_des_true;
         } else {
           trajAll[12 * i + 3] =
               trajAll[12 * (i - 1) + 3] + dtMPC * v_des_world[0];
