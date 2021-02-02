@@ -4,6 +4,8 @@
 MIT mini cheetah use customized simulator and lcm framework, which is not a popular way to do the robot development. Now, we extract the algorithm and do the simulation using ros and pybullet. This can be simple to deploy the system into different custom robot or plantform, and easy to learn the algorithm.
 
 <img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/blob/master/quadruped_balance.gif" alt="show" />
+<img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/blob/master/vision.png" alt="show" />
+<img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/blob/master/rviz.png" alt="show" />
 
 ### System requirements:
 Ubuntu 18.04, ROS Mellodic  
@@ -28,6 +30,7 @@ you can modify the ```config/quadruped_ctrl_cinfig.yaml/terrain``` to deploy dif
 "stairs"
 "random1"
 "random2"
+"racetrack"
 ```
 
 ### Running:
@@ -39,7 +42,14 @@ run the controller in simulator:
 ```
 roslaunch quadruped_ctrl quadruped_ctrl.launch
 ```
-you can switch the gait type:  
+
+switch the camera on:
+camera set True in quadruped_ctrl_config.yaml, then launch the rviz to see the point cloud:
+```
+roslaunch quadruped_ctrl vision.launch
+```
+
+you alse can switch the gait type:  
 ```
 rosservice call /gait_type "cmd: 1"
 ```

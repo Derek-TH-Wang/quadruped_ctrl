@@ -1,0 +1,3 @@
+<launch>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find quadruped_ctrl)/rviz/vision.rviz" />
+</launch>

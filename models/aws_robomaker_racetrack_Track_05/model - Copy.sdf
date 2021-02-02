@@ -1,0 +1,88 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  
+  
+  <model name='aws_Track_05_border'>
+    
+     <link name='body_border'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <inertial>
+        <mass>1000</mass>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>file://models/aws_robomaker_racetrack_Track_05/meshes/aws_Track_05_visual_border.obj</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+        <meta>
+          <layer>0</layer>
+        </meta>
+      </visual>
+      
+    </link>
+  </model>
+  
+   <model name='aws_Track_05_border'>
+    
+     <link name='body_border'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <inertial>
+        <mass>1000</mass>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>file://models/aws_robomaker_racetrack_Track_05/meshes/aws_Track_05_visual_track.obj</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+        <meta>
+          <layer>0</layer>
+        </meta>
+      </visual>
+      
+    </link>
+  </model>
+</sdf>

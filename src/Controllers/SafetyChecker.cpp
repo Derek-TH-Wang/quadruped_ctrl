@@ -129,7 +129,7 @@ bool SafetyChecker<T>::checkJointLimit(LegController<float>& _legController){
 
   T max_ab_ad_angle = 1.0472;   //60 degree
   T max_hip_angle = 0.174533;   //10 degree
-  T min_hip_angle = -1.22173;    //-70 degree
+  T min_hip_angle = -1.8;  //-1.22173;    //-70 degree
   T max_knee_angle = 2.79253;    //160 degree
   T min_knee_angle = -0.174533;   //-10 degree
 

@@ -1,0 +1,44 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='aws_Trackline_01'>
+    <link name='body'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <inertial>
+        <mass>0.5</mass>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>file://models/aws_robomaker_racetrack_Trackline_01/meshes/aws_Trackline_01_visual.obj</uri>
+            <scale>0.01 0.01 0.01</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+        <meta>
+          <layer>0</layer>
+        </meta>
+      </visual>
+      
+    </link>
+    <static>1</static>
+  </model>
+</sdf>

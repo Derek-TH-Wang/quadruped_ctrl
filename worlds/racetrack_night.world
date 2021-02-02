@@ -1,0 +1,1626 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sdf version="1.6"> 
+  <world name="default"> 
+    <!-- override the default position of the camera -->
+    <gui>
+      <camera name='gzclient_camera'>
+        <pose>36.00 -27.95 24.67 0.00 0.53 2.376</pose>
+      </camera>
+    </gui>
+    <gravity>0 0 -9.8</gravity>  
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>  
+    <atmosphere type="adiabatic"/>  
+    <physics name="default_physics" default="0" type="ode"> 
+      <max_step_size>0.001</max_step_size>  
+      <real_time_factor>1</real_time_factor>  
+      <real_time_update_rate>1000</real_time_update_rate> 
+    </physics>  
+    <scene> 
+      <ambient>0.1 0.1 0.1 1</ambient>  
+      <background>0.1 0.1 0.1 1</background>  
+      <shadows>1</shadows> 
+    </scene>  
+    <spherical_coordinates> 
+      <surface_model>EARTH_WGS84</surface_model>  
+      <latitude_deg>0</latitude_deg>  
+      <longitude_deg>0</longitude_deg>  
+      <elevation>0</elevation>  
+      <heading_deg>0</heading_deg> 
+    </spherical_coordinates>  
+    <model name="aws_robomaker_racetrack_Billboard_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Billboard_01</uri> 
+      </include>  
+      <pose frame="">4.32789 -14.8431 -2e-06 0 1e-06 1.56416</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-8.47522 4.09403 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-7.67012 3.67698 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-13.6708 -0.983538 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-13.6938 6.13266 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>2.35672 8.58743 0.054 0 0 0.094608</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>3.14399 8.69292 0 0 -0 0.292667</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>5.18867 8.56895 0 0 0 -0.026658</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>5.89383 8.24239 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>8.58056 10.3426 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>7.88227 10.5539 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>22.2917 13.5697 0 0 -0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>22.9018 12.8693 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>22.2128 6.62693 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_13"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>20.9847 6.29253 0 0 -0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_14"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>24.073 -17.9303 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_15"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>20.8422 -8.59507 0.054 0 0 0.012499</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_16"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>20.3649 -9.17417 0 0 -0 0.004768</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_17"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>19.7995 -9.67862 0.054 0 0 -0.003254</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_18"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>19.1471 -10.2467 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_19"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include> 
+        <pose frame=''>18.3999 -10.9106 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_20"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-22.169 12.8311 0 0 -0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_21"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-17.3216 9.66872 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_22"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>14.1427 -12.6734 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_23"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>14.9254 -12.4456 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_24"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-15.0558 -0.45872 0 0 -0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_25"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>13.3868 -12.8508 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_26"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>9.22311 -21.8198 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_27"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>3.82438 -0.358379 0 0 -0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_28"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>14.9648 -18.6736 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_29"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>23.6827 12.1956 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_30"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>24.3346 11.4874 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_31"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include> 
+        <pose frame=''>24.8882 10.6788 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_32"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>20.5304 9.13561 0.054 0 0 -0.001449</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_33"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>19.3714 10.0864 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_34"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>20.0016 9.69426 0 0 0 -0.00182</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_35"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>21.0478 8.57525 0.054 0 0 -0.000349</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_36"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>21.5218 7.97169 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_37"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>21.8874 7.29413 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_38"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.38383 7.63289 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_39"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.48514 6.73841 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_40"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.63137 5.86016 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_41"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.84089 5.04433 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_42"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.41586 4.22597 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_43"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>4.45229 8.66174 0.054 0 0 0.095583</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_44"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-13.8311 5.21601 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_45"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>5.3642 2.03973 0.054 0 0 -0.008872</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_46"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>5.91311 2.58362 0 0 0 -0.010849</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_47"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>6.38729 3.3437 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_48"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>4.78436 1.25544 0 0 0 -0.004687</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_49"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>4.1948 0.806848 0.054 0 0 -0.002707</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_50"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-6.80733 3.36416 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_51"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-9.83411 4.55632 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_52"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-10.8194 4.31922 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_53"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>3.7947 8.27498 0 0 0 -0.244875</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_54"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-10.1026 6.87186 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_55"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-11.2375 6.93335 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_56"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-13.9209 0.216601 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_57"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-7.72969 7.02543 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_58"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-6.91293 6.87432 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_59"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-6.56208 7.77782 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_60"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.6963 0.705029 0 0 -0 0.00632</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_61"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.205 4.57376 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_62"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.8093 2.14739 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_63"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.964 1.3691 0.054 0 0 0.003001</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_64"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.5066 3.82709 0.054 0 0 -0.127634</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_65"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-14.5756 2.99063 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_66"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>          
+	  <pose frame=''>-13.7254 7.00826 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_67"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-13.4797 7.73167 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_CrashworthBucket_01_68"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_CrashworthBucket_01</uri> 
+      </include>  
+        <pose frame=''>-12.5612 7.3288 0.054 0 0 0</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_FenceMesh_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_FenceMesh_01</uri> 
+      </include>  
+      <pose frame="">4.2331 -11.1761 5.05223 0 0 -0.006038</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_FenceMesh_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_FenceMesh_01</uri> 
+      </include>  
+      <pose frame="">4.16406 -18.6269 5.05223 0 0 -0.006038</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_FenceMesh_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_FenceMesh_01</uri> 
+      </include>  
+      <pose frame="">4.63223 -18.6067 5.05223 0 0 -0.006038</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_FenceMesh_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_FenceMesh_01</uri> 
+      </include>  
+      <pose frame="">4.67467 -11.1966 5.05223 0 0 -0.006038</pose> 
+    </model>  
+<model name="aws_robomaker_racetrack_Fence_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">7.552996 13.158695 0 0 0 -1.57272</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-0.500271 13.158695 0 0 0 -1.57272</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-8.897229 13.158695 0 0 0 -1.57272</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-17.681196 13.158695 0 0 0 -1.57272</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-12.990376 -16.857170 0.054 -0.0 0.0 -1.558614</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-4.880881 -16.849474 0.054  0 0 -1.572721</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">3.247635 -16.899557 0.054  0 0 -1.581650</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">11.364270 -16.813890 0.054  0.0 0.0 -1.525504</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-15.529042 -13.134610 0.054 0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-7.391050 -13.134610 0.054651 0 0.0 1.580400</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">0.720398 -13.134610 0.054671 0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">8.89898 -13.134610 0.054638 0.0 0.0 1.572679</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-18.882746 16.818918 0.054  0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_13"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-10.776134 16.818918 0.054  0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_14"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">-2.679413 16.818918 0 0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_01_15"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_01</uri> 
+      </include>  
+      <pose frame="">5.475008 16.818918 0.054  0 -0 1.57158</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+        <pose frame=''>-1.05264 -0.5238 0.040535 -0.008781 0.086261 -1.77545</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">9.06357 1.626 0 0 0 -0.300407</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">-3.88076 0.08215 0 0 0 -1.73608</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">-6.69129 0.495608 0 0 0 -1.73608</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame=''>-10.283561 1.223148 0.054 0 0 -1.789875</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">4.57205 11.1353 0 0 0 -1.73608</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">6.8958583 9.887979 0 0 0 -2.140475</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame=''>1.60246 11.2143 0 0 -0 1.90339</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">-1.13 10.3272 0 0 -0 1.90339</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">-3.85384 9.39461 0 0 -0 1.90339</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">9.89165 4.45225 0 0 0 -0.045392</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">10.0686 7.48939 0 0 -0 0.450699</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Fence_02_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Fence_02</uri> 
+      </include>  
+      <pose frame="">1.65856 -1.03383 0 0 0 -1.02955</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_RaceStartLight_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_RaceStartLight_01</uri> 
+      </include>  
+      <pose frame="">4.13359 -14.1692 5.08709 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_RaceStartLight_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_RaceStartLight_01</uri> 
+      </include>  
+      <pose frame="">4.14665 -14.6522 5.08709 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_RaceStartLight_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_RaceStartLight_01</uri> 
+      </include>  
+      <pose frame="">4.21676 -15.0918 5.08709 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_RaceStartLight_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_RaceStartLight_01</uri> 
+      </include>  
+      <pose frame="">4.17594 -15.5526 5.08709 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+      <pose frame=''>-21.1732 -12.7799 0.054 0 -0 -0.086667</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-23.6727 -12.2854 0.054 0 -0.0 -0.301631</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-22.8128 8.293 0.054 0 -0 0.009742</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-24.2891 12.2118 0.054 0 -0 0.334226</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-20.3219 18.8912 0.054 0 -0.0 0.009742</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>11.0892 17.2043 0.054 0 -0.0 0.029389</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>13.5633 17.1121 0.054 0 -0.0 -0.108086</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>16.0013 16.8104 0.054 0 -0.0 -0.206147</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>18.4263 16.0384 0.054 0 -0.0 -0.379591</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>17.8323 11.1467 0.054 0 -0.0 -0.536699</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>22.7563 5.03589 0.054 0 -0.0 -1.28348</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>23.2964 2.57509 0.054 -0 -0.0 -1.43498</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>23.4326 0.10745 0.054 -0 -0.0 -1.58404</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_13"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>23.2774 -2.40527 0.054 0 -0.0 -1.65922</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_14"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>22.705 -4.89186 0.054 -0 -0.0 -1.88566</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_15"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>21.6688 -7.19526 0.054 0 -0.0 -2.13625</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_16"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>28.1211 -0.475719 0.054 0 -0.0 -1.59506</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_17"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>16.7061 -11.7058 0.054 -0 -0.0 -2.7953</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_18"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>28.0027 -3.03906 0.054 0 -0.0 -1.68291</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_19"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>9.84486 -11.2119 0.054 0 -0.0 -2.93657</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_20"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>10.8625 -21.1556 0.054 -0 -0.0 0.135159</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_21"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>17.2914 -16.4156 0.054 0 -0.0 0.298911</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_22"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>19.6208 -15.4615 0.054 0 -0.0 0.489077</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_23"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>21.7939 -14.1476 0.054 0 -0.0 0.61668</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_24"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>23.6698 -12.3608 0.054 0 -0.0 0.810318</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_25"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>25.3929 -10.3347 0.054 -0 -0.0 0.931507</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_26"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>27.7466 4.53211 0.054 0 -0.0 1.75246</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_27"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>27.0691 6.99271 0.054 0 -0.0 1.91654</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_28"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>26.0366 9.29805 0.054 0 -0.0 2.08782</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_29"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>26.7385 -7.99231 0.054 -0 -0.0 1.16098</pose>
+    </model>  
+	 <model name="aws_robomaker_racetrack_StonePier_01_30"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+      <pose frame=''>27.5962 -5.54706 0.054 0 -0.0 1.36231</pose>
+    </model>	
+    <model name="aws_robomaker_racetrack_StonePier_01_31"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>28.0314 1.9989 0.054 0 -0.0 -1.53351</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_32"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>20.6714 14.8473 0.054 0 -0.0 -0.587598</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_33"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>12.9654 12.6879 0.054 0 -0.0 -0.096781</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_34"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>15.5357 12.1477 0.054 -0 0.00036 -0.29956</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_35"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-23.832 18.561 0.054 -0 -0.0 0.133251</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_36"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+         <pose frame=''>-26.5946 11.0295 0.054 0 0.00036 0.646791</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_37"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-24.4271 16.8105 0.054 -0 -0.0 0.217772</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_38"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-28.6752 9.30494 0.054 0 -0.0 0.789682</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_39"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-30.2584 7.24451 0.054 -0 -0.0 1.02306</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_40"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-18.3212 -17.1986 0.054 0 -0.0 -0.000165</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_41"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-26.1157 -11.2238 0.054 0 -0.0 -0.528829</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_42"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-28.1466 -9.75745 0.054 0 -0.0 -0.811127</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_43"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-29.8572 -7.79098 0.054 0 -0.0 -0.924577</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_44"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.1336 -5.56451 0.054 0 -0.0 -1.16956</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_45"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.6395 -3.07904 0.054 -0 -0.0 -1.43795</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_46"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.7709 -0.48849 0.054 0 -0.0 -1.61074</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_47"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.7363 2.12666 0.054 0 -0.0 -1.64853</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_48"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.2901 4.63965 0.054 -0 -0.0 -1.9545</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_49"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-25.0833 5.46077 -2.5e-05 2e-06 -2e-05 -2.1191</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_50"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-26.2415 3.56444 -3.6e-05 1e-06 -2.8e-05 -2.1191</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_51"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-27.0954 7.40849 0.054 -0 0.00036 -2.46174</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_52"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-28.2666 -15.3279 0.054 0 0.00036 -0.483595</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_53"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-30.4813 -13.931 0.054 0 -0.0 2.50624</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_54"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>          
+	  <pose frame=''>-32.3931 -12.181 0.054 0 -0.0 2.30053</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_55"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-33.9725 -10.1825 0.054 0 -0.0 2.15404</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_56"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-35.2144 -7.92381 0.054 0 -0.0 1.91826</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_57"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-36.4999 -3.03273 0.054 -0 0.00036 -1.47965</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_58"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-36.5369 -0.578473 -0.000468 -0 0.000348 1.59189</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_59"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-36.0789 -5.53149 0.054 0 -0.0 1.76121</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_60"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>
+        <pose frame=''>-36.5742 2.13483 -4.9e-05 -4.8e-05 -6.2e-05 1.40891</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_61"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>
+        <pose frame=''>-36.1891 4.48288 0.000698 -7e-05 -0.000662 1.40758</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_62"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-35.7706 6.79941 0.00067 5.5e-05 0.000534 1.37633</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_63"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-34.5101 9.28526 0.054 0 -0.0 1.03684</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_64"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-33.1083 11.4014 0.054 0 -0.0 0.877747</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_65"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-31.2882 13.312 0.054 -0 -0.0 0.701782</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_66"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-29.1909 14.829 0.054 0 -0.0 0.529025</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_67"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-26.9181 15.9588 0.054 0 -0.0 0.349577</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_68"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-20.8526 -17.1365 0.054 -0 0.00036 -0.016586</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_69"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-23.3756 -16.9024 0.054 0 -0.0 -0.119704</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StonePier_01_70"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StonePier_01</uri> 
+      </include>  
+        <pose frame=''>-25.8909 -16.4126 0.054 0 -0.0 -0.32217</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_StopSign_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_StopSign_01</uri> 
+      </include> 
+	  <pose frame=''>-2.7487 -12.1054 0.000775 0.075944 0.005053 -1.56731</pose>
+    </model>  
+    <model name="aws_robomaker_racetrack_Track_05_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Track_05</uri> 
+      </include>  
+      <pose frame="">0 0 0.051 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Trackline_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Trackline_01</uri> 
+      </include>  
+      <pose frame="">-4.24539 0 0.102 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-9.379170 -1.123267 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-12.1926 -0.169504 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-11.1147 0.36652 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-8.204195 -1.168056 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-5.69629 3.05056 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">1.63274 12.4879 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">0.741449 12.6798 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-0.041804 12.6793 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include> 
+      <pose frame="">-1.478687 -2.047922 0 0 0 0</pose>  
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-3.07094 12.5681 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-4.721023 -1.439288 0.054 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">-1.18613 7.84487 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include> 
+    <pose frame="">-3.3402 7.8678 0 0 -0 0</pose>  
+    </model>  
+    <model name="aws_robomaker_racetrack_TrafficCone_01_13"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_TrafficCone_01</uri> 
+      </include>  
+      <pose frame="">1.78217 7.69024 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Ground_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Ground_01</uri> 
+      </include>  
+      <pose frame="">-4.9 -2 0.05 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Light_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Light_01</uri> 
+      </include>  
+      <pose frame="">-0.355802 -21.7691 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Light_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Light_01</uri> 
+      </include>  
+      <pose frame="">0.041158 19.0887 0 0 -0 3.09146</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Light_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Light_01</uri> 
+      </include>  
+      <pose frame="">29.8469 -0.049215 0 0 -0 1.63215</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Light_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Light_01</uri> 
+      </include>  
+      <pose frame="">-37.2567 -0.808964 0 0 0 -1.52672</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_00"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">10.772 20.6862 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_01"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">4.94795 20.6846 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_02"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-0.883158 20.684 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_03"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-6.71068 20.6834 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_04"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-12.5489 20.683 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_05"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-18.3809 20.685 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_06"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-24.2154 20.6835 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_07"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-30.0218 20.682 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_08"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-35.8134 20.6795 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_09"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-35.6316 -25.5235 0 0 -0 3.14066</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_10"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-29.8183 -25.5224 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_11"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-23.9919 -25.5182 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_12"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-18.1656 -25.5178 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_13"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-12.3608 -25.513 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_14"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-6.53417 -25.5081 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_15"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-0.701372 -25.5056 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_16"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">5.12343 -25.507 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_17"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">10.9489 -25.511 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_18"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">16.7552 -25.5119 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_19"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">22.5772 -25.5071 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_20"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">28.3975 -25.5099 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_21"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">16.5737 20.6849 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_22"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">22.3987 20.6806 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_23"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">28.2373 20.6833 0 0 -0 0</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_24"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.3722 17.8758 0 0 -0 1.58903</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_25"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.2759 12.1211 0 0 -0 1.58713</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_26"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.2483 6.29377 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_27"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.2488 0.480728 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_28"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include> 
+      <pose frame="">-38.2283 -5.33883 0 0 -0 1.57459</pose>  
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_29"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.2023 -11.1666 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_30"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.1849 -16.999 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_31"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">-38.1615 -22.7433 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_32"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.9522 -17.1105 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_33"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.9711 -22.7005 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_34"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.9317 -11.3127 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_35"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.9092 -5.49982 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_36"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.8878 0.333623 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_37"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.8663 6.16983 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_38"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.8445 11.977 0 0 -0 1.57459</pose> 
+    </model>  
+    <model name="aws_robomaker_racetrack_Wall_01_39"> 
+      <include> 
+        <uri>model://aws_robomaker_racetrack_Wall_01</uri> 
+      </include>  
+      <pose frame="">30.8212 17.8155 0 0 -0 1.57459</pose> 
+    </model>  
+    <state world_name="default"> 
+      <sim_time>7212 321000000</sim_time>  
+      <real_time>744 496821786</real_time>  
+      <wall_time>1539228409 40882448</wall_time>  
+      <iterations>742421</iterations>   
+      <light name="user_point_light_0"> 
+        <pose frame="">4 -14.6516 3.9 0 -0 0</pose> 
+      </light>  
+      <light name="user_point_light_1"> 
+        <pose frame="">3.88413 -14.1477 3.9 0 -0 0</pose> 
+      </light>  
+      <light name="user_point_light_2"> 
+        <pose frame="">4 -15.1089 3.91259 0 -0 0</pose> 
+      </light>  
+      <light name="user_point_light_3"> 
+        <pose frame="">4 -15.577 3.9 0 -0 0</pose> 
+      </light>  
+      <light name="user_spot_light_0"> 
+        <pose frame="">-0.144593 -20.9614 15 0.2156 -0.05 0</pose> 
+      </light>  
+      <light name="user_spot_light_1"> 
+        <pose frame="">-0.205868 17.8973 15 -0.46 0.05 0</pose> 
+      </light>  
+      <light name="user_spot_light_2"> 
+        <pose frame="">28.4576 0.185276 14.8666 0 0.37187 0</pose> 
+      </light>  
+      <light name="user_spot_light_3"> 
+        <pose frame="">-36.6423 -0.791063 15 0 -0.37281 0.00</pose> 
+      </light> 
+    </state>  
+    <light name="user_spot_light_0" type="spot"> 
+      <pose frame="">-1.14812 -21.7863 1 0 -0 0</pose>  
+      <diffuse>1 1 1 1</diffuse>  
+      <specular>1 1 1 1</specular>  
+      <direction>0 0 -1</direction>  
+      <attenuation> 
+        <range>150</range>  
+        <constant>0.0</constant>  
+        <linear>0.02</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <spot> 
+        <inner_angle>0.4</inner_angle>  
+        <outer_angle>2.2</outer_angle>  
+        <falloff>2.1</falloff> 
+      </spot> 
+    </light>  
+    <light name="user_spot_light_1" type="spot"> 
+      <pose frame="">-1.03106 18.5269 1 0 -0 0</pose>  
+      <diffuse>1 1 1 1</diffuse>  
+      <specular>1 1 1 1</specular>  
+      <direction>0 0 -1</direction>  
+      <attenuation> 
+        <range>150</range>  
+        <constant>0.0</constant>  
+        <linear>0.02</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <spot> 
+        <inner_angle>0.4</inner_angle>  
+        <outer_angle>2.2</outer_angle>  
+        <falloff>2.1</falloff> 
+      </spot> 
+    </light>  
+    <light name="user_spot_light_2" type="spot"> 
+      <pose frame="">29.2101 0.185276 1 0 -0 0</pose>  
+      <diffuse>1 1 1 1</diffuse>  
+      <specular>1 1 1 1</specular>  
+      <direction>0 0 -1</direction>  
+      <attenuation> 
+        <range>150</range>  
+        <constant>0.2</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <spot> 
+        <inner_angle>0.4</inner_angle>  
+        <outer_angle>2.2</outer_angle>  
+        <falloff>2.1</falloff> 
+      </spot> 
+    </light>  
+    <light name="user_spot_light_3" type="spot"> 
+      <pose frame="">-36.6423 -1.2117 1 0 -0 0</pose>  
+      <diffuse>1 1 1 1</diffuse>  
+      <specular>1 1 1 1</specular>  
+      <direction>0 0 -1</direction>  
+      <attenuation> 
+        <range>150</range>  
+        <constant>0.2</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <spot> 
+        <inner_angle>0.4</inner_angle>  
+        <outer_angle>2.2</outer_angle>  
+        <falloff>2.1</falloff> 
+      </spot> 
+    </light>  
+    <light name="user_point_light_0" type="point"> 
+      <pose frame="">1.49278 -15.5363 1 0 -0 0</pose>  
+      <diffuse>0 0.98039 0 1</diffuse>  
+      <specular>0.1 0.1 0.1 1</specular>  
+      <attenuation> 
+        <range>0.3</range>  
+        <constant>0.02</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <direction>0 0 -1</direction> 
+    </light>  
+    <light name="user_point_light_1" type="point"> 
+      <pose frame="">6.99411 -11.55 1 0 -0 0</pose>  
+      <diffuse>0 0.98039 0 1</diffuse>  
+      <specular>0.1 0.1 0.1 1</specular>  
+      <attenuation> 
+        <range>0.3</range>  
+        <constant>0.02</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <direction>0 0 -1</direction> 
+    </light>  
+    <light name="user_point_light_2" type="point"> 
+      <pose frame="">5.65528 -14.8924 1 0 -0 0</pose>  
+      <diffuse>0 0.98039 0 1</diffuse>  
+      <specular>0.1 0.1 0.1 1</specular>  
+      <attenuation> 
+        <range>0.3</range>  
+        <constant>0.02</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <direction>0 0 -1</direction> 
+    </light>  
+    <light name="user_point_light_3" type="point"> 
+      <pose frame="">3.6452 -17.3437 1 0 -0 0</pose>  
+      <diffuse>0 0.98039 0 1</diffuse>  
+      <specular>0.1 0.1 0.1 1</specular>  
+      <attenuation> 
+        <range>0.3</range>  
+        <constant>0.02</constant>  
+        <linear>0.01</linear>  
+        <quadratic>0</quadratic> 
+      </attenuation>  
+      <cast_shadows>0</cast_shadows>  
+      <direction>0 0 -1</direction> 
+    </light> 
+  </world> 
+</sdf>

@@ -1,0 +1,83 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='aws_Fence_02'>
+    <link name='body'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      <gravity>1</gravity>
+      <inertial>
+        <mass>5</mass>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertia>
+          <ixx>9.6</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>8.2</iyy>
+          <iyz>0</iyz>
+          <izz>2.1</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <geometry>
+          <mesh>
+            <uri>file://models/aws_robomaker_racetrack_Fence_02/meshes/aws_Fence_02_visual.obj</uri>
+            <scale>0.01 0.01 0.01</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
+        </material>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+        <meta>
+          <layer>0</layer>
+        </meta>
+      </visual>
+      <collision name='collision_0'>
+        <laser_retro>0</laser_retro>
+        <max_contacts>10</max_contacts>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>file://models/aws_robomaker_racetrack_Fence_02/meshes/aws_Fence_02_collision.obj</uri>
+            <scale>0.01 0.01 0.01</scale>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <coefficient>1</coefficient>
+              <patch_radius>0</patch_radius>
+              <surface_radius>0</surface_radius>
+              <use_patch_radius>1</use_patch_radius>
+              <ode>
+                <slip>0</slip>
+              </ode>
+            </torsional>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0</restitution_coefficient>
+            <threshold>1e+06</threshold>
+          </bounce>
+          <contact>
+            <collide_without_contact>0</collide_without_contact>
+            <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+            <collide_bitmask>1</collide_bitmask>
+          </contact>
+        </surface>
+      </collision>
+    </link>
+    <static>true</static>
+  </model>
+</sdf>

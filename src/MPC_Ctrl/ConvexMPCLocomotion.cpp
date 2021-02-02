@@ -22,23 +22,23 @@
 
 ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
     : iterationsBetweenMPC(_iterations_between_mpc),  //控制频率用  15
-      horizonLength(10),
+      horizonLength(14),
       dt(_dt),  // 0.002
       trotting(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/2.0, 0), 
       Vec4<int>(horizonLength/2.0, horizonLength/2.0, horizonLength/2.0, horizonLength/2.0), "Trotting"),
-      bounding(horizonLength, Vec4<int>(5, 5, 0, 0), Vec4<int>(4, 4, 4, 4), "Bounding"),
+      bounding(horizonLength, Vec4<int>(7, 7, 0, 0), Vec4<int>(6, 6, 6, 6), "Bounding"),
       // bounding(horizonLength,
       // Vec4<int>(5,5,0,0),Vec4<int>(3,3,3,3),"Bounding"),
-      pronking(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(4, 4, 4, 4), "Pronking"),
-      jumping(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(2, 2, 2, 2), "Jumping"),
-      galloping(horizonLength, Vec4<int>(0, 3, 6, 9), Vec4<int>(5, 5, 5, 5), "Galloping"),
-      standing( horizonLength, Vec4<int>(0, 0, 0, 0),  Vec4<int>(10, 19, 10, 10), "Standing"),
-      trotRunning(horizonLength, Vec4<int>(0, 5, 5, 0), Vec4<int>(4, 4, 4, 4), "Trot Running"),
+      pronking(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(6, 6, 6, 6), "Pronking"),
+      jumping(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(3, 3, 3, 3), "Jumping"),
+      galloping(horizonLength, Vec4<int>(0, 4, 7, 11), Vec4<int>(7, 7, 7, 7), "Galloping"),
+      standing( horizonLength, Vec4<int>(0, 0, 0, 0),  Vec4<int>(14, 14, 14, 14), "Standing"),
+      trotRunning(horizonLength, Vec4<int>(0, 7, 7, 0), Vec4<int>(6, 6, 6, 6), "Trot Running"),
       walking(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/4.0, 3.0*horizonLength/4.0), 
       Vec4<int>(3.0*horizonLength/4.0,3.0*horizonLength/4.0,3.0*horizonLength/4.0,3.0*horizonLength/4.0), "Walking"),
-      walking2(horizonLength, Vec4<int>(0, 5, 5, 0), Vec4<int>(7, 7, 7, 7), "Walking2"),
-      pacing(horizonLength, Vec4<int>(6, 0, 6, 0), Vec4<int>(6, 6, 6, 6), "Pacing"),
-      aio(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(10, 10, 10, 10), "aio") {
+      walking2(horizonLength, Vec4<int>(0, 7, 7, 0), Vec4<int>(10, 10, 10, 10), "Walking2"),
+      pacing(horizonLength, Vec4<int>(7, 0, 7, 0), Vec4<int>(7, 7, 7, 7), "Pacing"),
+      aio(horizonLength, Vec4<int>(0, 0, 0, 0), Vec4<int>(14, 14, 14, 14), "aio") {
   dtMPC = dt * iterationsBetweenMPC;  // 0.03
   default_iterations_between_mpc = iterationsBetweenMPC;
   printf("[Convex MPC] dt: %.3f iterations: %d, dtMPC: %.3f\n", dt,
@@ -148,9 +148,6 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
   // pick gait
   Gait* gait = &trotting;
   if(robotMode == 0) {
-    if(gait->getGaitHorizon() != 10) {
-      iterationCounter = 0;
-    }
     if (gaitNumber == 1)
       gait = &bounding;
     else if (gaitNumber == 2)
