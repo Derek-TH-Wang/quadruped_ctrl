@@ -43,13 +43,13 @@ run the controller in simulator:
 roslaunch quadruped_ctrl quadruped_ctrl.launch
 ```
 
-switch the camera on:
-camera set True in quadruped_ctrl_config.yaml, then launch the rviz to see the point cloud:
+switch the camera on / off:
+camera set ```True``` or ```False``` in ```config/quadruped_ctrl_config.yaml```, then launch the rviz to see the point cloud:
 ```
 roslaunch quadruped_ctrl vision.launch
 ```
 
-you alse can switch the gait type:  
+also can switch the gait type:  
 ```
 rosservice call /gait_type "cmd: 1"
 ```
