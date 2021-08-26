@@ -9,6 +9,7 @@ set(CMAKE_BUILD_TYPE "Release")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+find_package (Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -121,6 +122,7 @@ message(STATUS ${PROJECT_SOURCE_DIR})
 include_directories(${catkin_INCLUDE_DIRS}
   include
   include/${PROJECT_NAME}
+  ${Eigen3_INCLUDE_DIRS}
   src
 )
 
@@ -151,6 +153,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
+  Eigen3::Eigen
   JCQP
   qpOASES
   osqp
@@ -195,7 +198,7 @@ target_link_libraries(${PROJECT_NAME}
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-   scripts/walking_simulation.py 
+   scripts/walking_simulation.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
