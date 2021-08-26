@@ -29,7 +29,7 @@
  *	\date 2009-2017
  *
  *	Declaration of the ConstraintProduct class which allows to specify a
- *	user-defined function for evaluating the constraint product at the 
+ *	user-defined function for evaluating the constraint product at the
  *	current iterate to speed-up QP solution in case of a specially structured
  *	constraint matrix.
  */
@@ -43,11 +43,11 @@
 BEGIN_NAMESPACE_QPOASES
 
 
-/** 
+/**
  *	\brief Interface for specifying user-defined evaluations of constraint products.
  *
- *	A class which allows to specify a user-defined function for evaluating the 
- *	constraint product at the current iterate to speed-up QP solution in case 
+ *	A class which allows to specify a user-defined function for evaluating the
+ *	constraint product at the current iterate to speed-up QP solution in case
  *	of a specially structured constraint matrix.
  *
  *	\author Hans Joachim Ferreau
@@ -61,21 +61,21 @@ class ConstraintProduct
 		ConstraintProduct( ) {};
 
 		/** Copy constructor. */
-		ConstraintProduct(	const ConstraintProduct &toCopy	/**< Rhs object. */
+		ConstraintProduct(	const ConstraintProduct &/*toCopy*/	/**< Rhs object. */
 							) {};
 
 		/** Destructor. */
 		virtual ~ConstraintProduct( ) {};
-		
+
 		/** Assignment operator. */
-		ConstraintProduct &operator=(	const ConstraintProduct &toCopy	/**< Rhs object. */
+		ConstraintProduct &operator=(	const ConstraintProduct &/*toCopy*/	/**< Rhs object. */
 										)
 		{
 			return *this;
 		}
 
 		/** Evaluates the product of a given constraint with the current iterate.
-		 *	This function needs to be implemented in a derived class for the 
+		 *	This function needs to be implemented in a derived class for the
 		 *	user-defined constraint product function.
 		 *	\return 0:         successful \n
 					otherwise: not successful */

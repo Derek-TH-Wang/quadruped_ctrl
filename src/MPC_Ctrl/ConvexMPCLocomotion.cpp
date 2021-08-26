@@ -24,7 +24,7 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
     : iterationsBetweenMPC(_iterations_between_mpc),  //控制频率用  15
       horizonLength(14),
       dt(_dt),  // 0.002
-      trotting(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/2.0, 0), 
+      trotting(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/2.0, 0),
       Vec4<int>(horizonLength/2.0, horizonLength/2.0, horizonLength/2.0, horizonLength/2.0), "Trotting"),
       bounding(horizonLength, Vec4<int>(7, 7, 0, 0), Vec4<int>(6, 6, 6, 6), "Bounding"),
       // bounding(horizonLength,
@@ -34,7 +34,7 @@ ConvexMPCLocomotion::ConvexMPCLocomotion(float _dt, int _iterations_between_mpc)
       galloping(horizonLength, Vec4<int>(0, 4, 7, 11), Vec4<int>(7, 7, 7, 7), "Galloping"),
       standing( horizonLength, Vec4<int>(0, 0, 0, 0),  Vec4<int>(14, 14, 14, 14), "Standing"),
       trotRunning(horizonLength, Vec4<int>(0, 7, 7, 0), Vec4<int>(6, 6, 6, 6), "Trot Running"),
-      walking(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/4.0, 3.0*horizonLength/4.0), 
+      walking(horizonLength, Vec4<int>(0, horizonLength/2.0, horizonLength/4.0, 3.0*horizonLength/4.0),
       Vec4<int>(3.0*horizonLength/4.0,3.0*horizonLength/4.0,3.0*horizonLength/4.0,3.0*horizonLength/4.0), "Walking"),
       walking2(horizonLength, Vec4<int>(0, 7, 7, 0), Vec4<int>(10, 10, 10, 10), "Walking2"),
       pacing(horizonLength, Vec4<int>(7, 0, 7, 0), Vec4<int>(7, 7, 7, 7), "Pacing"),
@@ -117,7 +117,7 @@ template <>
 void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
                               LegController<float>& _legController,
                               StateEstimatorContainer<float>& _stateEstimator,
-                              DesiredStateCommand<float>& _desiredStateCommand,
+                              DesiredStateCommand<float>& /*_desiredStateCommand*/,
                               std::vector<double> gamepadCommand,
                               int gaitType, int robotMode) {
   bool omniMode = false;
@@ -174,11 +174,11 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
     int h = 10;
     double vBody = sqrt(_x_vel_des*_x_vel_des)+(_y_vel_des*_y_vel_des);
     gait = &aio;
-    gaitNumber == 9;
+    gaitNumber = 9;  // Trotting
     if(gait->getCurrentGaitPhase() == 0) {
       if(vBody < 0.002) {
         if(abs(_yaw_turn_rate) < 0.01) {
-          gaitNumber == 4;
+          gaitNumber = 4;  // Standing
           if(gait->getGaitHorizon() != h) {
             iterationCounter = 0;
           }
@@ -188,7 +188,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
           if(gait->getGaitHorizon() != h) {
             iterationCounter = 0;
           }
-          gait->setGaitParam(h, Vec4<int>(0, h / 2, h / 2, 0), 
+          gait->setGaitParam(h, Vec4<int>(0, h / 2, h / 2, 0),
                                 Vec4<int>(h / 2, h / 2, h / 2, h / 2), "trotting");
         }
       } else {
@@ -198,7 +198,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
             iterationCounter = 0;
           }
           gait->setGaitParam(h,
-                  Vec4<int>(0, 1 * h / 2, 1 * h / 4, 3 * h / 4), 
+                  Vec4<int>(0, 1 * h / 2, 1 * h / 4, 3 * h / 4),
                   Vec4<int>(3 * h / 4, 3 * h / 4, 3 * h / 4, 3 * h / 4), "Walking");
         } else if(vBody > 0.2 && vBody <= 0.4) {
           h = 16;
@@ -207,7 +207,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
           }
           gait->setGaitParam(h,
                   Vec4<int>(0, 1 * h / 2, h*((5.0/4.0)*vBody), h*((5.0/4.0)*vBody+(1.0/2.0))),
-                  Vec4<int>(h*((-5.0/4.0)*vBody+1.0), h*((-5.0/4.0)*vBody+1.0), 
+                  Vec4<int>(h*((-5.0/4.0)*vBody+1.0), h*((-5.0/4.0)*vBody+1.0),
                             h*((-5.0/4.0)*vBody+1.0), h*((-5.0/4.0)*vBody+1.0)), "Walking2trotting");
         } else if(vBody > 0.4 && vBody <= 1.4) {
           h = 14;
@@ -356,7 +356,7 @@ void ConvexMPCLocomotion::run(Quadruped<float>& _quadruped,
     if (i == 1) {
       // std::cout << "pf0 = " << (seResult.rBody*(Pf- seResult.position)).transpose() << " " << std::endl;
       // std::cout << pfx_rel << " " << pfy_rel << std::endl;
-      // std::cout << 0.5f * sqrt(seResult.position[2] / 9.81f) * (seResult.vWorld[1] * _yaw_turn_rate) << " " 
+      // std::cout << 0.5f * sqrt(seResult.position[2] / 9.81f) * (seResult.vWorld[1] * _yaw_turn_rate) << " "
       //           << (0.5f * sqrt(seResult.position[2] / 9.81f)) * (-seResult.vWorld[0] * _yaw_turn_rate) << std::endl;
       // std::cout << (0.5f * seResult.position[2] / 9.81f) * (seResult.vWorld[0] * _yaw_turn_rate) << std::endl;
       // std::cout << _yaw_turn_rate << std::endl;

@@ -295,8 +295,6 @@ Matrix<fpt,13,12> B_ct_r;
 
 void solve_mpc(update_data_t* update, problem_setup* setup)
 {
-  clock_t start, finish;
-
   rs.set(update->p, update->v, update->q, update->w, update->r, update->yaw);
 #ifdef K_PRINT_EVERYTHING
 
@@ -379,7 +377,7 @@ void solve_mpc(update_data_t* update, problem_setup* setup)
     fmat.block(i*5,i*3,5,3) = f_block;
   }
 
-
+  // clock_t start, finish;
   // start = clock();
 
   // qH = B_qp.transpose()*S;
