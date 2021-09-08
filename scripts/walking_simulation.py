@@ -4,10 +4,9 @@ import os
 import numpy
 import pyquaternion
 import pcl
-import tf
+import tf2_ros
 import rospy
 import rospkg
-import time
 import threading
 import random
 import ctypes
@@ -15,13 +14,13 @@ from PIL import Image as pil
 import pybullet as p
 import pybullet_data
 from pybullet_utils import gazebo_world_parser
-from sensor_msgs.msg import Imu
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, Imu, JointState, PointCloud2, PointField
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import PointCloud2
-from sensor_msgs.msg import PointField
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TransformStamped, Twist
 from quadruped_ctrl.srv import QuadrupedCmd, QuadrupedCmdResponse
+from whole_body_state_msgs.msg import WholeBodyState
+from whole_body_state_msgs.msg import JointState as WBJointState
+from whole_body_state_msgs.msg import ContactState as WBContactState
 
 
 get_last_vel = [0] * 3
@@ -85,12 +84,27 @@ def acc_filter(value, last_accValue):
     return filter_value
 
 
+def fill_tf_message(parent_frame, child_frame, translation, rotation):
+    t = TransformStamped()
+    t.header.stamp = rospy.Time.now()
+    t.header.frame_id = parent_frame
+    t.child_frame_id = child_frame
+    t.transform.translation.x = translation[0]
+    t.transform.translation.y = translation[1]
+    t.transform.translation.z = translation[2]
+    t.transform.rotation.x = rotation[0]
+    t.transform.rotation.y = rotation[1]
+    t.transform.rotation.z = rotation[2]
+    t.transform.rotation.w = rotation[3]
+    return t
+
+
 def pub_nav_msg(base_pos, imu_data):
-    pub_odom = rospy.Publisher("/robot_odom", Odometry, queue_size=100)
+    pub_odom = rospy.Publisher("/robot_odom", Odometry, queue_size=30)
     odom = Odometry()
     odom.header.stamp = rospy.Time.now()
-    odom.header.frame_id ="world"
-    odom.child_frame_id = "world"
+    odom.header.frame_id = "world"
+    odom.child_frame_id = "body"
     odom.pose.pose.position.x = base_pos[0]
     odom.pose.pose.position.y = base_pos[1]
     odom.pose.pose.position.z = base_pos[2]
@@ -101,9 +115,12 @@ def pub_nav_msg(base_pos, imu_data):
 
     pub_odom.publish(odom)
 
+    t = fill_tf_message(odom.header.frame_id, odom.child_frame_id, base_pos[0:3], imu_data[3:7])
+    robot_tf.sendTransform(t)
+
 
 def pub_imu_msg(imu_data):
-    pub_imu = rospy.Publisher("/imu0", Imu, queue_size=100)
+    pub_imu = rospy.Publisher("/imu0", Imu, queue_size=30)
     imu_msg = Imu()
     imu_msg.linear_acceleration.x = imu_data[0]
     imu_msg.linear_acceleration.y = imu_data[1]
@@ -116,33 +133,101 @@ def pub_imu_msg(imu_data):
     imu_msg.orientation.z = imu_data[5]
     imu_msg.orientation.w = imu_data[6]
     imu_msg.header.stamp = rospy.Time.now()
-    imu_msg.header.frame_id = "robot"
+    imu_msg.header.frame_id = "body"
     pub_imu.publish(imu_msg)
 
+def pub_joint_states(joint_states):
+    pub_js = rospy.Publisher("joint_states", JointState, queue_size=30)
+    js_msg = JointState()
+    js_msg.name = []
+    js_msg.position = []
+    js_msg.velocity = []
+    i = 0
+    for _ in joint_states["index"]:
+        js_msg.name.append(joint_states["name"][i].decode('utf-8'))
+        js_msg.position.append(joint_states["state"][i])
+        js_msg.velocity.append(joint_states["state"][12+i])
+        i += 1
+    js_msg.header.stamp = rospy.Time.now()
+    js_msg.header.frame_id = "body"
+    pub_js.publish(js_msg)
+
+def pub_whole_body_state(imu_data, leg_data, base_pos, contact_points):
+    wbs_pub = rospy.Publisher("wb_state", WholeBodyState, queue_size=10)
+    wbs = WholeBodyState()
+    wbs.header.stamp = rospy.Time.now()
+    wbs.header.frame_id = "world"
+    wbs.time = wbs.header.stamp.secs
+    # This represents the base state (CoM motion, angular motion and centroidal momenta)
+    wbs.centroidal.com_position.x = base_pos[0]
+    wbs.centroidal.com_position.y = base_pos[1]
+    wbs.centroidal.com_position.z = base_pos[2]
+    wbs.centroidal.base_orientation.x = imu_data[3]
+    wbs.centroidal.base_orientation.y = imu_data[4]
+    wbs.centroidal.base_orientation.z = imu_data[5]
+    wbs.centroidal.base_orientation.w = imu_data[6]
+    wbs.centroidal.base_angular_velocity.x = imu_data[7]
+    wbs.centroidal.base_angular_velocity.y = imu_data[8]
+    wbs.centroidal.base_angular_velocity.z = imu_data[9]
+    # This represents the joint state (position, velocity, acceleration and effort)
+    wbs.joints = []
+    i = 0
+    for _ in leg_data["index"]:
+        js_msg = WBJointState()
+        js_msg.name = leg_data["name"][i].decode('utf-8')
+        js_msg.position = leg_data["state"][i]
+        js_msg.velocity = leg_data["state"][12+i]
+        wbs.joints.append(js_msg)
+        i += 1
+    # This represents the end-effector state (cartesian position and contact forces)
+    wbs.contacts = []
+    for contact_point in contact_points:
+        contact_msg = WBContactState()
+        contact_msg.name = "body"
+        contact_msg.type = WBContactState.UNKNOWN
+        contact_msg.pose.position.x = contact_point[5][0]
+        contact_msg.pose.position.y = contact_point[5][1]
+        contact_msg.pose.position.z = contact_point[5][2]
+        contact_msg.wrench.force.z = contact_point[9]
+        contact_msg.surface_normal.x = contact_point[7][0]
+        contact_msg.surface_normal.y = contact_point[7][1]
+        contact_msg.surface_normal.z = contact_point[7][2]
+        contact_msg.friction_coefficient = 1.0
+        wbs.contacts.append(contact_msg)
+    wbs_pub.publish(wbs)
+
+def get_motor_joint_states(robot):
+    joint_number_range = range(p.getNumJoints(robot))
+    joint_states = p.getJointStates(robot, joint_number_range)
+    joint_infos = [p.getJointInfo(robot, i) for i in joint_number_range]
+    joint_states, joint_name, joint_index = zip(*[(j, i[1], i[0]) for j, i in zip(joint_states, joint_infos) if i[2] != p.JOINT_FIXED])
+    joint_positions = [state[0] for state in joint_states]
+    joint_velocities = [state[1] for state in joint_states]
+    joint_torques = [state[3] for state in joint_states]
+    return joint_positions, joint_velocities, joint_torques, joint_name, joint_index
 
 def get_data_from_sim():
     global get_last_vel
-    get_orientation = []
     get_matrix = []
     get_velocity = []
     get_invert = []
     imu_data = [0] * 10
-    leg_data = [0] * 24
+    leg_data = {}
+    leg_data["state"] = [0] * 24
+    leg_data["name"] = [""] * 12
+    leg_data["index"] = [0] * 12
 
-    pose_orn = p.getBasePositionAndOrientation(boxId)
+    base_pose = p.getBasePositionAndOrientation(boxId)
 
-    for i in range(4):
-        get_orientation.append(pose_orn[1][i])
-    # get_euler = p.getEulerFromQuaternion(get_orientation)
     get_velocity = p.getBaseVelocity(boxId)
-    get_invert = p.invertTransform(pose_orn[0], pose_orn[1])
+    get_invert = p.invertTransform(base_pose[0], base_pose[1])
     get_matrix = p.getMatrixFromQuaternion(get_invert[1])
 
     # IMU data
-    imu_data[3] = pose_orn[1][0]
-    imu_data[4] = pose_orn[1][1]
-    imu_data[5] = pose_orn[1][2]
-    imu_data[6] = pose_orn[1][3]
+    imu_data[3] = base_pose[1][0]
+    imu_data[4] = base_pose[1][1]
+    imu_data[5] = base_pose[1][2]
+    imu_data[6] = base_pose[1][3]
 
     imu_data[7] = get_matrix[0] * get_velocity[1][0] + get_matrix[1] * \
         get_velocity[1][1] + get_matrix[2] * get_velocity[1][2]
@@ -163,23 +248,22 @@ def get_data_from_sim():
         get_matrix[7] * linear_Y + get_matrix[8] * linear_Z
 
     # joint data
-    joint_state = p.getJointStates(boxId, motor_id_list)
-    leg_data[0:12] = [joint_state[0][0], joint_state[1][0], joint_state[2][0],
-                      joint_state[3][0], joint_state[4][0], joint_state[5][0],
-                      joint_state[6][0], joint_state[7][0], joint_state[8][0],
-                      joint_state[9][0], joint_state[10][0], joint_state[11][0]]
+    joint_positions, joint_velocities, _, joint_names, joint_index = get_motor_joint_states(boxId)
+    leg_data["state"][0:12] = joint_positions
+    leg_data["state"][12:24] = joint_velocities
+    leg_data["name"] = joint_names
+    leg_data["index"] = joint_index
 
-    leg_data[12:24] = [joint_state[0][1], joint_state[1][1], joint_state[2][1],
-                       joint_state[3][1], joint_state[4][1], joint_state[5][1],
-                       joint_state[6][1], joint_state[7][1], joint_state[8][1],
-                       joint_state[9][1], joint_state[10][1], joint_state[11][1]]
     com_velocity = [get_velocity[0][0],
                     get_velocity[0][1], get_velocity[0][2]]
-    # get_last_vel.clear()
+
     get_last_vel = []
     get_last_vel = com_velocity
 
-    return imu_data, leg_data, pose_orn[0]
+    # Contacts
+    contact_points = p.getContactPoints(boxId)
+
+    return imu_data, leg_data, base_pose[0], contact_points
 
 
 def reset_robot():
@@ -197,15 +281,15 @@ def reset_robot():
 
     for _ in range(10):
         p.stepSimulation()
-        imu_data, leg_data, _ = get_data_from_sim()
+        imu_data, leg_data, _, _ = get_data_from_sim()
         cpp_gait_ctrller.pre_work(convert_type(
-            imu_data), convert_type(leg_data))
+            imu_data), convert_type(leg_data["state"]))
 
     for j in range(16):
         force = 0
         p.setJointMotorControl2(
             boxId, j, p.VELOCITY_CONTROL, force=force)
-    
+
     cpp_gait_ctrller.set_robot_mode(convert_type(1))
     for _ in range(200):
         run()
@@ -294,40 +378,35 @@ def init_simulator():
         p.configureDebugVisualizer(shadowMapWorldSize = 25)
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
 
-    boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos,
-                       useFixedBase=False)
+    # TODO: Get the URDF from robot_description parameter (or URDF file in the repo)
+    boxId = p.loadURDF("mini_cheetah/mini_cheetah.urdf", robot_start_pos, useFixedBase=False)
     p.changeDynamics(boxId, 3, spinningFriction=spinningFriction)
     p.changeDynamics(boxId, 7, spinningFriction=spinningFriction)
     p.changeDynamics(boxId, 11, spinningFriction=spinningFriction)
     p.changeDynamics(boxId, 15, spinningFriction=spinningFriction)
-    jointIds = []
-    for j in range(p.getNumJoints(boxId)):
-        p.getJointInfo(boxId, j)
-        jointIds.append(j)
 
     reset_robot()
 
 
 def run():
     # get data from simulator
-    imu_data, leg_data, base_pos = get_data_from_sim()
+    imu_data, leg_data, base_pos, contact_points = get_data_from_sim()
 
-    #pub msg
+    # pub msg
     pub_nav_msg(base_pos, imu_data)
     pub_imu_msg(imu_data)
+    pub_joint_states(leg_data)
+    pub_whole_body_state(imu_data, leg_data, base_pos, contact_points)
 
     # call cpp function to calculate mpc tau
-    tau = cpp_gait_ctrller.toque_calculator(convert_type(
-        imu_data), convert_type(leg_data))
+    tau = cpp_gait_ctrller.torque_calculator(convert_type(
+        imu_data), convert_type(leg_data["state"]))
 
     # set tau to simulator
     p.setJointMotorControlArray(bodyUniqueId=boxId,
                                 jointIndices=motor_id_list,
                                 controlMode=p.TORQUE_CONTROL,
                                 forces=tau.contents.eff)
-
-    # reset visual cam
-    # p.resetDebugVisualizerCamera(2.5, 45, -30, base_pos)
 
     p.stepSimulation()
 
@@ -349,21 +428,18 @@ def camera_update():
     pointcloud_publisher = rospy.Publisher("/generated_pc", PointCloud2, queue_size=10)
     image_publisher = rospy.Publisher("/cam0/image_raw", Image, queue_size=10)
 
-    robot_tf = tf.TransformBroadcaster()
-
     while not rospy.is_shutdown():
         cubePos, cubeOrn = p.getBasePositionAndOrientation(boxId)
         get_matrix = p.getMatrixFromQuaternion(cubeOrn)
-        # T1 = numpy.mat([[0, -numpy.sqrt(2.0)/2.0, numpy.sqrt(2.0)/2.0, 0.25], [-1, 0, 0, 0],
-        #                 [0, -numpy.sqrt(2.0)/2.0, -numpy.sqrt(2.0)/2.0, 0], [0, 0, 0, 1]])
+
         T1 = numpy.mat([[0, -1.0/2.0, numpy.sqrt(3.0)/2.0, 0.25], [-1, 0, 0, 0],
                         [0, -numpy.sqrt(3.0)/2.0, -1.0/2.0, 0], [0, 0, 0, 1]])
 
-        T2 = numpy.mat([[get_matrix[0], get_matrix[1], get_matrix[2], cubePos[0]], 
-                        [get_matrix[3], get_matrix[4], get_matrix[5], cubePos[1]], 
-                        [get_matrix[6], get_matrix[7], get_matrix[8], cubePos[2]], 
+        T2 = numpy.mat([[get_matrix[0], get_matrix[1], get_matrix[2], cubePos[0]],
+                        [get_matrix[3], get_matrix[4], get_matrix[5], cubePos[1]],
+                        [get_matrix[6], get_matrix[7], get_matrix[8], cubePos[2]],
                         [0, 0, 0, 1]])
-        
+
         T2_ = (T2.I)
         T3_ = numpy.array(T2*T1)
 
@@ -375,9 +451,9 @@ def camera_update():
         q = pyquaternion.Quaternion(matrix=T3_)
         cameraQuat = [q[1], q[2], q[3], q[0]]
 
-        robot_tf.sendTransform(cubePos, cubeOrn, rospy.Time.now(), "robot", "world")
-        robot_tf.sendTransform(cameraEyePosition, cameraQuat, rospy.Time.now(), "cam", "world")
-        robot_tf.sendTransform(cameraTargetPosition, cubeOrn, rospy.Time.now(), "tar", "world")
+        robot_tf.sendTransform(fill_tf_message("world", "robot", cubePos, cubeOrn))
+        robot_tf.sendTransform(fill_tf_message("world", "cam", cameraEyePosition, cameraQuat))
+        robot_tf.sendTransform(fill_tf_message("world", "tar", cameraTargetPosition, cubeOrn))
 
         cameraUpVector = [0, 0, 1]
         viewMatrix = p.computeViewMatrix(
@@ -392,29 +468,7 @@ def camera_update():
                                    lightDirection=[1, 1, 1],
                                    renderer=p.ER_BULLET_HARDWARE_OPENGL)
 
-        # point cloud mehted 1
-        # imgW = width
-        # imgH = height
-        # depth_img_buffer = numpy.reshape(depthImg, [imgH, imgW])
-        # projectionMatrix1 = numpy.asarray(projectionMatrix).reshape([4,4],order='F')
-        # viewMatrix1 = numpy.asarray(viewMatrix).reshape([4,4],order='F')
-        # tran_pix_world = numpy.linalg.inv(numpy.matmul(projectionMatrix1, viewMatrix1))
-        # pcl_data = pcl.PointCloud()
-        # pc_list = [0]*(imgW*imgH)
-        # pc = numpy.zeros(3)
-        # pixPos = numpy.ones(4)
-        # pixPosZ = (2.0*depth_img_buffer - 1.0)
-        # for h in range(0, imgH):
-        #     for w in range(0, imgW):
-        #         pixPos[0] = (2.0*w - imgW)/imgW
-        #         pixPos[1] = -(2.0*h - imgH)/imgH
-        #         pixPos[2] = pixPosZ[h,w]
-        #         position = tran_pix_world.dot(pixPos)
-        #         for ii in range(3):
-        #             pc[ii] = position[ii] / position[3]
-        #         pc_list[h*imgW+w]=pc.tolist()
-
-        # point cloud mehted 2
+        # point cloud mehted
         pc_list = []
         pcl_data = pcl.PointCloud()
         fx = (pixelWidth*projectionMatrix[0])/2.0
@@ -424,15 +478,15 @@ def camera_update():
         cloud_point = [0]*pixelWidth*pixelHeight*3
         depthBuffer = numpy.reshape(depthImg,[pixelHeight,pixelWidth])
         depth = depthBuffer
-        for h in range(0, pixelHeight):    
-            for w in range(0, pixelWidth):   
+        for h in range(0, pixelHeight):
+            for w in range(0, pixelWidth):
                 depth[h][w] =float(depthBuffer[h,w])
                 depth[h][w] = far * near / (far - (far - near) * depthBuffer[h][w])
                 Z= float(depth[h][w])
                 if (Z >4):
                     continue
                 if (Z< 0.01):
-                    continue 
+                    continue
                 X=(w-cx)*Z/fx
                 Y=(h-cy)*Z/fy
                 XYZ_= numpy.mat([[X],[Y],[Z],[1]])
@@ -448,7 +502,7 @@ def camera_update():
 
         pcl_data.from_list(pc_list)
         pub_pointcloud.header.stamp = rospy.Time().now()
-        pub_pointcloud.header.frame_id = "world"
+        pub_pointcloud.header.frame_id = "body"
         pub_pointcloud.height = 1
         pub_pointcloud.width = len(pc_list)
         pub_pointcloud.point_step = 12
@@ -494,7 +548,7 @@ def main():
             high_performance_flag = p.readUserDebugParameter(high_performance_mode)
             rospy.logwarn("set robot to high performance mode")
             cpp_gait_ctrller.set_robot_mode(convert_type(0))
-        
+
         run()
 
         cnt += 1
@@ -528,12 +582,15 @@ if __name__ == '__main__':
     if(not os.path.exists(so_file)):
         rospy.logerr("cannot find cpp.so file")
     cpp_gait_ctrller = ctypes.cdll.LoadLibrary(so_file)
-    cpp_gait_ctrller.toque_calculator.restype = ctypes.POINTER(StructPointer)
+    cpp_gait_ctrller.torque_calculator.restype = ctypes.POINTER(StructPointer)
     rospy.loginfo("find so file = " + so_file)
 
     s = rospy.Service('gait_type', QuadrupedCmd, callback_gait)
     s1 = rospy.Service('robot_mode', QuadrupedCmd, callback_mode)
     rospy.Subscriber("cmd_vel", Twist, callback_body_vel, buff_size=10000)
+
+    global robot_tf
+    robot_tf = tf2_ros.TransformBroadcaster()
 
     init_simulator()
 
