@@ -1,6 +1,12 @@
 <launch>
-        <rosparam command="load" file="$(find quadruped_ctrl)/config/quadruped_ctrl_config.yaml"/>
+    <rosparam command="load" file="$(find quadruped_ctrl)/config/quadruped_ctrl_config.yaml"/>
 
-	<!-- <node name="quadruped" pkg="quadruped_ctrl" type="mainController" respawn="false" output="screen"/> -->
-        <node name="quadruped_simulator" pkg="quadruped_ctrl" type="walking_simulation.py" respawn="false" output="screen"/>
+    <arg name="mini_cheetah_xacro" value="$(find quadruped_ctrl)/urdf/mini_cheetah/mini_cheetah.urdf.xacro"/>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg mini_cheetah_xacro)" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <node name="quadruped_simulator" pkg="quadruped_ctrl" type="walking_simulation.py"
+          respawn="false" output="screen" required="true"/>
+
+    <include file="$(find quadruped_ctrl)/launch/vision.launch"/>
 </launch>
