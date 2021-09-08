@@ -41,8 +41,6 @@ catkin_package(
   INCLUDE_DIRS
   LIBRARIES
   CATKIN_DEPENDS
-    roscpp
-    rospy
     std_msgs
     message_runtime
     geometry_msgs
@@ -99,4 +97,14 @@ target_link_libraries(${PROJECT_NAME}
 catkin_install_python(PROGRAMS
   scripts/walking_simulation.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY
+    config
+    models
+    msg
+    rviz
+    urdf
+    worlds
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
