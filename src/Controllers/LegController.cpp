@@ -87,7 +87,7 @@ void LegController<T>::edampCommand(RobotType robot, T gain) {
  */
 template <typename T>
 void LegController<T>::updateData(LegData* legData) {
-  for (int leg = 0; leg < 4; leg++) {
+  for (size_t leg = 0; leg < 4; leg++) {
     // q: 关节角
     datas[leg].q(0) = legData->q_abad[leg];
     datas[leg].q(1) = legData->q_hip[leg];
@@ -105,16 +105,6 @@ void LegController<T>::updateData(LegData* legData) {
     // v 足端速度
     datas[leg].v = datas[leg].J * datas[leg].qd;
   }
-  // std::cout << "leg qd = " << std::endl;
-  // for(int leg = 0; leg<4; leg++) {
-  //   std::cout << datas[leg].qd.transpose() << " ";
-  // }
-  // std::cout << std::endl;
-  // std::cout << "leg p = " << std::endl;
-  // for(int leg = 0; leg<4; leg++) {
-  //   std::cout << datas[leg].p.transpose() << " ";
-  // }
-  // std::cout << std::endl;
 }
 
 /*!
