@@ -6,7 +6,7 @@
 #include "SparseCMPC.h"
 #include "Utilities/cppTypes.h"
 #include "Gait.h"
-#include <fstream> 
+#include <fstream>
 #include <sys/time.h>
 
 #include <cstdio>
@@ -144,7 +144,7 @@ private:
   Vec3<float> f_ff[4];
   Vec4<float> swingTimes;
   FootSwingTrajectory<float> footSwingTrajectories[4];
-  OffsetDurationGait aio, trotting, bounding, pronking, jumping, galloping, standing, trotRunning, walking, walking2, pacing;
+  OffsetDurationGait trotting, bounding, pronking, jumping, galloping, standing, trotRunning, walking, walking2, pacing, aio;
   // MixedFrequncyGait random, random2;
   Mat3<float> Kp, Kd, Kp_stance, Kd_stance, Kp1;
   bool firstRun = true;

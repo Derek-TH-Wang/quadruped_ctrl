@@ -60,7 +60,7 @@ struct LegControllerData {
 };
 
 /*!
- * Controller for 4 legs of a quadruped.  Works for both Mini Cheetah and
+ * Controller for 4 legs of a quadruped. Works for both Mini Cheetah and
  * Cheetah 3
  */
 template <typename T>
@@ -81,7 +81,7 @@ class LegController {
   // command);
 
   /*!
-   * Set the maximum torque.  This only works on cheetah 3!
+   * Set the maximum torque. This only works on cheetah 3!
    */
   void setMaxTorqueCheetah3(T tau) { _maxTorque = tau; }
 

@@ -5,6 +5,7 @@
 #include <time.h>
 
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "Controllers/ContactEstimator.h"
@@ -34,7 +35,7 @@ class GaitCtrller {
   void SetGaitType(int gaitType);
   void SetRobotMode(int mode);
   void SetRobotVel(double* vel);
-  void ToqueCalculator(double* imuData, double* motorData, double* effort);
+  void TorqueCalculator(double* imuData, double* motorData, double* effort);
 
  private:
   int _gaitType = 0;
@@ -44,18 +45,19 @@ class GaitCtrller {
   Vec4<float> ctrlParam;
 
   Quadruped<float> _quadruped;
-  ConvexMPCLocomotion* convexMPC;
-  LegController<float>* _legController;
-  StateEstimatorContainer<float>* _stateEstimator;
+  FloatingBaseModel<float> _model;
+  std::unique_ptr<ConvexMPCLocomotion> convexMPC;
+  std::unique_ptr<LegController<float>> _legController;
+  std::unique_ptr<StateEstimatorContainer<float>> _stateEstimator;
   LegData _legdata;
   LegCommand legcommand;
   ControlFSMData<float> control_data;
   VectorNavData _vectorNavData;
-  CheaterState<double>* cheaterState;
+  std::unique_ptr<CheaterState<double>> cheaterState;
   StateEstimate<float> _stateEstimate;
-  RobotControlParameters* controlParameters;
-  DesiredStateCommand<float>* _desiredStateCommand;
-  SafetyChecker<float>* safetyChecker;
+  std::unique_ptr<RobotControlParameters> controlParameters;
+  std::unique_ptr<DesiredStateCommand<float>> _desiredStateCommand;
+  std::unique_ptr<SafetyChecker<float>> safetyChecker;
 };
 
 extern "C" {
@@ -86,9 +88,9 @@ void set_robot_mode(int mode) { gCtrller->SetRobotMode(mode); }
 void set_robot_vel(double vel[]) { gCtrller->SetRobotVel(vel); }
 
 // after init controller and pre work, the mpc calculator can work
-JointEff* toque_calculator(double imuData[], double motorData[]) {
+JointEff* torque_calculator(double imuData[], double motorData[]) {
   double eff[12] = {0.0};
-  gCtrller->ToqueCalculator(imuData, motorData, eff);
+  gCtrller->TorqueCalculator(imuData, motorData, eff);
   for (int i = 0; i < 12; i++) {
     jointEff.eff[i] = eff[i];
   }

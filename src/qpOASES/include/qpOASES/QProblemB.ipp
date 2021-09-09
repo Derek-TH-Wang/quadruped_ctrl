@@ -246,7 +246,7 @@ inline returnValue QProblemB::setH( SymmetricMatrix* H_new )
 
 	H = H_new;
 	freeHessian = BT_FALSE;
-	
+
 	return SUCCESSFUL_RETURN;
 }
 
@@ -444,7 +444,7 @@ inline void QProblemB::computeGivens(	real_t xold, real_t yold, real_t& xnew, re
 /*
  *	a p p l y G i v e n s
  */
-inline void QProblemB::applyGivens(	real_t c, real_t s, real_t nu, real_t xold, real_t yold,
+inline void QProblemB::applyGivens(	real_t c, real_t s, real_t /*nu*/, real_t xold, real_t yold,
 									real_t& xnew, real_t& ynew
 									) const
 {

@@ -8,10 +8,10 @@ MIT mini cheetah use customized simulator and lcm framework, which is not a popu
 <img src="https://github.com/Derek-TH-Wang/quadruped_ctrl/blob/master/rviz.png" alt="show" />
 
 ### System requirements:
-Ubuntu 18.04, ROS Mellodic  
+Ubuntu 18.04, ROS Melodic
 
 ### Dependency:
-use Logitech gamepad to control robot  
+use Logitech gamepad to control robot
 ```
 git clone https://github.com/Derek-TH-Wang/gamepad_ctrl.git
 ```
@@ -21,6 +21,12 @@ git clone https://github.com/Derek-TH-Wang/gamepad_ctrl.git
 cd {your workspace}
 catkin make
 source devel/setup.bash
+```
+
+#### Install Python dependencies
+
+```bash
+pip3 install -r requirements.txt
 ```
 
 ### Terrain
@@ -38,7 +44,7 @@ run the gamepad node to control robot:
 ```
 roslaunch gamepad_ctrl gamepad_ctrl.launch
 ```
-run the controller in simulator:  
+run the controller in simulator:
 ```
 roslaunch quadruped_ctrl quadruped_ctrl.launch
 ```
@@ -49,7 +55,7 @@ camera set ```True``` or ```False``` in ```config/quadruped_ctrl_config.yaml```,
 roslaunch quadruped_ctrl vision.launch
 ```
 
-also can switch the gait type:  
+also can switch the gait type:
 ```
 rosservice call /gait_type "cmd: 1"
 ```
