@@ -15,9 +15,10 @@ use Logitech gamepad to control robot
 ```
 git clone https://github.com/Derek-TH-Wang/gamepad_ctrl.git
 ```
-msg rospack
+msg rospack and rviz plugin
 ```
 https://github.com/loco-3d/whole_body_state_msgs.git
+https://github.com/eborghi10/whole_body_state_rviz_plugin
 ```
 ### Build
 ```
